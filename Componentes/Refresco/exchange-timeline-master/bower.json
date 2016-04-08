@@ -1,0 +1,29 @@
+{
+  "name": "sof-timeline",
+  "version": "1.0.3",
+  "authors": [
+    "Miguel Ortega Moreno <mortega@conwet.com>"
+  ],
+  "description": "An element providing a stackoverflow timeline.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "stackoverflow",
+    "stackoverflow timeline"
+  ],
+  "main": "sof-timeline.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/mortega5/seed-element/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "bower_components"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.1.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
+}
