@@ -10,10 +10,13 @@
           texto=element.events[i].text
           console.log(texto)
           console.log(i)
+          var d=new Date(element.events[i].created_at).getTime() / 1000
+          console.log(d)
+          console.log(typeof(d))
           texto = texto.replace(/<a [^>]*>([^<]*)<\/a>/g,'$1');
-          var diccionario = {
-            'text': texto , 
-            'time_created' : element.events[i].created_at
+          var diccionario = { 
+            'time_created' : d,
+            'text': texto
           }
           var dicc_string = JSON.stringify(diccionario);
           mixpanel.track("completitud twitter",{'value':dicc_string});

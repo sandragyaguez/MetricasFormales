@@ -15,6 +15,7 @@ import requests.packages.urllib3
 requests.packages.urllib3.disable_warnings()
 import datetime
 import re
+import ast
 import mixpanel
 from mixpanel import Mixpanel
 mp = Mixpanel("10b73632200abfbd592a5567ae99f065")
@@ -45,21 +46,22 @@ request_usertimeline="https://api.twitter.com/1.1/statuses/home_timeline.json?co
 s= requests.get(request_usertimeline, auth=oauth)
 timeline=s.json()
 contador=0
-lista=[]
+lis=[]
 for tweet in timeline:
     #print tweet['user']['name'], 'dice: '
     #print "--------------------------------------------------------------"
     text=tweet['text']
     #print "el tweet es: " + text
-    time= tweet['created_at']
-    #print "time: " + str(time)
+    t= tweet['created_at']
+    #print "t: " + str(t)
+    #stamp=time.mktime(time.strptime(t,"%a %b %d %H:%M:%S +0000 %Y"))
+    #print stamp
     contador=contador+1
-    lista.append(text)
+    lis.append(text)
 print contador
-#print lista
-#print lista[0]
+#print lis
+#print lis[0]
 print "--------------------------------------------------------------"
-
 
 import mixpanel_api, json
 from mixpanel import Mixpanel
@@ -75,45 +77,38 @@ params={'event':['completitud twitter'],
         'interval':1}
 
 respuesta=x.request(['events/properties/values'], params, format='json')
-#print respuesta
-# print type(respuesta)
 
-# for lista in respuesta:
-#     miDic=dict(lista)
-#     print type(miDic)
+lista=[]
+import ast
+for x in respuesta:
+    #pasar de unicode a dict
+    resp = ast.literal_eval(x)
+    lista.append(resp)
 
-#     print type(lista)
-#     print lista
-    # for k,v in lista.items():
-    #     print k,v
-#print zip(lista,respuesta)
 
-# for k,v in zip(lista,respuesta):
+#ordeno la lista de diccionarios por el tiempo
+newlist = sorted(lista, key=lambda created_at: created_at['time_created'])
+newlist.reverse()
+print newlist
+
+#def sort(item):
+    #return -item.items()[1][1]
+
+#fastList = sorted(respuesta,key=sort)
+
+
+#COGER SOLO LOS TEXT DE NEWLIST Y COMPARAR CON LIST
+
+#imprimir solo los timestamp
+#for y in newlist:
+#    print y['time_created']
+
+
+
+#for k,v in zip(lis,newlist):
+    #print k,v
 #     #la k son los tweets obtenidos de twitter y v son los tweets obtenidos del componente
-#     if cmp(k,v)==0:
-#         print "son iguales, completitud OK"
-#     else:
-#         print "NO completitud"
-
-# fixed_list = [x.items() for x in respuesta]
-# keys,values = zip(*fixed_list)
-# print keys
-
-
-# a =[{"car":45845},{"house": 123}]
-# print type(a)
-# print type(respuesta)
-# print respuesta
-# for res in respuesta:
-#     print type(res)
-#     res1=map(dict, res)
-#     print type(res1)
-
-
-# list1 = [i.values()[0] for i in a] #iterate over values 
-# list2=  [i.keys()[0] for i in a]   #iterate over keys
-# print type(i)
-# print a
-# print list1
-# print list2
-
+    #if cmp(k,v)==0:
+        #print "son iguales, completitud OK"
+    #else:
+        #print "NO completitud"
