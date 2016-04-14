@@ -2,6 +2,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*
 
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 import httplib
 import urllib2, urllib
 import json
@@ -16,6 +20,7 @@ requests.packages.urllib3.disable_warnings()
 import datetime
 import re
 import ast
+import calendar
 import mixpanel
 from mixpanel import Mixpanel
 mp = Mixpanel("10b73632200abfbd592a5567ae99f065")
@@ -40,13 +45,14 @@ ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token 
 
 oauth = OAuth1(CONSUMER_KEY,client_secret=CONSUMER_SECRET,resource_owner_key="3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",resource_owner_secret="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock")
 url = 'https://api.twitter.com/1.1/statuses/update.json'
-request_usertimeline="https://api.twitter.com/1.1/statuses/home_timeline.json?count=300"
+request_hometimeline="https://api.twitter.com/1.1/statuses/home_timeline.json?count=300"
 
 #Request timeline home
-s= requests.get(request_usertimeline, auth=oauth)
+s= requests.get(request_hometimeline, auth=oauth)
 timeline=s.json()
 contador=0
 lis=[]
+tiempo=[]
 for tweet in timeline:
     #print tweet['user']['name'], 'dice: '
     #print "--------------------------------------------------------------"
@@ -54,14 +60,28 @@ for tweet in timeline:
     #print "el tweet es: " + text
     t= tweet['created_at']
     #print "t: " + str(t)
-    #stamp=time.mktime(time.strptime(t,"%a %b %d %H:%M:%S +0000 %Y"))
-    #print stamp
+    stamp=calendar.timegm(time.strptime(t,"%a %b %d %H:%M:%S +0000 %Y"))
+    stamp=int(stamp)
     contador=contador+1
     lis.append(text)
+    tiempo.append(stamp)
 print contador
+tiempo=sorted(tiempo)
+tiempo.reverse()
+print tiempo
 #print lis
-#print lis[0]
 print "--------------------------------------------------------------"
+listaT=[]
+for listT in lis:
+    listT = re.sub(r'RT[^<:]*: ','',listT)
+    listaT.append(listT)
+
+
+##########################################################################################################################################
+##########################################################################################################################################
+#------------------------------------------------------PETICION A MIXPANEL----------------------------------------------------------------
+##########################################################################################################################################
+##########################################################################################################################################
 
 import mixpanel_api, json
 from mixpanel import Mixpanel
@@ -79,36 +99,68 @@ params={'event':['completitud twitter'],
 respuesta=x.request(['events/properties/values'], params, format='json')
 
 lista=[]
-import ast
 for x in respuesta:
     #pasar de unicode a dict
     resp = ast.literal_eval(x)
     lista.append(resp)
 
-
 #ordeno la lista de diccionarios por el tiempo
 newlist = sorted(lista, key=lambda created_at: created_at['time_created'])
 newlist.reverse()
-print newlist
 
+listacomp=[]
+listatiempo=[]
+for y in newlist:
+    #la k son los text y el tme_created y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
+    textocomp=y.items()[0][1]
+    tiempocomp=y.items()[1][1]
+    listacomp.append(textocomp)
+    listatiempo.append(tiempocomp)
+
+print listatiempo
+
+
+contador=0
+for k,v in zip(tiempo,listatiempo):
+    #print k
+    #print v
+    #la k son los tweets obtenidos de twitter y v son los tweets obtenidos del componente
+    if cmp(k,v)==0:
+        print "tiempos iguales"
+        contador+=1
+        print contador
+    else:
+        print "NO son iguales"
+        #print "falla en: " + k
+        #print v
+
+
+
+
+
+cont=0
+for k,v in zip(listaT,listacomp):
+    #print k
+    #print v
+    #la k son los tweets obtenidos de twitter y v son los tweets obtenidos del componente
+    if cmp(k,v)==0:
+        print "son iguales, completitud OK"
+        cont+=1
+        print cont
+    else:
+        print "NO completitud"
+        #print "falla en: " + k
+        #print v
+
+
+
+
+
+
+
+
+
+#Miguel funcion de ordenacion
 #def sort(item):
     #return -item.items()[1][1]
-
 #fastList = sorted(respuesta,key=sort)
-
-
-#COGER SOLO LOS TEXT DE NEWLIST Y COMPARAR CON LIST
-
-#imprimir solo los timestamp
-#for y in newlist:
-#    print y['time_created']
-
-
-
-#for k,v in zip(lis,newlist):
-    #print k,v
-#     #la k son los tweets obtenidos de twitter y v son los tweets obtenidos del componente
-    #if cmp(k,v)==0:
-        #print "son iguales, completitud OK"
-    #else:
-        #print "NO completitud"
