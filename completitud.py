@@ -73,7 +73,7 @@ print tiempo
 print "--------------------------------------------------------------"
 listaT=[]
 for listT in lis:
-    listT = re.sub(r'RT[^<:]*: ','',listT)
+    listT = re.sub(r'RT[^:]*: ','',listT)
     listaT.append(listT)
 
 
