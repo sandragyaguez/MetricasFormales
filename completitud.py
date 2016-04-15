@@ -56,7 +56,12 @@ tiempo=[]
 for tweet in timeline:
     #print tweet['user']['name'], 'dice: '
     #print "--------------------------------------------------------------"
-    text=tweet['text']
+    #if para ver si el tweet es un retweet
+    if(tweet.has_key('retweeted_status')):
+        text = tweet['retweeted_status']['text']
+        #print "text: " + str(text)
+    else:
+        text=tweet['text']
     #print "el tweet es: " + text
     t= tweet['created_at']
     #print "t: " + str(t)
@@ -68,14 +73,13 @@ for tweet in timeline:
 print contador
 tiempo=sorted(tiempo)
 tiempo.reverse()
-print tiempo
-#print lis
-print "--------------------------------------------------------------"
-listaT=[]
-for listT in lis:
-    listT = re.sub(r'RT[^:]*: ','',listT)
-    listaT.append(listT)
 
+print "--------------------------------------------------------------"
+#quitar RT @usuario:   pero si el tweet empieza asi (sin ser un retweet) lo quita igualmente y esta mal
+#listaT=[]
+#for listT in lis:
+    #listT = re.sub(r'RT[^:]*: ','',listT)
+    #listaT.append(listT)
 
 ##########################################################################################################################################
 ##########################################################################################################################################
@@ -117,14 +121,10 @@ for y in newlist:
     listacomp.append(textocomp)
     listatiempo.append(tiempocomp)
 
-print listatiempo
-
-
+#comparar timestamp de twitter con el del componente
 contador=0
 for k,v in zip(tiempo,listatiempo):
-    #print k
-    #print v
-    #la k son los tweets obtenidos de twitter y v son los tweets obtenidos del componente
+    #la k son los timestamps obtenidos de twitter y v son los timestamps obtenidos del componente
     if cmp(k,v)==0:
         print "tiempos iguales"
         contador+=1
@@ -132,25 +132,24 @@ for k,v in zip(tiempo,listatiempo):
     else:
         print "NO son iguales"
         #print "falla en: " + k
-        #print v
 
-
-
-
-
+print "-------------------------------------------------------------"
+print "-------------------------------------------------------------"
 cont=0
-for k,v in zip(listaT,listacomp):
-    #print k
-    #print v
+for k,v in zip(lis,listacomp):
     #la k son los tweets obtenidos de twitter y v son los tweets obtenidos del componente
     if cmp(k,v)==0:
         print "son iguales, completitud OK"
+        print k
+        print v
         cont+=1
         print cont
     else:
+        print "-----------------------------------------------------"
+        print "-----------------------------------------------------"
         print "NO completitud"
-        #print "falla en: " + k
-        #print v
+        print "falla en: " + k
+        print v
 
 
 
