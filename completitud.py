@@ -35,6 +35,11 @@ CONSUMER_SECRET = '8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf' #Consumer
 ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
 ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
 
+#CONSUMER_KEY= "7pBOCbidtVpQfTpPpwvQBL31o"
+#CONSUMER_SECRET = "0M3o2TTQQQi4fqXx03XRkfUIOXZBa3sIN0w5q7culXPnVv3enb"
+#ACCESS_KEY = "249717000-nG3UUpnfHkhIkyhnA8KpClgVKK0Uc2kl33qTrBdP"
+#ACCESS_SECRET = "erdkRUxv9eKGjfNHSkpzxi0kUYGAlOvI7ESOdPuxEv4OA"
+
 
 ##########################################################################################################################################
 ##########################################################################################################################################
@@ -43,9 +48,10 @@ ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token 
 ##########################################################################################################################################
 
 
-oauth = OAuth1(CONSUMER_KEY,client_secret=CONSUMER_SECRET,resource_owner_key="3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",resource_owner_secret="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock")
-url = 'https://api.twitter.com/1.1/statuses/update.json'
-request_hometimeline="https://api.twitter.com/1.1/statuses/home_timeline.json?count=300"
+oauth = OAuth1(CONSUMER_KEY,client_secret=CONSUMER_SECRET,resource_owner_key=ACCESS_KEY,resource_owner_secret=ACCESS_SECRET)
+#url = 'https://api.twitter.com/1.1/statuses/update.json'
+request_hometimeline="https://api.twitter.com/1.1/statuses/home_timeline.json?count=200"
+
 
 #Request timeline home
 s= requests.get(request_hometimeline, auth=oauth)
@@ -73,7 +79,10 @@ for tweet in timeline:
 print contador
 tiempo=sorted(tiempo)
 tiempo.reverse()
-
+print tiempo[50]
+print tiempo[51]
+print lis[50]
+print ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"
 print "--------------------------------------------------------------"
 #quitar RT @usuario:   pero si el tweet empieza asi (sin ser un retweet) lo quita igualmente y esta mal
 #listaT=[]
@@ -121,35 +130,45 @@ for y in newlist:
     listacomp.append(textocomp)
     listatiempo.append(tiempocomp)
 
+print listatiempo[50]
+print listacomp[50]
+
+print listatiempo[51]
 #comparar timestamp de twitter con el del componente
 contador=0
 for k,v in zip(tiempo,listatiempo):
     #la k son los timestamps obtenidos de twitter y v son los timestamps obtenidos del componente
     if cmp(k,v)==0:
-        print "tiempos iguales"
         contador+=1
-        print contador
+        #print contador
+        print "tiempos iguales"
+        
     else:
         print "NO son iguales"
         #print "falla en: " + k
 
 print "-------------------------------------------------------------"
 print "-------------------------------------------------------------"
-cont=0
+cont=1
 for k,v in zip(lis,listacomp):
     #la k son los tweets obtenidos de twitter y v son los tweets obtenidos del componente
     if cmp(k,v)==0:
-        print "son iguales, completitud OK"
-        print k
-        print v
         cont+=1
-        print cont
+        #print cont
+        #print "son iguales, completitud OK"
+        #print k
+        #print v
+       
     else:
         print "-----------------------------------------------------"
         print "-----------------------------------------------------"
         print "NO completitud"
-        print "falla en: " + k
-        print v
+        cont+=1
+        print "falla en el numero: " + str(cont)
+        print "python: " + k
+        print "componente: " + v
+
+
 
 
 
