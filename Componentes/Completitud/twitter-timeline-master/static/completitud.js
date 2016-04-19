@@ -16,7 +16,7 @@
           texto=element.events[i].text
           console.log(texto)
           console.log(i)
-          var d=new Date(element.events[i].created_at).getTime() / 1000
+          var d=new Date(element.events[i].created_at).getTime()
           console.log(d)
           console.log(typeof(d))
           texto = texto.replace(/<a [^>]*>([^<]*)<\/a>/g,'$1');
