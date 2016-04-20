@@ -28,7 +28,7 @@ mp = Mixpanel("10b73632200abfbd592a5567ae99f065")
 
 webbrowser.open_new("http://twitter-timeline-app.appspot.com/app/_completitud.html")
 
-time.sleep(15)
+time.sleep(10)
 
 #CONSUMER_KEY = 'J4bjMZmJ6hh7r0wlG9H90cgEe' #Consumer key
 #CONSUMER_SECRET = '8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf' #Consumer secret
@@ -99,8 +99,12 @@ from mixpanel import Mixpanel
 x=mixpanel_api.Mixpanel("0be846115003ba87c667ee6467edb336","c282259a64f150a4ce2496a2dd73e097")
 
 
+event_master="completitud twitter master"
+event_latency= "completitud twitter latency"
+event_accuracy="completitud twitter accuracy"
+
 #Cuando lo tengas, defines los parametros necesarios para la peticion
-params={'event':['completitud twitter'],
+params={'event':[event_master],
         'name':'value',
         'type':"general",
         'unit':"day",

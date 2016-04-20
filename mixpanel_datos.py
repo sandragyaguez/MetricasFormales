@@ -7,7 +7,7 @@ mp = Mixpanel("070bf8a01a6127ebf78325716490697a")
 #Tienes que crear una instancia de la clase Mixpanel, con tus credenciales
 x=mixpanel_api.Mixpanel("c10939e3faf2e34b4abb4f0f1594deaa","4a3b46218b0d3865511bc546384b8928")
 
-version="accuracy"
+version="master"
 event_master="Twitter refresh master"
 event_latency= "Twitter refresh latency"
 event_accuracy="Twitter refresh accuracy"
@@ -17,7 +17,7 @@ event_accuracy="Twitter refresh accuracy"
 ################################################################################################
 
 #Cuando lo tengas, defines los parametros necesarios para la peticion
-params={'event':[event_accuracy],
+params={'event':[event_master],
 	'name':'time_refresh',
 	'type':"general",
         'unit':"day",
@@ -25,7 +25,7 @@ params={'event':[event_accuracy],
         'from_date':'2016-03-09',
         'to_date':'2016-06-15'}
 
-params_refresh={'event':[event_accuracy],
+params_refresh={'event':[event_master],
 	'name':'tweet',
 	'type':"general",
         'unit':"day",
@@ -59,7 +59,7 @@ event_master_post= "Twitter post master"
 event_latency_post="Twitter post latency"
 event_accuracy_post="Twitter post accuracy"
 
-params1={'event':[event_accuracy_post], 
+params1={'event':[event_master_post], 
 	'name':'time post',
         'type':"general",
         'from_date':'2016-03-09',
@@ -68,7 +68,7 @@ params1={'event':[event_accuracy_post],
         'interval':1}
 
 
-params1_post={'event':[event_accuracy_post], 
+params1_post={'event':[event_master_post], 
 	'name':'tweet',
         'type':"general",
         'from_date':'2016-03-09',
@@ -117,4 +117,4 @@ for k,v in zip(miDiccionario.items(),miDiccionario1.items()):
                 print k[0]
                 final_time=int(k[1])-int(v[1])
                 print "final_time diccionarios: " + str(final_time)
-                mp.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": k[0], "version":version})
+                mp.track(final_time, "Final time master",{"time final": final_time, "tweet": k[0], "version":version})

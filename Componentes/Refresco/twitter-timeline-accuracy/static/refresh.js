@@ -38,7 +38,7 @@
                 console.log(element.events[i]);
                 //el time es el mismo para los tres tweets porque se muestran al
                 if(element.events[i].text===publish_text){
-                  mixpanel.track("Twitter refresh accuracy",{"time_refresh": time, "tweet": publish_text, "version": "master"});
+                  mixpanel.track("Twitter refresh accuracy",{"time_refresh": time, "tweet": publish_text, "version": "accuracy"});
                   console.log("time de escucha de cambio en ms: " + time);
 
                 }

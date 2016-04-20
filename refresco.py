@@ -24,13 +24,16 @@ from mixpanel import Mixpanel
 mp = Mixpanel("070bf8a01a6127ebf78325716490697a")
 
 estado="hola1"
-webbrowser.open_new("http://twitter-timeline-app.appspot.com/app/_refresh.html" + "?" + estado)
+
+webbrowser.get('google-chrome').open_new("http://twitter-timeline-app.appspot.com/app/_refresh.html" + "?" + estado)
 
 #webbrowser.open_new("http://twitter-timeline-app.appspot.com/app/_refresh.html" + "?" + estado + "&" + estado1 + "&" + estado2)
 #webbrowser.open_new("http://twitter-timeline-app.appspot.com/app/_refresh.html")
 #webbrowser.open_new("http://instagram-timeline.appspot.com/app/_refresh_insta.html")
 
 time.sleep(5)
+
+
 
 ##########################################################################################################################################
 ##########################################################################################################################################
@@ -188,7 +191,7 @@ def publicar(estado):
     print "Respuesta: " + str(r)
     tpubl=datetime.datetime.now()
     tpubl_ms=int(time.time()*1000)
-    mp.track(tpubl_ms, event_accuracy_post,{"time post": tpubl_ms, "tweet": estado})
+    mp.track(tpubl_ms, event_master_post,{"time post": tpubl_ms, "tweet": estado})
     #tweetpub=r.text
     #tweetpub=r.json()
     #print tweetpub['text']

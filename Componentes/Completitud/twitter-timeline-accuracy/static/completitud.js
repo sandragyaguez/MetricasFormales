@@ -1,6 +1,5 @@
 
 
-
       //function sleep(milliseconds){
         //var start = new Date().getTime();
         //while ((new Date().getTime() - start) <= milliseconds);
@@ -25,7 +24,7 @@
             'text': texto
           }
           var dicc_string = JSON.stringify(diccionario);
-          mixpanel.track("completitud twitter master",{'value':dicc_string});
+          mixpanel.track("completitud twitter accuracy",{'value':dicc_string});
 
           }
       }, 2000);

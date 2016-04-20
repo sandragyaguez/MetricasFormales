@@ -1,6 +1,6 @@
 
 #abro el fichero demo.html y lo leo
-fichero = open("/home/sandra/Documentos/Labo/MetricasFormales/Componentes/Completitud/twitter-timeline-master/static/demo.html", "r")
+fichero = open("/home/sandra/Documentos/Labo/MetricasFormales/Componentes/Completitud/twitter-timeline-accuracy/static/demo.html", "r")
 text = fichero.read()
 #inyectar al final del body el contenido de completitud.js (con esto consigo inyectar en codigo js sin modificar el demo.html original)
 
@@ -9,7 +9,7 @@ mixpanel='<script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;
 text_newfile= text.replace("</body>", "<script src='completitud.js' type='text/javascript'></script>\n</body>")
 text_newfile= text_newfile.replace("</head>", mixpanel + "\n</head>")
 
-completitud_file=open("/home/sandra/Documentos/Labo/MetricasFormales/Componentes/Completitud/twitter-timeline-master/static/_completitud.html", 'w')
+completitud_file=open("/home/sandra/Documentos/Labo/MetricasFormales/Componentes/Completitud/twitter-timeline-accuracy/static/_completitud.html", 'w')
 completitud_file.truncate()
 completitud_file.write(text_newfile)
 completitud_file.close()
