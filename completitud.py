@@ -131,30 +131,23 @@ for y in newlist:
 #comparar timestamp de twitter con el del componente
 contador=0
 for k,v in zip(tiempo,listatiempo):
-    #print k
-    #print v
     #la k son los timestamps obtenidos de twitter y v son los timestamps obtenidos del componente
     if cmp(k,v)==0:
         contador+=1
         #print contador
-        #print "tiempos iguales"
-        
+        #print "tiempos iguales" 
     #else:
         #print "NO son iguales"
         #print "falla en: " + k
 
 print "-------------------------------------------------------------"
-#print "-------------------------------------------------------------"
 cont=1
 for k,v in zip(lis,listacomp):
     #la k son los tweets obtenidos de twitter y v son los tweets obtenidos del componente
     if cmp(k,v)==0:
         cont+=1
         #print cont
-        #print "son iguales, completitud OK"
-        #print k
-        #print v
-       
+        #print "son iguales, completitud OK"       
     else:
         print "-----------------------------------------------------"
         print "-----------------------------------------------------"
