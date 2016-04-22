@@ -18,7 +18,7 @@
             'text': texto
           }
           var dicc_string = JSON.stringify(diccionario);
-          mixpanel.track("completitud twitter accuracy",{'value':dicc_string});
+          mixpanel.track("accuracy",{'value':dicc_string});
 
           }
       }, 2000);

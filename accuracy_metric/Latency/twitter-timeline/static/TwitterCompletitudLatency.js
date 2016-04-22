@@ -21,7 +21,7 @@
             'text': texto
           }
           var dicc_string = JSON.stringify(diccionario);
-          mixpanel.track("completitud twitter latency",{'value':dicc_string});
+          mixpanel.track("latency",{'value':dicc_string});
 
           }
       }, 2000);
