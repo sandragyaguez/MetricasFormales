@@ -342,10 +342,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         for (var i=0;i < data.length; i++){
           if(this.probability(this.accuracy_probability)){
             if(data[i].retweeted_status) {
-              data[i].retweeted_status.text = this.data.tweetError;
+              data[i].retweeted_status.text = "Tweet error";
+              data[i].user.name = "Perico el de los palotes"
 
             } else{
-              data[i].text = this.data.tweetError;
+              data[i].text = "Tweet error";
+              data[i].user.name = "Perico el de los palotes"
             }
             console.log("Elemento " + i + " cambiado");
           }

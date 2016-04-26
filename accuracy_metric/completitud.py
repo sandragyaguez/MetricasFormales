@@ -28,8 +28,6 @@ mp = Mixpanel("10b73632200abfbd592a5567ae99f065")
 mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
 import mixpanel_api
 
-#Abrir terminal
-#os.system("gnome-terminal -e 'bash -c \"sudo apt-get update; exec bash\"'")
 
 #JFS
 #CONSUMER_KEY= "7pBOCbidtVpQfTpPpwvQBL31o"
@@ -48,7 +46,6 @@ if len(sys.argv) >= 2:
     social_network = sys.argv[1]
 else:
     social_network = ''
-
 
 if len(sys.argv) >= 3:
     version= sys.argv[2]
@@ -157,12 +154,17 @@ if social_network in network_list:
                         valuesP=dictPython.get(key,None)
                         if cmp(valuesP,value)==0:
                             print "OK"
+                            cont+=1
                         else:
-                            print "falla en: " + n
+                            print "falla en: " + value
+                            cont+=1
+                            mp.track(cont,"Fallos accuracy",{"posicion": cont , "tweet": value, "version":version})
+
                     else:
                         print "falla en: " + str(key)
                         print "el tweet es: " + value
-                        mp.track(cont,"Fallos master",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
+                        cont+=1
+                        mp.track(cont,"Fallos master",{"posicion": cont , "tweet": value, "version":version})
 
                     
             elif version=="latency":
@@ -199,12 +201,17 @@ if social_network in network_list:
                         valuesP=dictPython.get(key,None)
                         if cmp(valuesP,value)==0:
                             print "OK"
+                            cont+=1
                         else:
-                            print "falla en: " + n
+                            print "falla en: " + value
+                            cont+=1
+                            mp.track(cont,"Fallos accuracy",{"posicion": cont , "tweet": value, "version":version})
                     else:
                         print "falla en: " + str(key)
                         print "el tweet es: " + value
-                        mp.track(cont,"Fallos latency",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
+                        cont+=1
+                        mp.track(cont,"Fallos latency",{"posicion": cont , "tweet": value, "version":version})
+
 
             elif version=="accuracy":
                              #defino los parametros necesarios para la peticion
@@ -236,16 +243,23 @@ if social_network in network_list:
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
-                        cont+=1
                         valuesP=dictPython.get(key,None)
                         if cmp(valuesP,value)==0:
                             print "OK"
+                            cont+=1
                         else:
-                            print "falla en: " + n
+                            print "falla en: " + value
+                            cont+=1
+                            print cont
+                            mp.track(cont,"Fallos accuracy",{"posicion":cont ,"tweet": value, "version":version})
+
                     else:
                         print "falla en: " + str(key)
                         print "el tweet es: " + value
-                        mp.track(cont,"Fallos accuracy",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
+                        cont+=1
+                        mp.track(cont,"Fallos accuracy",{"posicion": cont, "tweet": value, "version":version})
+
+
 
 #--------------------------------------------------
 #CASO1: GITHUB
@@ -268,29 +282,25 @@ if social_network in network_list:
         #----------------------------------------------------------DATOS GITHUB API---------------------------------------------------------------
         ##########################################################################################################################################
 
-        github_url = "https://api.github.com/users/polymer-spain/received_events"
+        github_url = "https://api.github.com/users/mortega5/received_events"
         peticion= requests.get(github_url)
         print peticion
         muro=peticion.json()
         for events in muro:
-            #print events
+            print events
             print "------------------------------------------------------------------"
-            idsevents=events['id']
-            print idsevents
+            #idsevents=events['id']
+            #print idsevents
 
 
 
 
         ##########################################################################################################################################
-        #-----------------------------------------DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
+        #------------------------------------------DATOS GITHUB COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
         sleep(10)
                 # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("1119893e7fea6aad13e030ad514595be","bf69f1d1620ca5a5bb2b116c3e3a9944")
-        lista=[]
-        listacomp=[]
-        listaid=[]
-        cont=0
 
         if version in version_list:
             if version=="master":
