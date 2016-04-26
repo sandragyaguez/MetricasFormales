@@ -25,6 +25,7 @@ import mixpanel
 import os
 from mixpanel import Mixpanel
 mp = Mixpanel("10b73632200abfbd592a5567ae99f065")
+mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
 import mixpanel_api
 
 #Abrir terminal
@@ -56,6 +57,11 @@ else:
 
 #CASOS:
 if social_network in network_list:
+
+#--------------------------------------------------
+#CASO1: TWITTER
+#--------------------------------------------------
+
     if social_network == 'twitter':
 
         ##########################################################################################################################################
@@ -108,150 +114,203 @@ if social_network in network_list:
         ##########################################################################################################################################
         #-----------------------------------------DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
-sleep(10)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-x=mixpanel_api.Mixpanel("0be846115003ba87c667ee6467edb336","c282259a64f150a4ce2496a2dd73e097")
-lista=[]
-listacomp=[]
-listaid=[]
-cont=0
+        sleep(10)
+                # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("0be846115003ba87c667ee6467edb336","c282259a64f150a4ce2496a2dd73e097")
+        lista=[]
+        listacomp=[]
+        listaid=[]
+        cont=0
 
-if version in version_list:
-    if version=="master":
-        #defino los parametros necesarios para la peticion
-        params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-        respuesta=x.request(['events/properties/values'], params, format='json')
-
-        for x in respuesta:
-            #pasar de unicode a dict
-            resp = ast.literal_eval(x)
-            lista.append(resp)
-
-        #ordeno la lista de diccionarios por el id
-        newlist = sorted(lista, key=lambda id_tweet: id_tweet['id'])
-        newlist.reverse()
-
-        for y in newlist:
-            #la k son los text y el id y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
-            textocomp=y.items()[0][1]
-            idcomp=y.items()[1][1]
-            idcomp=int(idcomp)
-            listacomp.append(textocomp)
-            listaid.append(idcomp)
-        
-        zipComp=zip(listaid,listacomp)
-        dictComp=dict(zipComp)
-
-        #Recorro el diccionario del componente
-        for key,value in dictComp.iteritems():
-            #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-            if(dictPython.has_key(key)):
-                #si es asi, cojo los values de python y del componente y los comparo
-                cont+=1
-                valuesP=dictPython.get(key,None)
-                if cmp(valuesP,value)==0:
-                    print "OK"
-                else:
-                    print "falla en: " + n
-            else:
-                print "falla en: " + str(key)
-                print "el tweet es: " + value
-                mp.track(cont,"Fallos master",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
-
-            
-    elif version=="latency":
+        if version in version_list:
+            if version=="master":
                 #defino los parametros necesarios para la peticion
-        params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
-        respuesta=x.request(['events/properties/values'], params, format='json')
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
 
-        for x in respuesta:
+                for x in respuesta:
                     #pasar de unicode a dict
-            resp = ast.literal_eval(x)
-            lista.append(resp)
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
 
                 #ordeno la lista de diccionarios por el id
-        newlist = sorted(lista, key=lambda id_tweet: id_tweet['id'])
-        newlist.reverse()
+                newlist = sorted(lista, key=lambda id_tweet: id_tweet['id'])
+                newlist.reverse()
 
-        for y in newlist:
-                #la k son los text y el id y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
-            textocomp=y.items()[0][1]
-            idcomp=y.items()[1][1]
-            idcomp=int(idcomp)
-            listacomp.append(textocomp)
-            listaid.append(idcomp)
-
-        zipComp=zip(listaid,listacomp)
-        dictComp=dict(zipComp)
-
-        #Recorro el diccionario del componente
-        for key,value in dictComp.iteritems():
-            #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-            if(dictPython.has_key(key)):
-                #si es asi, cojo los values de python y del componente y los comparo
-                cont+=1
-                valuesP=dictPython.get(key,None)
-                if cmp(valuesP,value)==0:
-                    print "OK"
-                else:
-                    print "falla en: " + n
-            else:
-                print "falla en: " + str(key)
-                print "el tweet es: " + value
-                mp.track(cont,"Fallos latency",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
-
-    elif version=="accuracy":
-                     #defino los parametros necesarios para la peticion
-        params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
-        respuesta=x.request(['events/properties/values'], params, format='json')
-
-        for x in respuesta:
-                    #pasar de unicode a dict
-            resp = ast.literal_eval(x)
-            lista.append(resp)
-
-                #ordeno la lista de diccionarios por el id
-        newlist = sorted(lista, key=lambda id_tweet: id_tweet['id'])
-        newlist.reverse()
-
-        for y in newlist:
-                #la k son los text y el id y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
-            textocomp=y.items()[0][1]
-            idcomp=y.items()[1][1]
-            idcomp=int(idcomp)
-            listacomp.append(textocomp)
-            listaid.append(idcomp)
-
-        zipComp=zip(listaid,listacomp)
-        dictComp=dict(zipComp)
-
-        #Recorro el diccionario del componente
-        for key,value in dictComp.iteritems():
-            #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-            if(dictPython.has_key(key)):
-                #si es asi, cojo los values de python y del componente y los comparo
-                cont+=1
-                valuesP=dictPython.get(key,None)
-                if cmp(valuesP,value)==0:
-                    print "OK"
-                else:
-                    print "falla en: " + n
-            else:
-                print "falla en: " + str(key)
-                print "el tweet es: " + value
-                mp.track(cont,"Fallos accuracy",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
-
-
+                for y in newlist:
+                    #la k son los text y el id y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
+                    textocomp=y.items()[0][1]
+                    idcomp=y.items()[1][1]
+                    idcomp=int(idcomp)
+                    listacomp.append(textocomp)
+                    listaid.append(idcomp)
                 
-        # elif social_network == 'github':
+                zipComp=zip(listaid,listacomp)
+                dictComp=dict(zipComp)
 
-        #     webbrowser.open_new(server_base_url + "/Stable/GithubEventsLatency.html?experiment="+ experiment_id)
-        #     time.sleep(10)
-        #     webbrowser.open_new(server_base_url + "/Accuracy/GithubEventsLatency.html?experiment="+ experiment_id)
-        #     time.sleep(10)
-        #     webbrowser.open_new(server_base_url + "/Latency/GithubEventsLatency.html?experiment="+ experiment_id)
+                #Recorro el diccionario del componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        cont+=1
+                        valuesP=dictPython.get(key,None)
+                        if cmp(valuesP,value)==0:
+                            print "OK"
+                        else:
+                            print "falla en: " + n
+                    else:
+                        print "falla en: " + str(key)
+                        print "el tweet es: " + value
+                        mp.track(cont,"Fallos master",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
 
-        # elif social_network == 'facebook' and len(sys.argv) >= 3:
+                    
+            elif version=="latency":
+                        #defino los parametros necesarios para la peticion
+                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                            #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                        #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda id_tweet: id_tweet['id'])
+                newlist.reverse()
+
+                for y in newlist:
+                        #la k son los text y el id y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
+                    textocomp=y.items()[0][1]
+                    idcomp=y.items()[1][1]
+                    idcomp=int(idcomp)
+                    listacomp.append(textocomp)
+                    listaid.append(idcomp)
+
+                zipComp=zip(listaid,listacomp)
+                dictComp=dict(zipComp)
+
+                #Recorro el diccionario del componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        cont+=1
+                        valuesP=dictPython.get(key,None)
+                        if cmp(valuesP,value)==0:
+                            print "OK"
+                        else:
+                            print "falla en: " + n
+                    else:
+                        print "falla en: " + str(key)
+                        print "el tweet es: " + value
+                        mp.track(cont,"Fallos latency",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
+
+            elif version=="accuracy":
+                             #defino los parametros necesarios para la peticion
+                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                            #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                        #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda id_tweet: id_tweet['id'])
+                newlist.reverse()
+
+                for y in newlist:
+                        #la k son los text y el id y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
+                    textocomp=y.items()[0][1]
+                    idcomp=y.items()[1][1]
+                    idcomp=int(idcomp)
+                    listacomp.append(textocomp)
+                    listaid.append(idcomp)
+
+                zipComp=zip(listaid,listacomp)
+                dictComp=dict(zipComp)
+
+                #Recorro el diccionario del componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        cont+=1
+                        valuesP=dictPython.get(key,None)
+                        if cmp(valuesP,value)==0:
+                            print "OK"
+                        else:
+                            print "falla en: " + n
+                    else:
+                        print "falla en: " + str(key)
+                        print "el tweet es: " + value
+                        mp.track(cont,"Fallos accuracy",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
+
+#--------------------------------------------------
+#CASO1: GITHUB
+#--------------------------------------------------
+                
+    elif social_network == 'github':
+
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new("http://localhost:8080/GithubCompletitud.html")
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new("http://localhost:8080/GithubCompletitudLatency.html")
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new("http://localhost:8080/GithubCompletitudAccuracy.html")
+                sleep(3)
+
+        ##########################################################################################################################################
+        #----------------------------------------------------------DATOS GITHUB API---------------------------------------------------------------
+        ##########################################################################################################################################
+
+        github_url = "https://api.github.com/users/polymer-spain/received_events"
+        peticion= requests.get(github_url)
+        print peticion
+        muro=peticion.json()
+        for events in muro:
+            #print events
+            print "------------------------------------------------------------------"
+            idsevents=events['id']
+            print idsevents
+
+
+
+
+        ##########################################################################################################################################
+        #-----------------------------------------DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
+        ##########################################################################################################################################
+        sleep(10)
+                # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("1119893e7fea6aad13e030ad514595be","bf69f1d1620ca5a5bb2b116c3e3a9944")
+        lista=[]
+        listacomp=[]
+        listaid=[]
+        cont=0
+
+        if version in version_list:
+            if version=="master":
+                #defino los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')               
+                    
+            elif version=="latency":
+                        #defino los parametros necesarios para la peticion
+                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+                
+
+            elif version=="accuracy":
+                             #defino los parametros necesarios para la peticion
+                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+    
+    #elif social_network == 'facebook' and len(sys.argv) >= 3:
         #     access_token = sys.argv[2]
             
     
