@@ -71,13 +71,13 @@ if social_network in network_list:
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new("http://twitter-timeline-app.appspot.com/app/TwitterCompletitud.html")
-                sleep(5)
+                sleep(3)
             elif(version=="latency"):
                 webbrowser.open_new("http://twitter-timeline-app.appspot.com/app/TwitterCompletitudLatency.html")
-                sleep(5)
+                sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new("http://twitter-timeline-app.appspot.com/app/TwitterCompletitudAccuracy.html")
-                sleep(5)
+                sleep(3)
 
         oauth = OAuth1(CONSUMER_KEY,client_secret=CONSUMER_SECRET,resource_owner_key=ACCESS_KEY,resource_owner_secret=ACCESS_SECRET)
         request_hometimeline="https://api.twitter.com/1.1/statuses/home_timeline.json?count=200"
@@ -93,8 +93,10 @@ if social_network in network_list:
                 text = tweet['retweeted_status']['text']
             else:
                 text=tweet['text']
+
             id_tweet1=tweet['id_str']
             id_tweet1=int(id_tweet1)
+            user=tweet['user']['name']
             contador=contador+1
             lis.append(text)
             #Twitter devuelve los id de los tweets cronologicamente (comprobado)
@@ -140,7 +142,6 @@ if version in version_list:
         zipComp=zip(listaid,listacomp)
         dictComp=dict(zipComp)
 
-        cont=1
         #Recorro el diccionario del componente
         for key,value in dictComp.iteritems():
             #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
@@ -156,7 +157,6 @@ if version in version_list:
                 print "falla en: " + str(key)
                 print "el tweet es: " + value
                 mp.track(cont,"Fallos master",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
-        print cont        
 
             
     elif version=="latency":
@@ -181,17 +181,24 @@ if version in version_list:
             listacomp.append(textocomp)
             listaid.append(idcomp)
 
-        for k,v in zip(lis,listacomp):
-                #la k son los tweets obtenidos de twitter y v son los tweets obtenidos del componente
-            if cmp(k,v)==0:
+        zipComp=zip(listaid,listacomp)
+        dictComp=dict(zipComp)
+
+        #Recorro el diccionario del componente
+        for key,value in dictComp.iteritems():
+            #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+            if(dictPython.has_key(key)):
+                #si es asi, cojo los values de python y del componente y los comparo
                 cont+=1
-                print "OK"
+                valuesP=dictPython.get(key,None)
+                if cmp(valuesP,value)==0:
+                    print "OK"
+                else:
+                    print "falla en: " + n
             else:
-                print "NO completitud"
-                cont+=1
-                print "falla en el numero: " + str(cont)
-                    #con listacom.index(v) mando a mixpanel la posicion en la que esta el tweet que fall en el componente
-                mp.track(cont,"Fallos latency",{"posicion": listacomp.index(v)+1 , "tweet": v, "version":version})
+                print "falla en: " + str(key)
+                print "el tweet es: " + value
+                mp.track(cont,"Fallos latency",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
 
     elif version=="accuracy":
                      #defino los parametros necesarios para la peticion
@@ -215,18 +222,24 @@ if version in version_list:
             listacomp.append(textocomp)
             listaid.append(idcomp)
 
-        for k,v in zip(lis,listacomp):
-                #la k son los tweets obtenidos de twitter y v son los tweets obtenidos del componente
-            if cmp(k,v)==0:
-                cont+=1
-                print "OK"
+        zipComp=zip(listaid,listacomp)
+        dictComp=dict(zipComp)
 
-            else:
-                print "NO completitud"
+        #Recorro el diccionario del componente
+        for key,value in dictComp.iteritems():
+            #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+            if(dictPython.has_key(key)):
+                #si es asi, cojo los values de python y del componente y los comparo
                 cont+=1
-                print "falla en el numero: " + str(cont)
-                        #con listacom.index(v) mando a mixpanel la posicion en la que esta el tweet que fall en el componente
-                mp.track(cont,"Fallos accuracy",{"posicion": listacomp.index(v)+1 , "tweet": v, "version":version})
+                valuesP=dictPython.get(key,None)
+                if cmp(valuesP,value)==0:
+                    print "OK"
+                else:
+                    print "falla en: " + n
+            else:
+                print "falla en: " + str(key)
+                print "el tweet es: " + value
+                mp.track(cont,"Fallos accuracy",{"posicion": listacomp.index(value)+1 , "tweet": value, "version":version})
 
 
                 
