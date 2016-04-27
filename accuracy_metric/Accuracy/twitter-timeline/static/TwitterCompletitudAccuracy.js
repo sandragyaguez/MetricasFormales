@@ -11,11 +11,13 @@
           console.log(texto)
           console.log(i)
           var id= element.events[i].id_str
-          console.log(id)
+          var user= element.events[i].user.name
           texto = texto.replace(/<a [^>]*>([^<]*)<\/a>/g,'$1');
           var diccionario = {
             'id': id,
-            'text': texto
+            'text': texto,
+            'user': user,
+             'i': i
           }
           var dicc_string = JSON.stringify(diccionario);
           mixpanel.track("accuracy",{'value':dicc_string});
