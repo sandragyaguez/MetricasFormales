@@ -423,30 +423,46 @@ if social_network in network_list:
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new("http://localhost:8080/GithubCompletitud.html")
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Master/GithubCompletitud.html")
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new("http://localhost:8080/GithubCompletitudLatency.html")
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Latency/GithubCompletitudLatency.html")
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new("http://localhost:8080/GithubCompletitudAccuracy.html")
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Accuracy/GithubCompletitudAccuracy.html")
                 sleep(3)
+
 
         ##########################################################################################################################################
         #----------------------------------------------------------DATOS GITHUB API---------------------------------------------------------------
         ##########################################################################################################################################
 
+        contador=0
+        lis=[]
+        ids=[]
+        users=[]
         github_url = "https://api.github.com/users/mortega5/received_events"
         peticion= requests.get(github_url)
         print peticion
         muro=peticion.json()
         for events in muro:
             print events
+            idsevents=events['id']
+            userevents=events['actor']['login']
+            print idsevents
+            print userevents
             print "------------------------------------------------------------------"
-            #idsevents=events['id']
-            #print idsevents
+            contador=contador+1
+            #lis.append(message)
+            users.append(userevents)
+            ids.append(idsevents)
 
-
+            #SOLO IMPRIME 30, MIRAR POR QUE
+        print contador
+        zipPython=zip(ids,lis)
+        zipPythonUser=zip(ids,users)
+        dictPython=dict(zipPython)
+        dictPythonUser=dict(zipPythonUser)
 
 
         ##########################################################################################################################################
