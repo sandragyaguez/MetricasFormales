@@ -680,6 +680,11 @@ if social_network in network_list:
 
 
     
+
+#http://metricas-formales.appspot.com/app/accuracy_metric/Latency/instagram-timeline/static/InstagramCompletitudLatency.html
+#http://metricas-formales.appspot.com/app/accuracy_metric/Master/instagram-timeline/static/InstagramCompletitud.html
+#http://metricas-formales.appspot.com/app/accuracy_metric/Accuracy/instagram-timeline/static/InstagramCompletitudAccuracy.html
+
     #elif social_network == 'facebook' and len(sys.argv) >= 3:
         #     access_token = sys.argv[2]
             

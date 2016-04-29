@@ -10,26 +10,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!doctype html>
 <html>
   <head>
-    <meta name="content-type"  content="text/html;" http-equiv="content-type" charset="utf-8">
-
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <title>Tu timeline</title>
-    <link rel="shortcut icon" href="favicon.ico">
+    <title>Instagram</title>
 
     <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
-    <link rel="import" href="twitter-timeline.html">
-
+    <link rel="import" href="instagram-timeline.html">
   </head>
   <body unresolved>
-    <template is="dom-bind" id="Demo">
-     <twitter-timeline endpoint="http://twitter-timeline-app.appspot.com/oauth/twitter" access-token="3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf" secret-token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock" consumer-key="J4bjMZmJ6hh7r0wlG9H90cgEe" consumer-secret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" count="200" language="{{language}}" component_directory="./">
-      </twitter-timeline>
-      </br>
-      <button on-click="prueba" name="es">Spanish</button>
-      <button on-click="prueba" name="en">English</button>
+    <template id="Demo" is="dom-bind">
+      <instagram-timeline endpoint="http://instagram-timeline.appspot.com/request/instagram" access-token="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" language="{{language}}">
+      </instagram-timeline>
+      <br>
+      <button name="es" on-click="changeIdiom">Spanish</button>
+      <button name="en" on-click="changeIdiom">English</button>
+      
       <script>
         Demo.language = "es";
-        Demo.prueba = function(event,detail) {
+        Demo.changeIdiom = function(event,detail) {
           Demo.language = event.target.getAttribute('name');
         }
       </script>
