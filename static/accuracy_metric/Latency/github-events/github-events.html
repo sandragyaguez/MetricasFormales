@@ -899,7 +899,7 @@ Element providing solution to no problem in particular.
 			return "https://api.github.com/users/" + username + "/received_events";
 		},
 		_processEventParams: function(page, per_page) {
-			return page < 1? {}: {page: page};
+			return page < 1? {'per_page':per_page}: {page: page,'per_page':per_page};
 		},
 		_processRefreshHeader: function(etag) {
 			this.$.refresh.headers["If-None-Match"] = etag;       

@@ -24,7 +24,7 @@ import calendar
 import mixpanel
 import os
 from mixpanel import Mixpanel
-mp = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
+mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
 mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
 import mixpanel_api
 
@@ -108,7 +108,7 @@ if social_network in network_list:
         #-----------------------------------------DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
         sleep(10)
-                # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("70d459a2d5e96864f6eacdcb1a1fcd50","4dd2fff92abd81af8f06950f419f066a")
         lista=[]
         listacomp=[]
@@ -176,7 +176,6 @@ if social_network in network_list:
 
                     else:
                         print "el tweet que no esta en API twitter es: " + value
-                        #mp.track(cont,"Fallos accuracy text",{"posicion": cont, "tweet": value, "version":version})
 
                 #Recorro el diccionario del componente, k es el id del tweet y v es el user del tweet
                 for k,v in dictCompUser.iteritems():
@@ -205,7 +204,7 @@ if social_network in network_list:
                 for clave, valor in dictFallosText.iteritems():
                     if(dictCompPos.has_key(clave)):
                         valores=dictCompPos.get(clave,None)
-                        mp.track(valores,"Fallos master text",{"posicion":valores ,"tweet": valor, "version":version})
+                        mpTwitter.track(valores,"Fallos master text",{"posicion":valores ,"tweet": valor, "version":version})
                     listavalores.append(valores)
                 listavalores.sort()
                 print listavalores
@@ -213,7 +212,7 @@ if social_network in network_list:
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
                         valores1=dictCompPos.get(clave1,None)
-                        mp.track(valores1,"Fallos master user",{"posicion":valores1 ,"tweet": valor1, "version":version})
+                        mpTwitter.track(valores1,"Fallos master user",{"posicion":valores1 ,"tweet": valor1, "version":version})
                     listavalores1.append(valores1)
                 listavalores1.sort()
                 print listavalores1
@@ -273,7 +272,6 @@ if social_network in network_list:
 
                     else:
                         print "el tweet que no esta en API twitter es: " + value
-                        #mp.track(cont,"Fallos accuracy text",{"posicion": cont, "tweet": value, "version":version})
 
                 #Recorro el diccionario del componente, k es el id del tweet y v es el user del tweet
                 for k,v in dictCompUser.iteritems():
@@ -302,7 +300,7 @@ if social_network in network_list:
                 for clave, valor in dictFallosText.iteritems():
                     if(dictCompPos.has_key(clave)):
                         valores=dictCompPos.get(clave,None)
-                        mp.track(valores,"Fallos latency text",{"posicion":valores ,"tweet": valor, "version":version})
+                        mpTwitter.track(valores,"Fallos latency text",{"posicion":valores ,"tweet": valor, "version":version})
                     listavalores.append(valores)
                 listavalores.sort()
                 print listavalores
@@ -310,7 +308,7 @@ if social_network in network_list:
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
                         valores1=dictCompPos.get(clave1,None)
-                        mp.track(valores1,"Fallos latency user",{"posicion":valores1 ,"tweet": valor1, "version":version})
+                        mpTwitter.track(valores1,"Fallos latency user",{"posicion":valores1 ,"tweet": valor1, "version":version})
                     listavalores1.append(valores1)
                 listavalores1.sort()
                 print listavalores1
@@ -370,7 +368,6 @@ if social_network in network_list:
 
                     else:
                         print "el tweet que no esta en API twitter es: " + value
-                        #mp.track(cont,"Fallos accuracy text",{"posicion": cont, "tweet": value, "version":version})
 
                 #Recorro el diccionario del componente, k es el id del tweet y v es el user del tweet
                 for k,v in dictCompUser.iteritems():
@@ -381,7 +378,6 @@ if social_network in network_list:
                         if cmp(vPythonUser,v)==0:
                             print "OK"
                         else:
-                            print "falla en: " + str(k) 
                             print "falla en: " + v
                             liskey.append(k)
                             lisvalue.append(v)
@@ -399,7 +395,7 @@ if social_network in network_list:
                 for clave, valor in dictFallosText.iteritems():
                     if(dictCompPos.has_key(clave)):
                         valores=dictCompPos.get(clave,None)
-                        mp.track(valores,"Fallos accuracy text",{"posicion":valores ,"tweet": valor, "version":version})
+                        mpTwitter.track(valores,"Fallos accuracy text",{"posicion":valores ,"tweet": valor, "version":version})
                     listavalores.append(valores)
                 listavalores.sort()
                 print listavalores
@@ -407,7 +403,7 @@ if social_network in network_list:
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
                         valores1=dictCompPos.get(clave1,None)
-                        mp.track(valores1,"Fallos accuracy user",{"posicion":valores1 ,"tweet": valor1, "version":version})
+                        mpTwitter.track(valores1,"Fallos accuracy user",{"posicion":valores1 ,"tweet": valor1, "version":version})
                     listavalores1.append(valores1)
                 listavalores1.sort()
                 print listavalores1
@@ -441,27 +437,35 @@ if social_network in network_list:
         lis=[]
         ids=[]
         users=[]
-        github_url = "https://api.github.com/users/mortega5/received_events"
+        lista=[]
+        listapos=[]
+        listaid=[]
+        listauser=[]
+        liskey=[]
+        lisvalue=[]
+        listavalores=[]
+        listavalores1=[]
+        listaFallosText=[]
+        listaFallosUser=[]
+
+        github_url = "https://api.github.com/users/mortega5/received_events?per_page=50"
         peticion= requests.get(github_url)
         print peticion
         muro=peticion.json()
         for events in muro:
-            print events
             idsevents=events['id']
+            idsevents=int(idsevents)
             userevents=events['actor']['login']
-            print idsevents
-            print userevents
-            print "------------------------------------------------------------------"
             contador=contador+1
             #lis.append(message)
             users.append(userevents)
             ids.append(idsevents)
-
-            #SOLO IMPRIME 30, MIRAR POR QUE
         print contador
-        zipPython=zip(ids,lis)
+        ids.sort()
+        ids.reverse()
+        #zipPython=zip(ids,lis)
         zipPythonUser=zip(ids,users)
-        dictPython=dict(zipPython)
+        #dictPython=dict(zipPython)
         dictPythonUser=dict(zipPythonUser)
 
 
@@ -476,18 +480,204 @@ if social_network in network_list:
             if version=="master":
                 #defino los parametros necesarios para la peticion
                 params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')               
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda id_event: id_event['id'])
+                newlist.reverse()
+
+                for y in newlist:
+                    #la k son los la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
+                    poscomp=y.items()[0][1]
+                    #textocomp=y.items()[1][1]
+                    idcomp=y.items()[1][1]
+                    idcomp=int(idcomp)
+                    usercomp=y.items()[2][1]
+                    listapos.append(poscomp)
+                    #listacomp.append(textocomp)
+                    listaid.append(idcomp)
+                    listauser.append(usercomp)
+
+                #zipComp=zip(listaid,listacomp)
+                zipCompUser=zip(listaid,listauser)
+                zipPos=zip(listaid,listapos)
+                #Diccionario id, text
+                #dictComp=dict(zipComp)
+                #Diccionario id, user
+                dictCompUser=dict(zipCompUser)
+                #Diccionario id, posicion
+                dictCompPos=dict(zipPos)
+
+                #Recorro el diccionario del componente, k es el id del tweet y v es el user del tweet
+                for k,v in dictCompUser.iteritems():
+                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonUser.has_key(k)):
+                         #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonUser=dictPythonUser.get(k,None)
+                        if cmp(vPythonUser,v)==0:
+                            print "OK"
+                        else:
+                            print "falla en: " + str(k) 
+                            print "falla en: " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosUser=zip(liskey,lisvalue)
+
+                    else:
+                        print "el user que no esta es: " + v
+                        print "corresponde al id: " + str(k)
+
+                #diccionario de users erroneos con su id
+                dictFallosUser=dict(listaFallosUser)
+
+                for clave1, valor1 in dictFallosUser.iteritems():
+                    if(dictCompPos.has_key(clave1)):
+                        valores1=dictCompPos.get(clave1,None)
+                        mpGithub.track(valores1,"Fallos master user",{"posicion":valores1, "version":version})
+                    listavalores1.append(valores1)
+                listavalores1.sort()
+                print listavalores1
+
                     
             elif version=="latency":
                         #defino los parametros necesarios para la peticion
                 params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda id_event: id_event['id'])
+                newlist.reverse()
+
+                for y in newlist:
+                    #la k son los la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
+                    poscomp=y.items()[0][1]
+                    #textocomp=y.items()[1][1]
+                    idcomp=y.items()[1][1]
+                    idcomp=int(idcomp)
+                    usercomp=y.items()[2][1]
+                    listapos.append(poscomp)
+                    #listacomp.append(textocomp)
+                    listaid.append(idcomp)
+                    listauser.append(usercomp)
+
+                #zipComp=zip(listaid,listacomp)
+                zipCompUser=zip(listaid,listauser)
+                zipPos=zip(listaid,listapos)
+                #Diccionario id, text
+                #dictComp=dict(zipComp)
+                #Diccionario id, user
+                dictCompUser=dict(zipCompUser)
+                #Diccionario id, posicion
+                dictCompPos=dict(zipPos)
+
+                #Recorro el diccionario del componente, k es el id del tweet y v es el user del tweet
+                for k,v in dictCompUser.iteritems():
+                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonUser.has_key(k)):
+                         #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonUser=dictPythonUser.get(k,None)
+                        if cmp(vPythonUser,v)==0:
+                            print "OK"
+                        else:
+                            print "falla en: " + str(k) 
+                            print "falla en: " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosUser=zip(liskey,lisvalue)
+
+                    else:
+                        print "el user que no esta es: " + v
+                        print "corresponde al id: " + str(k)
+
+                #diccionario de users erroneos con su id
+                dictFallosUser=dict(listaFallosUser)
+
+                for clave1, valor1 in dictFallosUser.iteritems():
+                    if(dictCompPos.has_key(clave1)):
+                        valores1=dictCompPos.get(clave1,None)
+                        mpGithub.track(valores1,"Fallos latency user",{"posicion":valores1, "version":version})
+                    listavalores1.append(valores1)
+                listavalores1.sort()
+                print listavalores1
+
                 
 
             elif version=="accuracy":
                              #defino los parametros necesarios para la peticion
                 params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda id_event: id_event['id'])
+                newlist.reverse()
+
+                for y in newlist:
+                    #la k son los la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
+                    poscomp=y.items()[0][1]
+                    #textocomp=y.items()[1][1]
+                    idcomp=y.items()[1][1]
+                    idcomp=int(idcomp)
+                    usercomp=y.items()[2][1]
+                    listapos.append(poscomp)
+                    #listacomp.append(textocomp)
+                    listaid.append(idcomp)
+                    listauser.append(usercomp)
+
+                #zipComp=zip(listaid,listacomp)
+                zipCompUser=zip(listaid,listauser)
+                zipPos=zip(listaid,listapos)
+                #Diccionario id, text
+                #dictComp=dict(zipComp)
+                #Diccionario id, user
+                dictCompUser=dict(zipCompUser)
+                #Diccionario id, posicion
+                dictCompPos=dict(zipPos)
+
+                #Recorro el diccionario del componente, k es el id del tweet y v es el user del tweet
+                for k,v in dictCompUser.iteritems():
+                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonUser.has_key(k)):
+                         #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonUser=dictPythonUser.get(k,None)
+                        if cmp(vPythonUser,v)==0:
+                            print "OK"
+                        else:
+                            print "falla en: " + str(k) 
+                            print "falla en: " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosUser=zip(liskey,lisvalue)
+
+                    else:
+                        print "el user que no esta es: " + v
+                        print "corresponde al id: " + str(k)
+
+                #diccionario de users erroneos con su id
+                dictFallosUser=dict(listaFallosUser)
+
+                for clave1, valor1 in dictFallosUser.iteritems():
+                    if(dictCompPos.has_key(clave1)):
+                        valores1=dictCompPos.get(clave1,None)
+                        mpGithub.track(valores1,"Fallos accuracy user",{"posicion":valores1, "version":version})
+                    listavalores1.append(valores1)
+                listavalores1.sort()
+                print listavalores1
+
 
     
     #elif social_network == 'facebook' and len(sys.argv) >= 3:
