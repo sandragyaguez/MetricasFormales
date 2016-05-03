@@ -996,7 +996,52 @@ if social_network in network_list:
 
 
 
+    elif social_network == 'facebook':
 
+        ##########################################################################################################################################
+        #--------------------------------------------------------DATOS FACEBOOK API---------------------------------------------------------------
+        ##########################################################################################################################################
+
+        webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Master/facebook-wall/FacebookCompletitud.html")
+        sleep(3)
+         
+        access_token="EAACEdEose0cBAIwcZAZB2Uw1th0kTJxh7nYUa1RBbKAdxZBc611cKq0EpVYm5VV5E4UhaqraDCy2LxxJJePNwGqJ7MSsHqqdg55H9kv3TAjM6NvUrt3XgHKGR9xhSUCcudcZBqBac1PwjOupppOrFFXsg5lglMPr61ZCoI0Q2pwZDZD"
+        facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
+
+        #Request timeline home
+        s= requests.get(facebook_url)
+        print s
+        muro=s.json()
+        contador=0
+        lis=[]
+        ids=[]
+        users=[]
+        listacont=[]
+        #facebook devuelve un diccionario con 2 keys (home, id) y solo me quiero quedar con los values del home
+        for k,v in muro.iteritems():
+            if(muro.has_key('home')):
+                values=muro.get('home',None)
+
+        #recorro todos los campos que tiene data
+        for items in values:
+            if(values.has_key('data')):
+                values1=values.get('data',None)
+
+        for items1 in values1:
+            idsevents=items1['id']
+            userevents=items1['from']['name']
+            print userevents
+
+            listacont.append(contador)
+            contador=contador+1
+            ids.append(idsevents)
+            #users.append(userevents)
+        
+        print contador
+        #zipPythonUser=zip(listacont,users)
+        #dictPythonUser=dict(zipPythonUser)
+        #zipPythonImage=zip(listacont,images)
+        #dictPythonImage=dict(zipPythonImage)
 
     #elif social_network == 'facebook' and len(sys.argv) >= 3:
         #     access_token = sys.argv[2]
