@@ -26,6 +26,7 @@ import os
 from mixpanel import Mixpanel
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
 mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
+mpInstagram=Mixpanel("59e0cb154cc5192322be22b2a035738e")
 import mixpanel_api
 
 #---------------------------------------------------------------------------------------------------------------------
@@ -412,7 +413,7 @@ if social_network in network_list:
 
 
 #--------------------------------------------------
-#CASO1: GITHUB
+#CASO2: GITHUB
 #--------------------------------------------------
                 
     elif social_network == 'github':
@@ -679,11 +680,323 @@ if social_network in network_list:
                 print listavalores1
 
 
-    
 
-#http://metricas-formales.appspot.com/app/accuracy_metric/Latency/instagram-timeline/static/InstagramCompletitudLatency.html
-#http://metricas-formales.appspot.com/app/accuracy_metric/Master/instagram-timeline/static/InstagramCompletitud.html
-#http://metricas-formales.appspot.com/app/accuracy_metric/Accuracy/instagram-timeline/static/InstagramCompletitudAccuracy.html
+#--------------------------------------------------
+#CASO3: INSTAGRAM
+#--------------------------------------------------
+
+    elif social_network == 'instagram':
+
+            ##########################################################################################################################################
+            #-------------------------------------------------------DATOS INSTAGRAM API---------------------------------------------------------------
+            ##########################################################################################################################################
+
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Master/instagram-timeline/static/InstagramCompletitud.html")
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Latency/instagram-timeline/static/InstagramCompletitudLatency.html")
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Accuracy/instagram-timeline/static/InstagramCompletitudAccuracy.html")
+                sleep(3)
+
+ 
+
+        insta_url="https://api.instagram.com/v1/users/self/feed?access_token=2062815740.34af286.169a9c42e1404ae58591d066c00cb979"
+        pet= requests.get(insta_url)
+        print pet
+        timeline=pet.json()
+
+        contador=0
+        listacont=[]
+        texts=[]
+        ids=[]
+        users=[]
+        images=[]
+        lista=[]
+        listapos=[]
+        listaid=[]
+        listaimage=[]
+        listauser=[]
+        liskey=[]
+        lisvalue=[]
+        listavalores=[]
+        listavalores1=[]
+        listaFallosText=[]
+        listaFallosUser=[]
+
+        #instagram devuelve un diccionario con 3 keys (pagination, meta y data) y solo quiero quedar con el contenido de data
+        for k,v in timeline.iteritems():
+            if(timeline.has_key('data')):
+                values=timeline.get('data',None)
+        #recorro todos los campos que tiene data
+        for items in values:
+            idsevents=items['id']
+            userevents=items['user']['username']
+            imageevents=items['images']['standard_resolution']['url']
+            #if(items['caption']!=None):
+                #textevents=items['caption']['text']
+                #texts.append(textevents)
+            #else:
+                #texts.append("")
+            listacont.append(contador)
+            contador=contador+1
+            ids.append(idsevents)
+            users.append(userevents)
+            images.append(imageevents)
+        print contador
+        zipPythonUser=zip(listacont,users)
+        dictPythonUser=dict(zipPythonUser)
+        zipPythonImage=zip(listacont,images)
+        dictPythonImage=dict(zipPythonImage)
+        #zipPythonText=zip(ids,texts)
+        #dictPythonText=dict(zipPythonText)
+
+
+        ##########################################################################################################################################
+        #-----------------------------------------DATOS INSTAGRAM COMPONENTE (RECOGIDOS DE MIXPANEL)----------------------------------------------
+        ##########################################################################################################################################
+        sleep(10)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("26904a5a94b675f2360d75af0ccbf0b6","2af7a58160fd737d242e81d9055a02c3")
+
+        if version in version_list:
+            if version=="master":
+                #defino los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda posicion: posicion['i'])
+
+                for y in newlist:
+                #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
+                    idcomp=y.items()[2][1]
+                    usercomp=y.items()[3][1]
+                    imagencomp=y.items()[1][1]
+                    poscomp=y.items()[0][1]
+                    listaid.append(idcomp)
+                    listauser.append(usercomp)
+                    listaimage.append(imagencomp)
+                    listapos.append(poscomp)
+        
+
+                zipCompUser=zip(listapos,listauser)
+                zipPos=zip(listapos,listaid)
+                zipCompImage=zip(listapos,listaimage)
+                #Diccionario posicion, user
+                dictCompUser=dict(zipCompUser)
+                #Diccionario posicion, id
+                dictCompPos=dict(zipPos)
+                #Diccionario posicion, imagen
+                dictCompImage=dict(zipCompImage)
+
+                #Recorro el diccionario del componente, k es la posicion y v es el user
+                for k,v in dictCompUser.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonUser.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonUser=dictPythonUser.get(k,None)
+                        if cmp(vPythonUser,v)==0:
+                            print "OK"
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el usuario que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosUser=zip(liskey,lisvalue)
+                            mpInstagram.track(listaFallosUser,"Fallos master user",{"posicion":listaFallosUser, "version":version})
+
+                    else:
+                        print "el user que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+
+                #Recorro el diccionario del componente, k es la posicion y v es la imagen
+                for k,v in dictCompImage.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonUser.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonImagen=dictPythonImage.get(k,None)
+                        if cmp(vPythonImagen,v)==0:
+                            print "OK"
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "la imagen que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosImagen=zip(liskey,lisvalue)
+                            mpInstagram.track(listaFallosImagen,"Fallos master imagen",{"posicion":listaFallosImagen, "version":version})
+
+                    else:
+                        print "la imagen que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+                    
+            elif version=="latency":
+                #defino los parametros necesarios para la peticion
+                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda posicion: posicion['i'])
+
+                for y in newlist:
+                #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
+                    idcomp=y.items()[2][1]
+                    usercomp=y.items()[3][1]
+                    imagencomp=y.items()[1][1]
+                    poscomp=y.items()[0][1]
+                    listaid.append(idcomp)
+                    listauser.append(usercomp)
+                    listaimage.append(imagencomp)
+                    listapos.append(poscomp)
+        
+
+                zipCompUser=zip(listapos,listauser)
+                zipPos=zip(listapos,listaid)
+                zipCompImage=zip(listapos,listaimage)
+                #Diccionario posicion, user
+                dictCompUser=dict(zipCompUser)
+                #Diccionario posicion, id
+                dictCompPos=dict(zipPos)
+                #Diccionario posicion, imagen
+                dictCompImage=dict(zipCompImage)
+
+                #Recorro el diccionario del componente, k es la posicion y v es el user
+                for k,v in dictCompUser.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonUser.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonUser=dictPythonUser.get(k,None)
+                        if cmp(vPythonUser,v)==0:
+                            print "OK"
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el usuario que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosUser=zip(liskey,lisvalue)
+                            mpInstagram.track(listaFallosUser,"Fallos latency user",{"posicion":listaFallosUser, "version":version})
+
+                    else:
+                        print "el user que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+
+                #Recorro el diccionario del componente, k es la posicion y v es la imagen
+                for k,v in dictCompImage.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonUser.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonImagen=dictPythonImage.get(k,None)
+                        if cmp(vPythonImagen,v)==0:
+                            print "OK"
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "la imagen que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosImagen=zip(liskey,lisvalue)
+                            mpInstagram.track(listaFallosImagen,"Fallos latency imagen",{"posicion":listaFallosImagen, "version":version})
+
+                    else:
+                        print "la imagen que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+              
+
+            elif version=="accuracy":
+                #defino los parametros necesarios para la peticion
+                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda posicion: posicion['i'])
+
+                for y in newlist:
+                #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
+                    idcomp=y.items()[2][1]
+                    usercomp=y.items()[3][1]
+                    imagencomp=y.items()[1][1]
+                    poscomp=y.items()[0][1]
+                    listaid.append(idcomp)
+                    listauser.append(usercomp)
+                    listaimage.append(imagencomp)
+                    listapos.append(poscomp)
+        
+
+                zipCompUser=zip(listapos,listauser)
+                zipPos=zip(listapos,listaid)
+                zipCompImage=zip(listapos,listaimage)
+                #Diccionario posicion, user
+                dictCompUser=dict(zipCompUser)
+                #Diccionario posicion, id
+                dictCompPos=dict(zipPos)
+                #Diccionario posicion, imagen
+                dictCompImage=dict(zipCompImage)
+
+                #Recorro el diccionario del componente, k es la posicion y v es el user
+                for k,v in dictCompUser.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonUser.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonUser=dictPythonUser.get(k,None)
+                        if cmp(vPythonUser,v)==0:
+                            print "OK"
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el usuario que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosUser=zip(liskey,lisvalue)
+                            mpInstagram.track(listaFallosUser,"Fallos accuracy user",{"posicion":listaFallosUser, "version":version})
+
+                    else:
+                        print "el user que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+
+                #Recorro el diccionario del componente, k es la posicion y v es la imagen
+                for k,v in dictCompImage.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonUser.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonImagen=dictPythonImage.get(k,None)
+                        if cmp(vPythonImagen,v)==0:
+                            print "OK"
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "la imagen que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosImagen=zip(liskey,lisvalue)
+                            mpInstagram.track(listaFallosImagen,"Fallos accuracy imagen",{"posicion":listaFallosImagen, "version":version})
+
+                    else:
+                        print "la imagen que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+
+
+
 
     #elif social_network == 'facebook' and len(sys.argv) >= 3:
         #     access_token = sys.argv[2]
