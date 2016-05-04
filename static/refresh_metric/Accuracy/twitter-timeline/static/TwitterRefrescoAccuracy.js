@@ -4,14 +4,12 @@
       document.addEventListener('WebComponentsReady', function() {
         //selecccionamos el componente de twitter con el querySelector
         var element= document.querySelector("twitter-timeline");
-        //-----------------------------------------------------------------------------------------------------//
         //Return the querystring part of a URL
         var publish_text = window.location.search
         //desplazo en uno para quitar la interrogacion y guardo desde ahi hasta el final del texto publicado
         publish_text = publish_text.slice(1, publish_text.length)
         //var publish_text= publish_text.split("&")
         //console.log("El texto que tengo que encontrar es: " + publish_text);
-        //-----------------------------------------------------------------------------------------------------//
         //timeout para dar tiempo al componente a que se cargue
         window.setTimeout(function() {
         //id del primer elemento que muestra el timeline
@@ -38,7 +36,12 @@
                 console.log(element.events[i]);
                 //el time es el mismo para los tres tweets porque se muestran al
                 if(element.events[i].text===publish_text){
-                  mixpanel.track("Twitter refresh accuracy",{"time_refresh": time, "tweet": publish_text, "version": "accuracy"});
+                  var diccionario = {
+                    'time': time,
+                    'tweet':publish_text
+                  }
+                  var dicc_string = JSON.stringify(diccionario);
+                  mixpanel.track("accuracy",{'value':dicc_string});
                   console.log("time de escucha de cambio en ms: " + time);
 
                 }
@@ -48,4 +51,3 @@
         });
       }, 2000);
       });
-

@@ -10,6 +10,7 @@ import json
 import hmac
 import base64
 import time
+from time import sleep
 from twitter import *
 from requests_oauthlib import OAuth1
 import requests
@@ -19,21 +20,13 @@ import requests.packages.urllib3
 requests.packages.urllib3.disable_warnings()
 import datetime
 import re
+import sys
+import ast
 import mixpanel
+import mixpanel_api, json
 from mixpanel import Mixpanel
-mp = Mixpanel("070bf8a01a6127ebf78325716490697a")
+mpTwitter = Mixpanel("070bf8a01a6127ebf78325716490697a")
 
-estado="prueba"
-estado1="prueba1"
-estado2="prueba2"
-
-webbrowser.open_new("http://twitter-timeline-app.appspot.com/app/_refresh.html" + "?" + estado)
-webbrowser.open_new("http://twitter-timeline-app.appspot.com/app/RefreshLatency.html" + "?" + estado1)
-webbrowser.open_new("http://twitter-timeline-app.appspot.com/app/RefreshAccuracy.html" + "?" + estado2)
-
-#webbrowser.open_new("http://twitter-timeline-app.appspot.com/app/_refresh.html" + "?" + estado + "&" + estado1 + "&" + estado2)
-
-time.sleep(5)
 
 ##########################################################################################################################################
 ##########################################################################################################################################
@@ -145,57 +138,233 @@ class OauthTwitter():
 objeto = OauthTwitter(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_KEY, ACCESS_SECRET)
 respuesta = objeto.get_auth_token()
 
+
+
+
+
+
+
+
+
 ##########################################################################################################################################
 ##########################################################################################################################################
 #----------------------------------------------------------------REFRESCO----------------------------------------------------------------
 ##########################################################################################################################################
 ##########################################################################################################################################
 
-#PUBLICACION DE TWEET Y REQUEST DEL TIMELINE
-oauth = OAuth1(CONSUMER_KEY,client_secret=CONSUMER_SECRET,resource_owner_key=ACCESS_KEY,resource_owner_secret=ACCESS_SECRET)
-url = 'https://api.twitter.com/1.1/statuses/update.json'
-request_usertimeline="https://api.twitter.com/1.1/statuses/user_timeline.json"
 
-event_master_post= "Twitter post master"
-event_latency_post="Twitter post latency"
-event_accuracy_post="Twitter post accuracy"
+network_list = ["twitter","instagram", "facebook", "github"]
+version_list = ["master","latency", "accuracy"]
 
-#Request publicar tweet
-def publicar(estado):
-    if estado == '':
-        return 1
-    print "--------------------------------------------------------------"
-    #CODIGO DE ERROR SI EL TWEET YA ESTABA PUBLICADO (ERROR CODE STATUS 187). CUANDO RESPONSE ==403
-    r = requests.post(url=url,data={"status":estado},auth=oauth)
-    if r.status_code == 403:
-        print "Tweet duplicado"
-        return 1
-    print "Respuesta: " + str(r)
-    tpubl=datetime.datetime.now()
-    tpubl_ms=int(time.time()*1000)
-    mp.track(tpubl_ms, event_accuracy_post,{"time post": tpubl_ms, "tweet": estado})
-    print "tiempo post en ms (1): " + str(tpubl_ms)
+#de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),consola: python completitud.py twitter coge la "variable" twitter
+if len(sys.argv) >= 2:
+    social_network = sys.argv[1]
+else:
+    social_network = ''
 
-#Request timeline user
-    s= requests.get(request_usertimeline, auth=oauth)
-    timeline=s.json()
-#Encontrar el texto del tweet que acabo de publicar, con el campo text que tiene cada tweet, y timestamp cuando me lo muestre en twitter (tambien se puede hacer con ID)(polling)
-    for tweet in timeline:
-        text=tweet['text']
-        print "el tweet es: " + text
-        if text==estado:
-            break
-#     tiguales=datetime.datetime.now()
-#     tiguales_ms=int(time.time()*1000)
-#     print "encontrado en Twitter: " + str(tiguales_ms)
-#     dif=tiguales-tpubl
-#     esta diferencia es el tiempo que tarda desde que hago un post (twitteo) hasta que Twitter me lo muestra (se encuentra en el timeline del usuario)
-#     dif_ms=tiguales_ms-tpubl_ms
+if len(sys.argv) >= 3:
+    version= sys.argv[2]
+else:
+    version = ''
+
+#CASOS:
+if social_network in network_list:
+
+#--------------------------------------------------
+#CASO1: TWITTER
+#--------------------------------------------------
+
+    if social_network == 'twitter':
+
+        ##########################################################################################################################################
+        #---------------------------------------------------------DATOS TWITTER API---------------------------------------------------------------
+        ##########################################################################################################################################
+
+        CONSUMER_KEY = 'J4bjMZmJ6hh7r0wlG9H90cgEe' #Consumer key
+        CONSUMER_SECRET = '8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf' #Consumer secret
+        ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
+        ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
+
+        listestado=[]
+        listtpubl_ms=[]
+
+        #Lanzamos una pestana por cada version del componente
+        estado="prueba"
+        estado1="prueba1"
+        estado2="prueba2"
+        #PUBLICACION DE TWEET Y REQUEST DEL TIMELINE
+        oauth = OAuth1(CONSUMER_KEY,client_secret=CONSUMER_SECRET,resource_owner_key=ACCESS_KEY,resource_owner_secret=ACCESS_SECRET)
+        url = 'https://api.twitter.com/1.1/statuses/update.json'
+        request_usertimeline="https://api.twitter.com/1.1/statuses/user_timeline.json"
 
 
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/twitter-timeline/static/TwitterRefresco.html" + "?" + estado)
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Latency/twitter-timeline/static/TwitterRefrescoLatency.html"  + "?" + estado1)
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado2)
+                sleep(3)
+
+   
+        #Request publicar tweet
+        def publicar(estado):
+            if estado == '':
+                return 1
+            print "--------------------------------------------------------------"
+            #CODIGO DE ERROR SI EL TWEET YA ESTABA PUBLICADO (ERROR CODE STATUS 187). CUANDO RESPONSE ==403
+            r = requests.post(url=url,data={"status":estado},auth=oauth)
+            if r.status_code == 403:
+                print "Tweet duplicado"
+                return 1
+            print "Respuesta: " + str(r)
+            tpubl=datetime.datetime.now()
+            tpubl_ms=int(time.time()*1000)
+            print "tiempo post en ms: " + str(tpubl_ms)
+            listestado.append(estado)
+            listtpubl_ms.append(tpubl_ms)
+        
+
+            #Request timeline user   
+            s= requests.get(request_usertimeline, auth=oauth)
+            timeline=s.json()
+            #Encontrar el texto del tweet que acabo de publicar, con el campo text que tiene cada tweet, y timestamp cuando me lo muestre en twitter (tambien se puede hacer con ID)(polling)
+            for tweet in timeline:
+                text=tweet['text']
+                if text==estado:
+                    break
+
+        #Pruebas
+        if (version=="master"):
+            publicar(estado)
+        elif(version=="latency"):
+            publicar(estado1)
+        elif(version=="accuracy"):
+            publicar(estado2)
+
+        zipPython=zip(listestado,listtpubl_ms)
+        dictPython=dict(zipPython)
+        print dictPython
+
+        ##########################################################################################################################################
+        #-----------------------------------------DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
+        ##########################################################################################################################################
+        #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
+        sleep(70)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("c10939e3faf2e34b4abb4f0f1594deaa","4a3b46218b0d3865511bc546384b8928")
+        lista=[]
+        listacomp=[]
+        listatime=[]
+
+        if version in version_list:
+            if version=="master":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
+
+                for y in newlist:
+                    textocomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(textocomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario tweet, time
+                dictComp=dict(zipComp)
+                print dictComp
+
+                #la key es el texto del tweet y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        valuesP=dictPython.get(key,None)
+                        #if cmp(valuesP,value)==0:
+                        final_time=int(value)-int(valuesP)
+                        print "final_time: " + str(final_time)
+                        mpTwitter.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
+
+            elif version=="latency":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
+
+                for y in newlist:
+                    textocomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(textocomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario tweet, time
+                dictComp=dict(zipComp)
+                print dictComp
+
+                #la key es el texto del tweet y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        valuesP=dictPython.get(key,None)
+                        #if cmp(valuesP,value)==0:
+                        final_time=int(value)-int(valuesP)
+                        print "final_time: " + str(final_time)
+                        mpTwitter.track(final_time, "Final time latency",{"time final": final_time, "tweet": key, "version":version})
+
+            elif version=="accuracy":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
+
+                for y in newlist:
+                    textocomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(textocomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario tweet, time
+                dictComp=dict(zipComp)
+                print dictComp
+
+                #la key es el texto del tweet y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        valuesP=dictPython.get(key,None)
+                        #if cmp(valuesP,value)==0:
+                        final_time=int(value)-int(valuesP)
+                        print "final_time: " + str(final_time)
+                        mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})
+
+    #elif social_network == 'facebook':
     
-#Pruebas
-#publicar(estado)
-#publicar(estado1)
-publicar(estado2)
-
