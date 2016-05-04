@@ -10,9 +10,9 @@
           console.log(i)
           var id= element.events[i].id
           var user= element.events[i].from.name
+          console.log(user)
           //var texto=element.events[i].description
           var diccionario = {
-            'id': id,
             'user': user,
             'i': i
           }

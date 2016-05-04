@@ -1005,7 +1005,7 @@ if social_network in network_list:
         webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Master/facebook-wall/FacebookCompletitud.html")
         sleep(3)
          
-        access_token="EAACEdEose0cBAIwcZAZB2Uw1th0kTJxh7nYUa1RBbKAdxZBc611cKq0EpVYm5VV5E4UhaqraDCy2LxxJJePNwGqJ7MSsHqqdg55H9kv3TAjM6NvUrt3XgHKGR9xhSUCcudcZBqBac1PwjOupppOrFFXsg5lglMPr61ZCoI0Q2pwZDZD"
+        access_token="EAACEdEose0cBAM89gussxU58dBryjhRXCTW6T7LKl2f37eBA3rXZAZBZA0U55Xs3VF0VCIlXctWRl9bWNqot96hwQAiXh0pqx5ypscxfKuWx9PjIqxHaARH1hEEUdRHEbKZBfZAprTHN8pljxlE7JiCQwC6hw2K6yTrlKTkBpcAZDZD"
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
         #Request timeline home
@@ -1017,6 +1017,9 @@ if social_network in network_list:
         ids=[]
         users=[]
         listacont=[]
+        lista=[]
+        listapos=[]
+        listauser=[]
         #facebook devuelve un diccionario con 2 keys (home, id) y solo me quiero quedar con los values del home
         for k,v in muro.iteritems():
             if(muro.has_key('home')):
@@ -1042,6 +1045,39 @@ if social_network in network_list:
         #dictPythonUser=dict(zipPythonUser)
         #zipPythonImage=zip(listacont,images)
         #dictPythonImage=dict(zipPythonImage)
+
+        ##########################################################################################################################################
+        #-------------------------------------------DATOS FACEBOOK COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
+        ##########################################################################################################################################
+
+        sleep(10)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("de21df1c2c63dff29ffce8a1a449494a","a7917928a9ba3dd88592fac7ac36e8a9")
+
+        #defino los parametros necesarios para la peticion
+        params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+        respuesta=x.request(['events/properties/values'], params, format='json')
+
+        for x in respuesta:
+            #pasar de unicode a dict
+            resp = ast.literal_eval(x)
+            lista.append(resp)
+
+        #ordeno la lista de diccionarios por el id
+        newlist = sorted(lista, key=lambda posicion: posicion['i'])
+
+        for y in newlist:
+            #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
+            poscomp=y.items()[0][1]
+            usercomp=y.items()[1][1]
+            listapos.append(poscomp)
+            listauser.append(usercomp)
+            
+        zipCompUser=zip(listapos,listauser)
+        #Diccionario posicion, user
+        dictCompUser=dict(zipCompUser)
+        print dictCompUser
+
 
     #elif social_network == 'facebook' and len(sys.argv) >= 3:
         #     access_token = sys.argv[2]
