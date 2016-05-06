@@ -21,11 +21,14 @@ requests.packages.urllib3.disable_warnings()
 import datetime
 import re
 import sys
+import facebook
+import urlparse
 import ast
 import mixpanel
 import mixpanel_api, json
 from mixpanel import Mixpanel
 mpTwitter = Mixpanel("070bf8a01a6127ebf78325716490697a")
+mpFacebook=Mixpanel("f9177cf864c2778e099d5ec71113d0bf")
 
 
 ##########################################################################################################################################
@@ -189,9 +192,9 @@ if social_network in network_list:
         listtpubl_ms=[]
 
         #Lanzamos una pestana por cada version del componente
-        estado="prueba"
-        estado1="prueba1"
-        estado2="prueba2"
+        estado="hola"
+        estado1="hola1"
+        estado2="hola2"
         #PUBLICACION DE TWEET Y REQUEST DEL TIMELINE
         oauth = OAuth1(CONSUMER_KEY,client_secret=CONSUMER_SECRET,resource_owner_key=ACCESS_KEY,resource_owner_secret=ACCESS_SECRET)
         url = 'https://api.twitter.com/1.1/statuses/update.json'
@@ -247,7 +250,6 @@ if social_network in network_list:
 
         zipPython=zip(listestado,listtpubl_ms)
         dictPython=dict(zipPython)
-        print dictPython
 
         ##########################################################################################################################################
         #-----------------------------------------DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
@@ -286,6 +288,8 @@ if social_network in network_list:
                 print dictComp
 
                 #la key es el texto del tweet y el value son los times de refresco en el componente
+                #en la siguiente prueba, aunque en el dict de Python haya dos keys con sus values, dictComp solo tiene una key y un value porque
+                #es el nuevo evento. Y busco la key del componente (del nuevo evento) en el dict de Python por lo que siempre va a restar bien los tiempos
                 for key,value in dictComp.iteritems():
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPython.has_key(key)):
@@ -366,5 +370,69 @@ if social_network in network_list:
                         print "final_time: " + str(final_time)
                         mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})
 
-    #elif social_network == 'facebook':
-    
+    elif social_network == 'facebook':
+
+        ##########################################################################################################################################
+        #---------------------------------------------------------DATOS FACEBOOK API--------------------------------------------------------------
+        ##########################################################################################################################################
+        
+        message='Prueba1'
+        webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/facebook-wall/FacebookRefresco.html" + "?" + message)
+        sleep(3)
+
+
+        access_token='EAANMUmJPs2UBACBjqjpeZC7T4zpEsKprs6S34yGbywqqe0UXwHjVO09g24NAjh4mPuG33FjJoZBkLINgI7x9RzNpkdUxFOMyOEDsebMu5F2UeydTXkNR7xQZCbpdf2btzpEKOXNUxI1brijIpq2LwPiFnMtVtYl0TUp6FEPBAZDZD'
+
+        listestado=[]
+        listtpubl_ms=[]
+
+        graph = facebook.GraphAPI(access_token=access_token, version='2.3')
+
+        #POST EN FACEBOOK
+        attachment =  {}
+
+        graph.put_wall_post(message=message, attachment=attachment)
+        tpubl=datetime.datetime.now()
+        tpubl_ms=int(time.time()*1000)
+        print "tiempo post en ms: " + str(tpubl_ms)
+        listestado.append(message)
+        listtpubl_ms.append(tpubl_ms)
+
+        zipPython=zip(listestado,listtpubl_ms)
+        dictPython=dict(zipPython)
+        print dictPython
+
+        ##########################################################################################################################################
+        #----------------------------------------DATOS FACEBOOK COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
+        ##########################################################################################################################################
+        #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
+        sleep(70)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("1c480cfa1d4cbaaeadc5c102a9ff50ea","b1308de232be2c6edf329081831eba52")
+        lista=[]
+        listacomp=[]
+        listatime=[]
+
+        #Cuando lo tengas, defines los parametros necesarios para la peticion
+        params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+        respuesta=x.request(['events/properties/values'], params, format='json')
+
+        for x in respuesta:
+            #pasar de unicode a dict
+            resp = ast.literal_eval(x)
+            lista.append(resp)
+
+        #ordeno la lista de diccionarios por el id
+        newlist = sorted(lista, key=lambda post: post['post'])
+        print newlist
+
+        # for y in newlist:
+        #     textocomp=y.items()[0][1]
+        #     timecomp=y.items()[1][1]
+        #     listacomp.append(textocomp)
+        #     listatime.append(timecomp)
+
+        # zipComp=zip(listacomp,listatime)
+        # #Diccionario tweet, time
+        # dictComp=dict(zipComp)
+        # print dictComp
