@@ -23,12 +23,15 @@ import re
 import sys
 import facebook
 import urlparse
+import random
+import string
 import ast
 import mixpanel
 import mixpanel_api, json
 from mixpanel import Mixpanel
 mpTwitter = Mixpanel("070bf8a01a6127ebf78325716490697a")
 mpFacebook=Mixpanel("f9177cf864c2778e099d5ec71113d0bf")
+mpGithub=Mixpanel("870ae6fd08343fcfb154ad6ed5227c47")
 
 
 ##########################################################################################################################################
@@ -144,11 +147,6 @@ respuesta = objeto.get_auth_token()
 
 
 
-
-
-
-
-
 ##########################################################################################################################################
 ##########################################################################################################################################
 #----------------------------------------------------------------REFRESCO----------------------------------------------------------------
@@ -191,25 +189,28 @@ if social_network in network_list:
         listestado=[]
         listtpubl_ms=[]
 
-        #Lanzamos una pestana por cada version del componente
-        estado="hola"
-        estado1="hola1"
-        estado2="hola2"
+        #digits = "".join( [random.choice(string.digits) for i in xrange(8)] )
+        #chars = "".join( [random.choice(string.letters) for i in xrange(15)] )
+        #print digits + chars
+
+        def randomword(length):
+            return ''.join(random.choice(string.lowercase) for i in range(length))
+
+        estado=randomword(10)
         #PUBLICACION DE TWEET Y REQUEST DEL TIMELINE
         oauth = OAuth1(CONSUMER_KEY,client_secret=CONSUMER_SECRET,resource_owner_key=ACCESS_KEY,resource_owner_secret=ACCESS_SECRET)
         url = 'https://api.twitter.com/1.1/statuses/update.json'
         request_usertimeline="https://api.twitter.com/1.1/statuses/user_timeline.json"
-
 
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/twitter-timeline/static/TwitterRefresco.html" + "?" + estado)
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Latency/twitter-timeline/static/TwitterRefrescoLatency.html"  + "?" + estado1)
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Latency/twitter-timeline/static/TwitterRefrescoLatency.html"  + "?" + estado)
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado2)
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado)
                 sleep(3)
 
    
@@ -229,7 +230,6 @@ if social_network in network_list:
             print "tiempo post en ms: " + str(tpubl_ms)
             listestado.append(estado)
             listtpubl_ms.append(tpubl_ms)
-        
 
             #Request timeline user   
             s= requests.get(request_usertimeline, auth=oauth)
@@ -241,12 +241,7 @@ if social_network in network_list:
                     break
 
         #Pruebas
-        if (version=="master"):
-            publicar(estado)
-        elif(version=="latency"):
-            publicar(estado1)
-        elif(version=="accuracy"):
-            publicar(estado2)
+        publicar(estado)
 
         zipPython=zip(listestado,listtpubl_ms)
         dictPython=dict(zipPython)
@@ -436,3 +431,19 @@ if social_network in network_list:
         # #Diccionario tweet, time
         # dictComp=dict(zipComp)
         # print dictComp
+
+    elif social_network == 'github':
+
+        ##########################################################################################################################################
+        #----------------------------------------------------------DATOS GITHUB API---------------------------------------------------------------
+        ##########################################################################################################################################
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/github-events/GithubRefresco.html")
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Latency/github-events/GithubRefrescoLatency.html")
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/github-events/GithubRefrescoAccuracy.html")
+                sleep(3)

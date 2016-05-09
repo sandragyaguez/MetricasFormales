@@ -167,7 +167,7 @@ if social_network in network_list:
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
                         if cmp(valuesP,value)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en: " + str(key)
                             print "falla en: " + value
@@ -185,7 +185,7 @@ if social_network in network_list:
                          #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en: " + str(k) 
                             print "falla en: " + v
@@ -208,16 +208,13 @@ if social_network in network_list:
                         mpTwitter.track(valores,"Fallos master text",{"posicion":valores ,"tweet": valor, "version":version})
                     listavalores.append(valores)
                 listavalores.sort()
-                print listavalores
 
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
                         valores1=dictCompPos.get(clave1,None)
                         mpTwitter.track(valores1,"Fallos master user",{"posicion":valores1 ,"tweet": valor1, "version":version})
                     listavalores1.append(valores1)
-                listavalores1.sort()
-                print listavalores1
-                           
+                listavalores1.sort()                           
 
                     
             elif version=="latency":
@@ -263,7 +260,7 @@ if social_network in network_list:
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
                         if cmp(valuesP,value)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en: " + str(key)
                             print "falla en: " + value
@@ -281,7 +278,7 @@ if social_network in network_list:
                          #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en: " + str(k) 
                             print "falla en: " + v
@@ -304,16 +301,13 @@ if social_network in network_list:
                         mpTwitter.track(valores,"Fallos latency text",{"posicion":valores ,"tweet": valor, "version":version})
                     listavalores.append(valores)
                 listavalores.sort()
-                print listavalores
 
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
                         valores1=dictCompPos.get(clave1,None)
                         mpTwitter.track(valores1,"Fallos latency user",{"posicion":valores1 ,"tweet": valor1, "version":version})
                     listavalores1.append(valores1)
-                listavalores1.sort()
-                print listavalores1
-                           
+                listavalores1.sort()                           
 
 
             elif version=="accuracy":
@@ -359,7 +353,7 @@ if social_network in network_list:
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
                         if cmp(valuesP,value)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en: " + str(key)
                             print "falla en: " + value
@@ -377,7 +371,7 @@ if social_network in network_list:
                          #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en: " + v
                             liskey.append(k)
@@ -521,7 +515,7 @@ if social_network in network_list:
                          #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en: " + str(k) 
                             print "falla en: " + v
@@ -542,8 +536,6 @@ if social_network in network_list:
                         mpGithub.track(valores1,"Fallos master user",{"posicion":valores1, "version":version})
                     listavalores1.append(valores1)
                 listavalores1.sort()
-                print listavalores1
-
                     
             elif version=="latency":
                         #defino los parametros necesarios para la peticion
@@ -588,7 +580,7 @@ if social_network in network_list:
                          #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en: " + str(k) 
                             print "falla en: " + v
@@ -609,9 +601,7 @@ if social_network in network_list:
                         mpGithub.track(valores1,"Fallos latency user",{"posicion":valores1, "version":version})
                     listavalores1.append(valores1)
                 listavalores1.sort()
-                print listavalores1
-
-                
+               
 
             elif version=="accuracy":
                              #defino los parametros necesarios para la peticion
@@ -656,7 +646,7 @@ if social_network in network_list:
                          #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en: " + str(k) 
                             print "falla en: " + v
@@ -726,6 +716,8 @@ if social_network in network_list:
         listavalores1=[]
         listaFallosText=[]
         listaFallosUser=[]
+        listatext=[]
+        listatex=[]
 
         #instagram devuelve un diccionario con 3 keys (pagination, meta y data) y solo quiero quedar con el contenido de data
         for k,v in timeline.iteritems():
@@ -736,11 +728,18 @@ if social_network in network_list:
             idsevents=items['id']
             userevents=items['user']['username']
             imageevents=items['images']['standard_resolution']['url']
-            #if(items['caption']!=None):
-                #textevents=items['caption']['text']
-                #texts.append(textevents)
-            #else:
-                #texts.append("")
+            if(items['caption']!=None):
+                textevents=items['caption']['text']
+                listatex.append(textevents)
+                for itemtext in listatex:
+                    itemtext=str(itemtext)
+                    #necesito restringir el texto porque sino no puedo comparar con los datos de Mixpanel ya que restringe el num de caracteres
+                    if (len(itemtext)<25):
+                        texts.append(textevents)
+                    else:
+                        texts.append("-")
+            else:
+                texts.append("")
             listacont.append(contador)
             contador=contador+1
             ids.append(idsevents)
@@ -751,9 +750,8 @@ if social_network in network_list:
         dictPythonUser=dict(zipPythonUser)
         zipPythonImage=zip(listacont,images)
         dictPythonImage=dict(zipPythonImage)
-        #zipPythonText=zip(ids,texts)
-        #dictPythonText=dict(zipPythonText)
-
+        zipPythonText=zip(ids,texts)
+        dictPythonText=dict(zipPythonText)
 
         ##########################################################################################################################################
         #-----------------------------------------DATOS INSTAGRAM COMPONENTE (RECOGIDOS DE MIXPANEL)----------------------------------------------
@@ -778,25 +776,30 @@ if social_network in network_list:
 
                 for y in newlist:
                 #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
-                    idcomp=y.items()[2][1]
-                    usercomp=y.items()[3][1]
-                    imagencomp=y.items()[1][1]
+                    idcomp=y.items()[3][1]
+                    usercomp=y.items()[4][1]
+                    imagencomp=y.items()[2][1]
                     poscomp=y.items()[0][1]
+                    textcomp=y.items()[1][1]
                     listaid.append(idcomp)
                     listauser.append(usercomp)
                     listaimage.append(imagencomp)
                     listapos.append(poscomp)
+                    listatext.append(textcomp)
         
 
                 zipCompUser=zip(listapos,listauser)
                 zipPos=zip(listapos,listaid)
                 zipCompImage=zip(listapos,listaimage)
+                zipCompText=zip(listapos,listatext)
                 #Diccionario posicion, user
                 dictCompUser=dict(zipCompUser)
                 #Diccionario posicion, id
                 dictCompPos=dict(zipPos)
                 #Diccionario posicion, imagen
                 dictCompImage=dict(zipCompImage)
+                #Diccionario posicion, imagen
+                dictCompText=dict(zipCompText)
 
                 #Recorro el diccionario del componente, k es la posicion y v es el user
                 for k,v in dictCompUser.iteritems():
@@ -805,7 +808,7 @@ if social_network in network_list:
                         #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en posicion: " + str(k) 
                             print "el usuario que falla es : " + v
@@ -826,7 +829,7 @@ if social_network in network_list:
                         #si es asi, cojo los values de python y del componente y los comparo
                         vPythonImagen=dictPythonImage.get(k,None)
                         if cmp(vPythonImagen,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en posicion: " + str(k) 
                             print "la imagen que falla es : " + v
@@ -838,6 +841,24 @@ if social_network in network_list:
                     else:
                         print "la imagen que no esta es: " + v
                         print "corresponde a la posicion: " + str(k)
+
+
+
+                #Recorro el diccionario del componente, k es la posicion y v es la imagen
+                for k,v in dictCompText.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonText.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonText=dictPythonText.get(k,None)
+                        if cmp(vPythonText,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el texto que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosText=zip(liskey,lisvalue)
+                            mpInstagram.track(listaFallosText,"Fallos master text",{"posicion":listaFallosText, "version":version})
 
                     
             elif version=="latency":
@@ -855,25 +876,30 @@ if social_network in network_list:
 
                 for y in newlist:
                 #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
-                    idcomp=y.items()[2][1]
-                    usercomp=y.items()[3][1]
-                    imagencomp=y.items()[1][1]
+                    idcomp=y.items()[3][1]
+                    usercomp=y.items()[4][1]
+                    imagencomp=y.items()[2][1]
                     poscomp=y.items()[0][1]
+                    textcomp=y.items()[1][1]
                     listaid.append(idcomp)
                     listauser.append(usercomp)
                     listaimage.append(imagencomp)
                     listapos.append(poscomp)
+                    listatext.append(textcomp)
         
 
                 zipCompUser=zip(listapos,listauser)
                 zipPos=zip(listapos,listaid)
                 zipCompImage=zip(listapos,listaimage)
+                zipCompText=zip(listapos,listatext)
                 #Diccionario posicion, user
                 dictCompUser=dict(zipCompUser)
                 #Diccionario posicion, id
                 dictCompPos=dict(zipPos)
                 #Diccionario posicion, imagen
                 dictCompImage=dict(zipCompImage)
+                #Diccionario posicion, imagen
+                dictCompText=dict(zipCompText)
 
                 #Recorro el diccionario del componente, k es la posicion y v es el user
                 for k,v in dictCompUser.iteritems():
@@ -882,7 +908,7 @@ if social_network in network_list:
                         #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en posicion: " + str(k) 
                             print "el usuario que falla es : " + v
@@ -903,7 +929,7 @@ if social_network in network_list:
                         #si es asi, cojo los values de python y del componente y los comparo
                         vPythonImagen=dictPythonImage.get(k,None)
                         if cmp(vPythonImagen,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en posicion: " + str(k) 
                             print "la imagen que falla es : " + v
@@ -915,6 +941,22 @@ if social_network in network_list:
                     else:
                         print "la imagen que no esta es: " + v
                         print "corresponde a la posicion: " + str(k)
+
+                #Recorro el diccionario del componente, k es la posicion y v es la imagen
+                for k,v in dictCompText.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonText.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonText=dictPythonText.get(k,None)
+                        if cmp(vPythonText,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el texto que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosText=zip(liskey,lisvalue)
+                            mpInstagram.track(listaFallosText,"Fallos latency text",{"posicion":listaFallosText, "version":version})
 
               
 
@@ -933,25 +975,29 @@ if social_network in network_list:
 
                 for y in newlist:
                 #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
-                    idcomp=y.items()[2][1]
-                    usercomp=y.items()[3][1]
-                    imagencomp=y.items()[1][1]
+                    idcomp=y.items()[3][1]
+                    usercomp=y.items()[4][1]
+                    imagencomp=y.items()[2][1]
                     poscomp=y.items()[0][1]
+                    textcomp=y.items()[1][1]
                     listaid.append(idcomp)
                     listauser.append(usercomp)
                     listaimage.append(imagencomp)
                     listapos.append(poscomp)
-        
+                    listatext.append(textcomp)
 
                 zipCompUser=zip(listapos,listauser)
                 zipPos=zip(listapos,listaid)
                 zipCompImage=zip(listapos,listaimage)
+                zipCompText=zip(listapos,listatext)
                 #Diccionario posicion, user
                 dictCompUser=dict(zipCompUser)
                 #Diccionario posicion, id
                 dictCompPos=dict(zipPos)
                 #Diccionario posicion, imagen
                 dictCompImage=dict(zipCompImage)
+                #Diccionario posicion, imagen
+                dictCompText=dict(zipCompText)
 
                 #Recorro el diccionario del componente, k es la posicion y v es el user
                 for k,v in dictCompUser.iteritems():
@@ -960,7 +1006,7 @@ if social_network in network_list:
                         #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en posicion: " + str(k) 
                             print "el usuario que falla es : " + v
@@ -981,7 +1027,7 @@ if social_network in network_list:
                         #si es asi, cojo los values de python y del componente y los comparo
                         vPythonImagen=dictPythonImage.get(k,None)
                         if cmp(vPythonImagen,v)==0:
-                            print "OK"
+                            True
                         else:
                             print "falla en posicion: " + str(k) 
                             print "la imagen que falla es : " + v
@@ -993,6 +1039,22 @@ if social_network in network_list:
                     else:
                         print "la imagen que no esta es: " + v
                         print "corresponde a la posicion: " + str(k)
+
+                #Recorro el diccionario del componente, k es la posicion y v es la imagen
+                for k,v in dictCompText.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonText.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonText=dictPythonText.get(k,None)
+                        if cmp(vPythonText,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el texto que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosText=zip(liskey,lisvalue)
+                            mpInstagram.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":version})
 
 
 
@@ -1076,7 +1138,6 @@ if social_network in network_list:
         zipCompUser=zip(listapos,listauser)
         #Diccionario posicion, user
         dictCompUser=dict(zipCompUser)
-        print dictCompUser
 
 
     #elif social_network == 'facebook' and len(sys.argv) >= 3:
