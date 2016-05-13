@@ -529,9 +529,9 @@ access_token={{access_token}}&summary=true -->
         }
         if (--i){
           realNew = newEvents.slice(0,i);
-          realNew = this.events.concat(realNew);
-          this._reParserLinked(realNew);
+          realNew = realNew.concat(this.events);
           this.set('events',realNew);
+          this._reParserLinked(this.events);
           this._changeTime(this.events);
           console.log('refrescado');
         }
