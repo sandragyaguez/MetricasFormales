@@ -455,7 +455,8 @@ if social_network in network_list:
 
         def post_repo():
             url='https://api.github.com/user/repos'
-            headers = {'Authorization': 'token 5ec766df9fc78189b31b5f72cd95924df5b43ec6'}
+            headers = {'Authorization': 'token 5ec766df9fc78189b3'
+            '1b5f72cd95924df5b43ec6'}
             payload = {'name': 'sandraguapa2', 'auto_init': True, 'private':False, 'gitignore_template': 'nanoc'}
             r = requests.post(url=url,data=json.dumps(payload),headers=headers)
 
@@ -465,7 +466,8 @@ if social_network in network_list:
 
         def post_issue():
             url='https://api.github.com/repos/sandragyaguez/prueba/issues'
-            headers = {'Authorization': 'token 5ec766df9fc78189b31b5f72cd95924df5b43ec6'}
+            headers = {'Authorization': 'token 5ec766df9fc78'
+            '189b31b5f72cd95924df5b43ec6'}
             payload = { "title": "Found a new bug","body": "I'm having a problem with this."}
             r = requests.post(url=url,data=json.dumps(payload),headers=headers)
 
@@ -474,7 +476,8 @@ if social_network in network_list:
 
         def post_pullrequest():
             url='https://api.github.com/repos/sandragyaguez/prueba/pulls'
-            headers = {'Authorization': 'token 5ec766df9fc78189b31b5f72cd95924df5b43ec6'}
+            headers = {'Authorization': 'token 5ec766df9fc78189b'
+            '31b5f72cd95924df5b43ec6'}
             payload = { "title": "Amazing new feature","body": "Please pull this in!","head": "rama_prueba","base": "master"}
             r = requests.post(url=url,data=json.dumps(payload),headers=headers)
 
