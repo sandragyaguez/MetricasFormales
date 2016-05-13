@@ -33,7 +33,6 @@
               //componente es lo mismo que he twitteado yo
               last_element_id=element.events[0].id;
             }
-            console.log("aqui")
             else{
                 console.log(element.events[i]);
                 //comparo solo el title de la issue porque es lo unico que se ve en el componente, el body no se muestra

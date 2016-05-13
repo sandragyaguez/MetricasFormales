@@ -379,7 +379,7 @@ if social_network in network_list:
         webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/facebook-wall/FacebookRefresco.html" + "?" + message)
         sleep(3)
 
-        access_token='EAANMUmJPs2UBAF7a6fMaWrJV2031aoZAoOPdq2guZCcvz47PiaAoC9DwQGjFLVe6u7KfAQDqMLTuLHamr5IZAZARP6bYBVcSCvpaDlaygiHFRENzxFayLt9KYaoGNzHXUPWYXUGydx5joEGLl9bsPnBxZB04J5gZBar33ZApZCmAiAZDZD'
+        access_token='EAANMUmJPs2UBAPFPiq4TzqraSEZB5y12EDVEN1Cua1AxjQy6mlKuWxlikScWJKRdPcZCR4XskNTkaMonZApBGfsgHszX4kkxxcHV2h3Fp6KPLjlu4CldLw3mZCKh29fUXT61Y0xTMJP9ZCvQyVopkPAYexzhw3JYnAX8G8KBN1gZDZD'
 
         listestado=[]
         listtpubl_ms=[]
@@ -452,77 +452,69 @@ if social_network in network_list:
                 webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/github-events/GithubRefrescoAccuracy.html"  + "?" + payload)
                 sleep(3)
 
+        
+        headers = {'Authorization': 'token 8eec4a47b695a5bf7742a01927938d878351e5e1' }
 
         def post_repo():
             url='https://api.github.com/user/repos'
-            headers = {'Authorization': 'token 5ec766df9fc78189b3'
-            '1b5f72cd95924df5b43ec6'}
             payload = {'name': 'sandraguapa2', 'auto_init': True, 'private':False, 'gitignore_template': 'nanoc'}
             r = requests.post(url=url,data=json.dumps(payload),headers=headers)
 
+            
+
+        def post_issue():
+            url='https://api.github.com/repos/sandragyaguez/prueba/issues'
+            payload = { "title": "Found a new bug","body": "I'm having a problem with this."}
+            r = requests.post(url=url,data=json.dumps(payload),headers=headers)
             print r.status_code
             print r.text
        
 
-        def post_issue():
-            url='https://api.github.com/repos/sandragyaguez/prueba/issues'
-            headers = {'Authorization': 'token 5ec766df9fc78'
-            '189b31b5f72cd95924df5b43ec6'}
-            payload = { "title": "Found a new bug","body": "I'm having a problem with this."}
-            r = requests.post(url=url,data=json.dumps(payload),headers=headers)
-
-            print r.status_code
-            print r.text
 
         def post_pullrequest():
             url='https://api.github.com/repos/sandragyaguez/prueba/pulls'
-            headers = {'Authorization': 'token 5ec766df9fc78189b'
-            '31b5f72cd95924df5b43ec6'}
             payload = { "title": "Amazing new feature","body": "Please pull this in!","head": "rama_prueba","base": "master"}
             r = requests.post(url=url,data=json.dumps(payload),headers=headers)
-
-            print r.status_code
-            print r.text
         
         post_issue()
 
 
         ##########################################################################################################################################
         #-------------------------------------------DATOS GITHUB COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
-        ##########################################################################################################################################
+        # ##########################################################################################################################################
 
 
-        sleep(70)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("4fe88dd4a1adad7b14889b4e7da2c204","e38bfa81176f69b094dd41ad1f28292c")
-        lista=[]
-        listacomp=[]
-        listatime=[]
+        # sleep(70)
+        # # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        # x=mixpanel_api.Mixpanel("4fe88dd4a1adad7b14889b4e7da2c204","e38bfa81176f69b094dd41ad1f28292c")
+        # lista=[]
+        # listacomp=[]
+        # listatime=[]
 
-        if version in version_list:
-            if version=="master":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
+        # if version in version_list:
+        #     if version=="master":
+        #         #Cuando lo tengas, defines los parametros necesarios para la peticion
+        #         params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+        #         respuesta=x.request(['events/properties/values'], params, format='json')
 
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
+        #         for x in respuesta:
+        #             #pasar de unicode a dict
+        #             resp = ast.literal_eval(x)
+        #             lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
-                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
+        #         #ordeno la lista de diccionarios por el id
+        #         newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
 
-                for y in newlist:
-                    textocomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(textocomp)
-                    listatime.append(timecomp)
+        #         for y in newlist:
+        #             textocomp=y.items()[0][1]
+        #             timecomp=y.items()[1][1]
+        #             listacomp.append(textocomp)
+        #             listatime.append(timecomp)
 
-                zipComp=zip(listacomp,listatime)
-                #Diccionario tweet, time
-                dictComp=dict(zipComp)
-                print dictComp
+        #         zipComp=zip(listacomp,listatime)
+        #         #Diccionario tweet, time
+        #         dictComp=dict(zipComp)
+        #         print dictComp
 
                 #la key es el texto del tweet y el value son los times de refresco en el componente
                 #en la siguiente prueba, aunque en el dict de Python haya dos keys con sus values, dictComp solo tiene una key y un value porque
