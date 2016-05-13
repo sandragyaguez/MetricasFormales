@@ -162,6 +162,15 @@
                >
     </iron-ajax>
     <iron-ajax
+               id="refreshData"
+               url="{{requestDataUrl}}"
+               headers="{'Timing-Allow-origin': '*'}"
+               method="GET"
+               handleAs="json"
+               on-response="_refreshResponse"
+               >
+    </iron-ajax>
+    <iron-ajax
                id="requestLanguage"
                url="{{languageUrl}}"
                method="GET"
@@ -353,10 +362,22 @@ access_token={{access_token}}&summary=true -->
           type:String,
           value: "",
           reflectToAttribute: true
+        },
+         refreshTime: {
+          type: Number,
+          value: 60000,
+          reflectToAttribute: true
         }
       },
       attached: function(){
         this.$.requestLanguage.generateRequest();
+        setInterval(function(){
+          this.refresh();
+        }.bind(this),this.refreshTime)
+      },
+
+      refresh: function(){
+        this.$.refreshData.generateRequest();
       },
       /* Observer and computed properties*/
       _languageUpdate: function(newValue){
@@ -420,7 +441,8 @@ access_token={{access_token}}&summary=true -->
         var fullUrl = item.picture || item.linked.picture;
         var pattern = "url" + "=([^&]*)";
         var exp = new RegExp(pattern);  
-        var url = exp.exec(fullUrl)[1];
+        var result = exp.exec(fullUrl)
+        var url = result && result.lenght >1 ? result[1] : ""
         url = url.replace(/%2F/g,"/");
         url =  url.replace(/%3A/g,":");
         url =  url.replace(/%3F/g,"?");
@@ -492,6 +514,26 @@ access_token={{access_token}}&summary=true -->
           }
           this._reParserLinked(this.events);
           this._changeTime(this.events);
+        }
+      },
+      _refreshResponse: function(event, detail){
+        var firstId = this.events[0].id;
+        var newEvents = detail.response.home.data;
+        var finded = false;
+        var i = 0;
+        var realNew = [];
+        for(i;i<newEvents.length && !finded;i++){
+          if (newEvents[i].id == firstId){
+            finded = true;
+          }
+        }
+        if (finded && --i){
+          realNew = newEvents.slice(0,i);
+          realNew = this.events.concat(realNew);
+          this.set('events',realNew);
+          this._reParserLinked(this.events);
+          this._changeTime(this.events);
+          console.log('refrescado');
         }
       },
       _changeTime: function(list){

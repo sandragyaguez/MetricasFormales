@@ -193,6 +193,7 @@ if social_network in network_list:
         #chars = "".join( [random.choice(string.letters) for i in xrange(15)] )
         #print digits + chars
 
+        #funcion random para crear tweets aleatorios
         def randomword(length):
             return ''.join(random.choice(string.lowercase) for i in range(length))
 
@@ -371,12 +372,14 @@ if social_network in network_list:
         #---------------------------------------------------------DATOS FACEBOOK API--------------------------------------------------------------
         ##########################################################################################################################################
         
-        message='Prueba1'
+        def randomword(length):
+            return ''.join(random.choice(string.lowercase) for i in range(length))
+
+        message=randomword(10)
         webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/facebook-wall/FacebookRefresco.html" + "?" + message)
         sleep(3)
 
-
-        access_token='EAANMUmJPs2UBACBjqjpeZC7T4zpEsKprs6S34yGbywqqe0UXwHjVO09g24NAjh4mPuG33FjJoZBkLINgI7x9RzNpkdUxFOMyOEDsebMu5F2UeydTXkNR7xQZCbpdf2btzpEKOXNUxI1brijIpq2LwPiFnMtVtYl0TUp6FEPBAZDZD'
+        access_token='EAANMUmJPs2UBAF7a6fMaWrJV2031aoZAoOPdq2guZCcvz47PiaAoC9DwQGjFLVe6u7KfAQDqMLTuLHamr5IZAZARP6bYBVcSCvpaDlaygiHFRENzxFayLt9KYaoGNzHXUPWYXUGydx5joEGLl9bsPnBxZB04J5gZBar33ZApZCmAiAZDZD'
 
         listestado=[]
         listtpubl_ms=[]
@@ -385,7 +388,6 @@ if social_network in network_list:
 
         #POST EN FACEBOOK
         attachment =  {}
-
         graph.put_wall_post(message=message, attachment=attachment)
         tpubl=datetime.datetime.now()
         tpubl_ms=int(time.time()*1000)
@@ -437,13 +439,97 @@ if social_network in network_list:
         ##########################################################################################################################################
         #----------------------------------------------------------DATOS GITHUB API---------------------------------------------------------------
         ##########################################################################################################################################
+        payload ="title: Found a new bug"
+        
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/github-events/GithubRefresco.html")
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/github-events/GithubRefresco.html"  + "?" + payload)
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Latency/github-events/GithubRefrescoLatency.html")
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Latency/github-events/GithubRefrescoLatency.html"  + "?" + payload)
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/github-events/GithubRefrescoAccuracy.html")
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/github-events/GithubRefrescoAccuracy.html"  + "?" + payload)
                 sleep(3)
+
+
+        def post_repo():
+            url='https://api.github.com/user/repos'
+            headers = {'Authorization': 'token 5ec766df9fc78189b31b5f72cd95924df5b43ec6'}
+            payload = {'name': 'sandraguapa2', 'auto_init': True, 'private':False, 'gitignore_template': 'nanoc'}
+            r = requests.post(url=url,data=json.dumps(payload),headers=headers)
+
+            print r.status_code
+            print r.text
+       
+
+        def post_issue():
+            url='https://api.github.com/repos/sandragyaguez/prueba/issues'
+            headers = {'Authorization': 'token 5ec766df9fc78189b31b5f72cd95924df5b43ec6'}
+            payload = { "title": "Found a new bug","body": "I'm having a problem with this."}
+            r = requests.post(url=url,data=json.dumps(payload),headers=headers)
+
+            print r.status_code
+            print r.text
+
+        def post_pullrequest():
+            url='https://api.github.com/repos/sandragyaguez/prueba/pulls'
+            headers = {'Authorization': 'token 5ec766df9fc78189b31b5f72cd95924df5b43ec6'}
+            payload = { "title": "Amazing new feature","body": "Please pull this in!","head": "rama_prueba","base": "master"}
+            r = requests.post(url=url,data=json.dumps(payload),headers=headers)
+
+            print r.status_code
+            print r.text
+        
+        post_issue()
+
+
+        ##########################################################################################################################################
+        #-------------------------------------------DATOS GITHUB COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
+        ##########################################################################################################################################
+
+
+        sleep(70)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("4fe88dd4a1adad7b14889b4e7da2c204","e38bfa81176f69b094dd41ad1f28292c")
+        lista=[]
+        listacomp=[]
+        listatime=[]
+
+        if version in version_list:
+            if version=="master":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
+
+                for y in newlist:
+                    textocomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(textocomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario tweet, time
+                dictComp=dict(zipComp)
+                print dictComp
+
+                #la key es el texto del tweet y el value son los times de refresco en el componente
+                #en la siguiente prueba, aunque en el dict de Python haya dos keys con sus values, dictComp solo tiene una key y un value porque
+                #es el nuevo evento. Y busco la key del componente (del nuevo evento) en el dict de Python por lo que siempre va a restar bien los tiempos
+                # for key,value in dictComp.iteritems():
+                #     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                #     if(dictPython.has_key(key)):
+                #         #si es asi, cojo los values de python y del componente y los comparo
+                #         valuesP=dictPython.get(key,None)
+                #         #if cmp(valuesP,value)==0:
+                #         final_time=int(value)-int(valuesP)
+                #         print "final_time: " + str(final_time)
+                #         mpTwitter.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})

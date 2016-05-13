@@ -15,8 +15,6 @@
         //id del primer elemento que muestra el timeline
         var last_element_id = element.events[0].id;
         console.log(element);
-
-        //NO TENEMOS PERMISOS DE FACE!!!!!!!!!!!!!!!
         //espero a escuchar si hay algun cambio
         element.addEventListener('events-changed', function(event){
           console.log("entra")
