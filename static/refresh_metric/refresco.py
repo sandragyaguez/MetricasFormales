@@ -377,9 +377,9 @@ if social_network in network_list:
 
         message=randomword(10)
         webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/facebook-wall/FacebookRefresco.html" + "?" + message)
-        sleep(3)
+        sleep(5)
 
-        access_token='EAANMUmJPs2UBAF7a6fMaWrJV2031aoZAoOPdq2guZCcvz47PiaAoC9DwQGjFLVe6u7KfAQDqMLTuLHamr5IZAZARP6bYBVcSCvpaDlaygiHFRENzxFayLt9KYaoGNzHXUPWYXUGydx5joEGLl9bsPnBxZB04J5gZBar33ZApZCmAiAZDZD'
+        access_token='EAANMUmJPs2UBANtcKSBx6InlN8c0Tq07yd0alAQbD81CJyNwDS8BNzFCaafwOE9wcWUlYPBfnpugrZCoh336QZBV8x6IxzeFWKbMboVbpbav2QKmGz3s0sHm0zPAEWH8WXFRFcZB1zYbLuZCAvIObJZB9Y6tKwiJHycsqqiUWZCQZDZD'
 
         listestado=[]
         listtpubl_ms=[]

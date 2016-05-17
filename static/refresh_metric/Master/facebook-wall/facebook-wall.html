@@ -182,7 +182,7 @@
       <div class="paper-header horizontal layout center-justified">
         <div><iron-icon src="images/facebook.svg"></iron-icon></div>
         <div class="flex" style="text-align:center"><span>Facebook wall</span></div>
-        <div><paper-icon-button icon="refresh"></paper-icon-button></div>
+        <div><paper-icon-button icon="refresh" on-click="refresh"></paper-icon-button></div>
 
       </div>
       <div class="content">
@@ -461,8 +461,11 @@ access_token={{access_token}}&summary=true -->
         return (item.linked && item.linked.shares) ? true : false;
       },
       _getShareInformation: function(item) {
-        tag = this._parserUser(item.from) + " " + item.story.replace(item.from.name+ " ", "");
-        return tag;
+        if (item.story && item.from){
+          tag = this._parserUser(item.from) + " " + item.story.replace(item.from.name+ " ", "");
+          return tag;
+        }
+        return '';
       },
       _getUserPicture: function(item) {
         var link = "https://graph.facebook.com/";
@@ -481,7 +484,11 @@ access_token={{access_token}}&summary=true -->
         return item !== type;
       },
       _getFullPhoto: function(item) {
-        return "https://graph.facebook.com/" + item.linked.object_id + "/picture?access_token=" + this.access_token;
+        if (item.linked && item.linked.object_id) {
+         return "https://graph.facebook.com/" + item.linked.object_id + "/picture?access_token=" + this.access_token;
+        } else {
+          console.log('error con alguna mierda en getFullFoto', item);
+        }
       },
 
       _getWith: function(item) {
@@ -530,12 +537,11 @@ access_token={{access_token}}&summary=true -->
         if (--i){
           realNew = newEvents.slice(0,i);
           for (var j=0;j<realNew.length;j++){
-            this.events.unshift(realNew[j]);
+            //this.events.unshift(realNew[j]);
+            this.unshift('events',realNew[j]);
           }
-          this.set('events',realNew);
           this._reParserLinked(this.events);
-          this._changeTime(this.events);
-          console.log('refrescado');
+          this._changeTime(this.events);        
         }
       },
       _changeTime: function(list){
