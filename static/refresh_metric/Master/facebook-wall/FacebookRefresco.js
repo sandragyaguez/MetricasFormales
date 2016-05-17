@@ -14,20 +14,19 @@
         window.setTimeout(function() {
         //id del primer elemento que muestra el timeline
         var last_element_id = element.events[0].id;
+        console.log(last_element_id)
         console.log(element);
         //espero a escuchar si hay algun cambio
         element.addEventListener('events-changed', function(event){
-          console.log("entra")
           //cojo tiempo en el momento que hay cambio
           var time=new Date().getTime();
-          //para filtrar solo cambios en el la variable, no en los elementos internos
-          if (!event.detail.path) {
+          //if (!event.detail.path) {
           var haymas=true;
           //voy a recorrer los nuevos cambios y comprobar si el event es el que queria
           for (var i = 0; i<element.events.length && haymas;i++){
             if(element.events[i].id === last_element_id){
               haymas=false;
-              console.log("hay mas: " + haymas);
+              //console.log("hay mas: " + haymas);
               //cuando no haya mas, tengo que actualizar el id al primero de la pila
               //en last_element_id tengo el id del tweet con el que voy a comparar con el id obtenido de python para comprobar que lo que se refresca en el
               //componente es lo mismo que he twitteado yo
@@ -48,7 +47,8 @@
                 }
               }
           }
-          }          
+        //}
+                    
         });
-      }, 2000);
+      }, 7000);
       });

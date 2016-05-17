@@ -364,7 +364,7 @@ if social_network in network_list:
                         #if cmp(valuesP,value)==0:
                         final_time=int(value)-int(valuesP)
                         print "final_time: " + str(final_time)
-                        mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})
+                        mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":"master"})
 
     elif social_network == 'facebook':
 
@@ -421,18 +421,26 @@ if social_network in network_list:
 
         #ordeno la lista de diccionarios por el id
         newlist = sorted(lista, key=lambda post: post['post'])
-        print newlist
+        for y in newlist:
+            textocomp=y.items()[0][1]
+            timecomp=y.items()[1][1]
+            listacomp.append(textocomp)
+            listatime.append(timecomp)
 
-        # for y in newlist:
-        #     textocomp=y.items()[0][1]
-        #     timecomp=y.items()[1][1]
-        #     listacomp.append(textocomp)
-        #     listatime.append(timecomp)
+        zipComp=zip(listacomp,listatime)
+        #Diccionario tweet, time
+        dictComp=dict(zipComp)
+        print dictComp
 
-        # zipComp=zip(listacomp,listatime)
-        # #Diccionario tweet, time
-        # dictComp=dict(zipComp)
-        # print dictComp
+        #la key es el texto del tweet y el value son los times de refresco en el componente
+        for key,value in dictComp.iteritems():
+            #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+            if(dictPython.has_key(key)):
+                #si es asi, cojo los values de python y del componente y los comparo
+                    valuesP=dictPython.get(key,None)
+                    final_time=int(value)-int(valuesP)
+                    print "final_time: " + str(final_time)
+                    mpFacebook.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
 
     elif social_network == 'github':
 
@@ -452,77 +460,70 @@ if social_network in network_list:
                 webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/github-events/GithubRefrescoAccuracy.html"  + "?" + payload)
                 sleep(3)
 
+        
+        headers = {'Authorization': 'token 8eec4a47b695a5bf7'
+        '742a01927938d878351e5e1' }
 
         def post_repo():
             url='https://api.github.com/user/repos'
-            headers = {'Authorization': 'token 5ec766df9fc78189b3'
-            '1b5f72cd95924df5b43ec6'}
             payload = {'name': 'sandraguapa2', 'auto_init': True, 'private':False, 'gitignore_template': 'nanoc'}
             r = requests.post(url=url,data=json.dumps(payload),headers=headers)
 
+            
+
+        def post_issue():
+            url='https://api.github.com/repos/sandragyaguez/prueba/issues'
+            payload = { "title": "Found a new bug","body": "I'm having a problem with this."}
+            r = requests.post(url=url,data=json.dumps(payload),headers=headers)
             print r.status_code
             print r.text
        
 
-        def post_issue():
-            url='https://api.github.com/repos/sandragyaguez/prueba/issues'
-            headers = {'Authorization': 'token 5ec766df9fc78'
-            '189b31b5f72cd95924df5b43ec6'}
-            payload = { "title": "Found a new bug","body": "I'm having a problem with this."}
-            r = requests.post(url=url,data=json.dumps(payload),headers=headers)
-
-            print r.status_code
-            print r.text
 
         def post_pullrequest():
             url='https://api.github.com/repos/sandragyaguez/prueba/pulls'
-            headers = {'Authorization': 'token 5ec766df9fc78189b'
-            '31b5f72cd95924df5b43ec6'}
             payload = { "title": "Amazing new feature","body": "Please pull this in!","head": "rama_prueba","base": "master"}
             r = requests.post(url=url,data=json.dumps(payload),headers=headers)
-
-            print r.status_code
-            print r.text
         
         post_issue()
 
 
         ##########################################################################################################################################
         #-------------------------------------------DATOS GITHUB COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
-        ##########################################################################################################################################
+        # ##########################################################################################################################################
 
 
-        sleep(70)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("4fe88dd4a1adad7b14889b4e7da2c204","e38bfa81176f69b094dd41ad1f28292c")
-        lista=[]
-        listacomp=[]
-        listatime=[]
+        # sleep(70)
+        # # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        # x=mixpanel_api.Mixpanel("4fe88dd4a1adad7b14889b4e7da2c204","e38bfa81176f69b094dd41ad1f28292c")
+        # lista=[]
+        # listacomp=[]
+        # listatime=[]
 
-        if version in version_list:
-            if version=="master":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
+        # if version in version_list:
+        #     if version=="master":
+        #         #Cuando lo tengas, defines los parametros necesarios para la peticion
+        #         params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+        #         respuesta=x.request(['events/properties/values'], params, format='json')
 
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
+        #         for x in respuesta:
+        #             #pasar de unicode a dict
+        #             resp = ast.literal_eval(x)
+        #             lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
-                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
+        #         #ordeno la lista de diccionarios por el id
+        #         newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
 
-                for y in newlist:
-                    textocomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(textocomp)
-                    listatime.append(timecomp)
+        #         for y in newlist:
+        #             textocomp=y.items()[0][1]
+        #             timecomp=y.items()[1][1]
+        #             listacomp.append(textocomp)
+        #             listatime.append(timecomp)
 
-                zipComp=zip(listacomp,listatime)
-                #Diccionario tweet, time
-                dictComp=dict(zipComp)
-                print dictComp
+        #         zipComp=zip(listacomp,listatime)
+        #         #Diccionario tweet, time
+        #         dictComp=dict(zipComp)
+        #         print dictComp
 
                 #la key es el texto del tweet y el value son los times de refresco en el componente
                 #en la siguiente prueba, aunque en el dict de Python haya dos keys con sus values, dictComp solo tiene una key y un value porque
