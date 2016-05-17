@@ -364,7 +364,7 @@ if social_network in network_list:
                         #if cmp(valuesP,value)==0:
                         final_time=int(value)-int(valuesP)
                         print "final_time: " + str(final_time)
-                        mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})
+                        mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":"master"})
 
     elif social_network == 'facebook':
 
@@ -379,7 +379,7 @@ if social_network in network_list:
         webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/facebook-wall/FacebookRefresco.html" + "?" + message)
         sleep(3)
 
-        access_token='EAANMUmJPs2UBAPFPiq4TzqraSEZB5y12EDVEN1Cua1AxjQy6mlKuWxlikScWJKRdPcZCR4XskNTkaMonZApBGfsgHszX4kkxxcHV2h3Fp6KPLjlu4CldLw3mZCKh29fUXT61Y0xTMJP9ZCvQyVopkPAYexzhw3JYnAX8G8KBN1gZDZD'
+        access_token='EAANMUmJPs2UBAJfigZAuiZAsxomwN4OM1lmNqx7ovice5aOADfaA1Qa32wS4gc4voapcF1C5La4UhCv03jvbyxzIWrsQK79QZArpIAwX0iojK0R3Rn4wlKIxvzUvOBrsGZC3NZCFKo32BkMW6uUSz7WHcIfNe4MCkCeUe399QbQZDZD'
 
         listestado=[]
         listtpubl_ms=[]
@@ -421,18 +421,26 @@ if social_network in network_list:
 
         #ordeno la lista de diccionarios por el id
         newlist = sorted(lista, key=lambda post: post['post'])
-        print newlist
+        for y in newlist:
+            textocomp=y.items()[0][1]
+            timecomp=y.items()[1][1]
+            listacomp.append(textocomp)
+            listatime.append(timecomp)
 
-        # for y in newlist:
-        #     textocomp=y.items()[0][1]
-        #     timecomp=y.items()[1][1]
-        #     listacomp.append(textocomp)
-        #     listatime.append(timecomp)
+        zipComp=zip(listacomp,listatime)
+        #Diccionario tweet, time
+        dictComp=dict(zipComp)
+        print dictComp
 
-        # zipComp=zip(listacomp,listatime)
-        # #Diccionario tweet, time
-        # dictComp=dict(zipComp)
-        # print dictComp
+        #la key es el texto del tweet y el value son los times de refresco en el componente
+        for key,value in dictComp.iteritems():
+            #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+            if(dictPython.has_key(key)):
+                #si es asi, cojo los values de python y del componente y los comparo
+                    valuesP=dictPython.get(key,None)
+                    final_time=int(value)-int(valuesP)
+                    print "final_time: " + str(final_time)
+                    mpFacebook.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
 
     elif social_network == 'github':
 

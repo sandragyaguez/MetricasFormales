@@ -539,9 +539,9 @@ access_token={{access_token}}&summary=true -->
         }
         if (--i){
           realNew = newEvents.slice(0,i);
-          for (var j=0;j<realNew.length;j++){
-            this.events.unshift(realNew[j]);
-          }
+      for (var j=0;j<realNew.length;j++){
+             this.events.unshift(realNew[j]);
+           }
           this.set('events',realNew);
           this._reParserLinked(this.events);
           this._changeTime(this.events);

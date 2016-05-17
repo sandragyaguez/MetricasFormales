@@ -20,6 +20,7 @@
         element.addEventListener('events-changed', function(event){
           //cojo tiempo en el momento que hay cambio
           var time=new Date().getTime();
+          //if (!event.detail.path) {
           var haymas=true;
           //voy a recorrer los nuevos cambios y comprobar si el event es el que queria
           for (var i = 0; i<element.events.length && haymas;i++){
@@ -46,7 +47,8 @@
                 }
               }
           }
+        //}
                     
         });
-      }, 2000);
+      }, 7000);
       });

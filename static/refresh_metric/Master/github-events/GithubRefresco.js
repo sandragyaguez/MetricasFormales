@@ -23,6 +23,8 @@
           //para filtrar solo cambios en el la variable, no en los elementos internos
           if (!event.detail.path) {
           var haymas=true;
+          console.log("entra")
+
           //voy a recorrer los nuevos cambios y comprobar si el event es el que queria
           for (var i = 0; i<element.events.length && haymas;i++){
             if(element.events[i].id === last_element_id){
