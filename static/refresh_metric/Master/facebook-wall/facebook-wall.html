@@ -536,11 +536,11 @@ access_token={{access_token}}&summary=true -->
         }
         if (--i){
           realNew = newEvents.slice(0,i);
+          realNew = this._reparseRefresh(realNew);
           for (var j=0;j<realNew.length;j++){
             //this.events.unshift(realNew[j]);
             this.unshift('events',realNew[j]);
           }
-          this._reParserLinked(this.events);
           this._changeTime(this.events);        
         }
       },
@@ -592,6 +592,19 @@ access_token={{access_token}}&summary=true -->
           this.set("events." + i + ".time", time);
 
         }
+      },
+      _reparseRefresh : function(list){
+        for (i=0;i<list.length-1;i++){
+          if (list[i].story && !list[i].caption) {
+            list[i].linked =  list[i+1];
+            list.splice(i+1, 1);
+          } 
+          if (list[i].message) {
+            list[i].message = list[i].message.replace(/(?:\r\n|\r|\n)/g, "<br>");
+            list[i].message = this._parseText(list[i].message);
+          }
+        }
+        return list;
       },
       _reParserLinked: function(list) {
         for (i=0;i<list.length-1;i++){
