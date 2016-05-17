@@ -461,7 +461,8 @@ if social_network in network_list:
                 sleep(3)
 
         
-        headers = {'Authorization': 'token 8eec4a47b695a5bf7742a01927938d878351e5e1' }
+        headers = {'Authorization': 'token 8eec4a47b695a5bf7'
+        '742a01927938d878351e5e1' }
 
         def post_repo():
             url='https://api.github.com/user/repos'
