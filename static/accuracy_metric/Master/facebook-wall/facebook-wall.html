@@ -587,7 +587,7 @@ access_token={{access_token}}&summary=true -->
       },
       _reParserLinked: function(list) {
         for (i=0;i<list.length-1;i++){
-          if (list[i].story && !list[i].caption) {
+          if (list[i].name == list[i+1].from.name  ) {
             this.set("events." + i + ".linked", list[i+1])
             this.splice("events", i+1, 1);
           } 

@@ -23,6 +23,7 @@ import ast
 import calendar
 import mixpanel
 import os
+import hashlib
 from mixpanel import Mixpanel
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
 mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
@@ -1065,9 +1066,9 @@ if social_network in network_list:
         ##########################################################################################################################################
 
         webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Master/facebook-wall/FacebookCompletitud.html")
-        sleep(3)
+        sleep(5)
          
-        access_token="EAACEdEose0cBAJUSvIw0P1tfiFFGZBynfWsiJi7DG7md9QxV5SKreLvNn66ZBNRubvLfboXOZCfqpBOdj8EZCx08kfN3OUyyFsZCneiKNjo24rzDmxZBUAkvLHztZBu3L1mVxjECsDnCUiiQ3OoXI1O4tsZCuT0y8zSbHGhKvi12rwZDZD"
+        access_token="EAANMUmJPs2UBALKA8YC6Y8HdOkcEMzZB2Wj5emTUQsI3DjZC2XQjV9s2oituphB2ijZCkoq8hukDOOF1UZCKvYhhpF4Mv75FESJTcfXzp55d96pzZCK3efpzr3S1bWPAGgplFHa3hfmpc4SLIX7igfCD7CO8yWim4ZAixCB4gEVwZDZD"
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
         #Request timeline home
@@ -1075,11 +1076,12 @@ if social_network in network_list:
         print s
         muro=s.json()
         contador=0
-        lis=[]
+        texto=[]
         ids=[]
         users=[]
         listacont=[]
         lista=[]
+        images=[]
         listapos=[]
         listauser=[]
         #facebook devuelve un diccionario con 2 keys (home, id) y solo me quiero quedar con los values del home
@@ -1093,20 +1095,46 @@ if social_network in network_list:
                 values1=values.get('data',None)
 
         for items1 in values1:
+            #print items1
+            #print "------------------------------"
             idsevents=items1['id']
             userevents=items1['from']['name']
-            print userevents
+             #if para ver si un description o un message
+            if(items1.has_key('description')):
+
+                text = items1['description']
+            elif items1.has_key('message'):
+                text=items1['message']
+            else:
+                text= ''
+
+
+            if(items1.has_key('picture')):
+                imagen=items1['picture']
+
+            #Hash para "comprimir" el texto
+            hash_object = hashlib.sha1(text)
+            text_hash = hash_object.hexdigest()
+
+
+            #Hash para "comprimir" el texto
+            hash_object = hashlib.sha1(imagen)
+            image_hash = hash_object.hexdigest()
 
             listacont.append(contador)
             contador=contador+1
             ids.append(idsevents)
-            #users.append(userevents)
-        
+            users.append(userevents)
+            images.append(image_hash)
+            texto.append(text_hash)
+
         print contador
-        #zipPythonUser=zip(listacont,users)
-        #dictPythonUser=dict(zipPythonUser)
-        #zipPythonImage=zip(listacont,images)
-        #dictPythonImage=dict(zipPythonImage)
+        zipPythonUser=zip(listacont,users)
+        dictPythonUser=dict(zipPythonUser)
+        zipPythonTexto=zip(listacont,texto)
+        dictPythonTexto=dict(zipPythonTexto)
+        zipPythonImage=zip(listacont,images)
+        dictPythonImage=dict(zipPythonImage)
 
         ##########################################################################################################################################
         #-------------------------------------------DATOS FACEBOOK COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
@@ -1127,17 +1155,18 @@ if social_network in network_list:
 
         #ordeno la lista de diccionarios por el id
         newlist = sorted(lista, key=lambda posicion: posicion['i'])
+        print newlist
 
-        for y in newlist:
-            #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
-            poscomp=y.items()[0][1]
-            usercomp=y.items()[1][1]
-            listapos.append(poscomp)
-            listauser.append(usercomp)
+        # for y in newlist:
+        #     #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
+        #     poscomp=y.items()[0][1]
+        #     usercomp=y.items()[1][1]
+        #     listapos.append(poscomp)
+        #     listauser.append(usercomp)
             
-        zipCompUser=zip(listapos,listauser)
-        #Diccionario posicion, user
-        dictCompUser=dict(zipCompUser)
+        # zipCompUser=zip(listapos,listauser)
+        # #Diccionario posicion, user
+        # dictCompUser=dict(zipCompUser)
 
 
     #elif social_network == 'facebook' and len(sys.argv) >= 3:
