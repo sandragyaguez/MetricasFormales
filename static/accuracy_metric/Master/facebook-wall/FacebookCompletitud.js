@@ -15,24 +15,30 @@
         };
         console.log(list.length)
 
-        var shaObj = new jsSHA("SHA-1", "TEXT");
         
         for (var i = 0; i<list.length;i++){
           console.log(i)
           var id= list[i].id
           var user= list[i].from.name
           console.log(user)
+          //objeto hash para "comprimir" textos e imagenes y poder mandarlo a Mixpanel sin ningun tipo de problemas por la limitacion de Mixpanel (255)
+          var shaObj = new jsSHA("SHA-1", "TEXT");
+
           if(list[i].description){
-            shaObj.update(list[i].description);
+            //sustituir saltos de linea por espacios
+            text = list[i].description.replace(/\n+/g, ' ')
+            shaObj.update(text);
             var hash = shaObj.getHash("HEX");
             var texto=hash
         }
-          else{
-            if(list[i].message){
-            shaObj.update(list[i].message);
+          else if (list[i].message){
+            text = list[i].message.replace(/\n+/g, ' ')
+            shaObj.update(text);
             var hash = shaObj.getHash("HEX");
             var texto=hash  
           }
+        else{
+          var texto=''
         }
           if(list[i].picture){
             shaObj.update(list[i].picture);

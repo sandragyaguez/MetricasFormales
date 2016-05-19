@@ -28,6 +28,7 @@ from mixpanel import Mixpanel
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
 mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
 mpInstagram=Mixpanel("59e0cb154cc5192322be22b2a035738e")
+mpFacebook=Mixpanel("04ae91408ffe85bf83628993704feb15")
 import mixpanel_api
 
 #---------------------------------------------------------------------------------------------------------------------
@@ -826,7 +827,7 @@ if social_network in network_list:
                 #Recorro el diccionario del componente, k es la posicion y v es la imagen
                 for k,v in dictCompImage.iteritems():
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonUser.has_key(k)):
+                    if(dictPythonImage.has_key(k)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         vPythonImagen=dictPythonImage.get(k,None)
                         if cmp(vPythonImagen,v)==0:
@@ -926,7 +927,7 @@ if social_network in network_list:
                 #Recorro el diccionario del componente, k es la posicion y v es la imagen
                 for k,v in dictCompImage.iteritems():
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonUser.has_key(k)):
+                    if(dictPythonImage.has_key(k)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         vPythonImagen=dictPythonImage.get(k,None)
                         if cmp(vPythonImagen,v)==0:
@@ -1024,7 +1025,7 @@ if social_network in network_list:
                 #Recorro el diccionario del componente, k es la posicion y v es la imagen
                 for k,v in dictCompImage.iteritems():
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonUser.has_key(k)):
+                    if(dictPythonImage.has_key(k)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         vPythonImagen=dictPythonImage.get(k,None)
                         if cmp(vPythonImagen,v)==0:
@@ -1068,7 +1069,7 @@ if social_network in network_list:
         webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Master/facebook-wall/FacebookCompletitud.html")
         sleep(5)
          
-        access_token="EAANMUmJPs2UBALKA8YC6Y8HdOkcEMzZB2Wj5emTUQsI3DjZC2XQjV9s2oituphB2ijZCkoq8hukDOOF1UZCKvYhhpF4Mv75FESJTcfXzp55d96pzZCK3efpzr3S1bWPAGgplFHa3hfmpc4SLIX7igfCD7CO8yWim4ZAixCB4gEVwZDZD"
+        access_token="EAANMUmJPs2UBAFDPDc3L2PJsWIvdZCD8cPHytXDgNyQjImZB8gYXgOtZA1yvx6KdiVHAMqtBZCU4SxBWjfVQFKh74wbR3LNF2VPAstuUnmNbarWqmW493r3AUx1UIrovtegTYiZBBZASipeYXDcYckkuShYzUfq4t4YqRZCZByfaYQZDZD"
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
         #Request timeline home
@@ -1084,6 +1085,10 @@ if social_network in network_list:
         images=[]
         listapos=[]
         listauser=[]
+        listatext=[]
+        listaimg=[]
+        liskey=[]
+        lisvalue=[]
         #facebook devuelve un diccionario con 2 keys (home, id) y solo me quiero quedar con los values del home
         for k,v in muro.iteritems():
             if(muro.has_key('home')):
@@ -1101,21 +1106,24 @@ if social_network in network_list:
             userevents=items1['from']['name']
              #if para ver si un description o un message
             if(items1.has_key('description')):
-
-                text = items1['description']
-            elif items1.has_key('message'):
-                text=items1['message']
+                text1 = items1['description']
+                #print text1
+                hash_object = hashlib.sha1(text1)
+                text = hash_object.hexdigest()
+            elif (items1.has_key('message')):
+                text1=items1['message']
+                print "---------------------------"
+                #print text1
+                hash_object = hashlib.sha1(text1)
+                text = hash_object.hexdigest()
             else:
                 text= ''
+                print "----------------------------"
+                #print text
 
 
             if(items1.has_key('picture')):
                 imagen=items1['picture']
-
-            #Hash para "comprimir" el texto
-            hash_object = hashlib.sha1(text)
-            text_hash = hash_object.hexdigest()
-
 
             #Hash para "comprimir" el texto
             hash_object = hashlib.sha1(imagen)
@@ -1126,15 +1134,17 @@ if social_network in network_list:
             ids.append(idsevents)
             users.append(userevents)
             images.append(image_hash)
-            texto.append(text_hash)
+            texto.append(text)
 
         print contador
         zipPythonUser=zip(listacont,users)
         dictPythonUser=dict(zipPythonUser)
         zipPythonTexto=zip(listacont,texto)
-        dictPythonTexto=dict(zipPythonTexto)
+        dictPythonText=dict(zipPythonTexto)
         zipPythonImage=zip(listacont,images)
         dictPythonImage=dict(zipPythonImage)
+        print dictPythonText
+        print "-------------------------------------"
 
         ##########################################################################################################################################
         #-------------------------------------------DATOS FACEBOOK COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
@@ -1155,23 +1165,87 @@ if social_network in network_list:
 
         #ordeno la lista de diccionarios por el id
         newlist = sorted(lista, key=lambda posicion: posicion['i'])
-        print newlist
+        #print newlist
 
-        # for y in newlist:
-        #     #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
-        #     poscomp=y.items()[0][1]
-        #     usercomp=y.items()[1][1]
-        #     listapos.append(poscomp)
-        #     listauser.append(usercomp)
+        for y in newlist:
+            poscomp=y.items()[0][1]
+            imagecomp=y.items()[1][1]
+            usercomp=y.items()[2][1]
+            textcomp=y.items()[3][1]
+            listapos.append(poscomp)
+            listaimg.append(imagecomp)
+            listauser.append(usercomp)
+            listatext.append(textcomp)
             
-        # zipCompUser=zip(listapos,listauser)
-        # #Diccionario posicion, user
-        # dictCompUser=dict(zipCompUser)
+        zipCompUser=zip(listapos,listauser)
+        zipCompImage=zip(listapos,listaimg)
+        zipCompText=zip(listapos,listatext)
+        #Diccionario posicion, user
+        dictCompUser=dict(zipCompUser)
+        #Diccionario posicion, imagen
+        dictCompImage=dict(zipCompImage)
+        #Diccionario posicion, imagen
+        dictCompText=dict(zipCompText)
+        print "----------------------------------------------"
+        print dictCompText
+
+        #Recorro el diccionario del componente, k es la posicion y v es el user
+        for k,v in dictCompUser.iteritems():
+        #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+            if(dictPythonUser.has_key(k)):
+            #si es asi, cojo los values de python y del componente y los comparo
+                vPythonUser=dictPythonUser.get(k,None)
+                if cmp(vPythonUser,v)==0:
+                    True
+                else:
+                    #print "falla en posicion: " + str(k) 
+                    #print "el usuario que falla es : " + v
+                    liskey.append(k)
+                    lisvalue.append(v)
+                    listaFallosUser=zip(liskey,lisvalue)
+                    mpFacebook.track(listaFallosUser,"Fallos master user",{"posicion":listaFallosUser, "version":"master"})
+
+            else:
+                print "el user que no esta es: " + v
+                print "corresponde a la posicion: " + str(k)
 
 
-    #elif social_network == 'facebook' and len(sys.argv) >= 3:
-        #     access_token = sys.argv[2]
-            
+        #Recorro el diccionario del componente, k es la posicion y v es la imagen
+        for k,v in dictCompImage.iteritems():
+            #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+            if(dictPythonImage.has_key(k)):
+                #si es asi, cojo los values de python y del componente y los comparo
+                vPythonImagen=dictPythonImage.get(k,None)
+                if cmp(vPythonImagen,v)==0:
+                    True
+                else:
+                    #print "falla en posicion: " + str(k) 
+                    #print "la imagen que falla es : " + v
+                    liskey.append(k)
+                    lisvalue.append(v)
+                    listaFallosImagen=zip(liskey,lisvalue)
+                    mpFacebook.track(listaFallosImagen,"Fallos master imagen",{"posicion":listaFallosImagen, "version":"master"})
+
+            else:
+                print "la imagen que no esta es: " + v
+                print "corresponde a la posicion: " + str(k)
+
+        #Recorro el diccionario del componente, k es la posicion y v es la imagen
+        for k,v in dictCompText.iteritems():
+            #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+            if(dictPythonText.has_key(k)):
+                #si es asi, cojo los values de python y del componente y los comparo
+                vPythonText=dictPythonText.get(k,None)
+                if cmp(vPythonText,v)==0:
+                    True
+                else:
+                    #print "falla en posicion: " + str(k) 
+                    #print "el texto que falla es : " + v
+                    liskey.append(k)
+                    lisvalue.append(v)
+                    listaFallosText=zip(liskey,lisvalue)
+                    mpFacebook.track(listaFallosText,"Fallos master text",{"posicion":listaFallosText, "version":"master"})    
+
     
     #else:
         #print "Wrong social network or missing param"
