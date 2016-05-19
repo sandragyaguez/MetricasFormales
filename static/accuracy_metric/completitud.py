@@ -730,23 +730,26 @@ if social_network in network_list:
             idsevents=items['id']
             userevents=items['user']['username']
             imageevents=items['images']['standard_resolution']['url']
+            hash_object = hashlib.sha1(imageevents)
+            imageevents = hash_object.hexdigest()
             if(items['caption']!=None):
                 textevents=items['caption']['text']
                 listatex.append(textevents)
                 for itemtext in listatex:
                     itemtext=str(itemtext)
                     #necesito restringir el texto porque sino no puedo comparar con los datos de Mixpanel ya que restringe el num de caracteres
-                    if (len(itemtext)<25):
-                        texts.append(textevents)
-                    else:
-                        texts.append("-")
+                    hash_object = hashlib.sha1(itemtext)
+                    textevents = hash_object.hexdigest()
+                    texts.append(textevents)
             else:
-                texts.append("")
+                texts.append('')
+
             listacont.append(contador)
             contador=contador+1
             ids.append(idsevents)
             users.append(userevents)
             images.append(imageevents)
+
         print contador
         zipPythonUser=zip(listacont,users)
         dictPythonUser=dict(zipPythonUser)
@@ -1137,8 +1140,6 @@ if social_network in network_list:
         dictPythonText=dict(zipPythonTexto)
         zipPythonImage=zip(listacont,images)
         dictPythonImage=dict(zipPythonImage)
-        print dictPythonImage
-        print "-------------------------------"
 
         ##########################################################################################################################################
         #-------------------------------------------DATOS FACEBOOK COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
@@ -1180,7 +1181,6 @@ if social_network in network_list:
         dictCompImage=dict(zipCompImage)
         #Diccionario posicion, imagen
         dictCompText=dict(zipCompText)
-        print dictCompImage
 
         #Recorro el diccionario del componente, k es la posicion y v es el user
         for k,v in dictCompUser.iteritems():

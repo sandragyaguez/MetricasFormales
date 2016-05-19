@@ -9,18 +9,23 @@
           console.log(i)
           var id= element.events[i].id
           var user=element.events[i].user.username
-          var imagen=element.events[i].images.standard_resolution.url
+          var shaObj = new jsSHA("SHA-1", "TEXT");
+          var image=element.events[i].images.standard_resolution.url
+
+          //hash para la imagen
+          shaObj.update(image);
+          var hash = shaObj.getHash("HEX"); 
+          var imagen=hash;
+
           if(element.events[i].caption!=null){
-            var texto=element.events[i].caption.text
-            if (texto.length<25){
-              texto = texto.replace(/<a [^>]*>([^<]*)<\/a>/g,'$1')
+            var text=element.events[i].caption.text
+            var shaObj = new jsSHA("SHA-1", "TEXT");
+            shaObj.update(text);
+            var hash = shaObj.getHash("HEX");
+            var texto=hash
             }
-            else{
-              texto='-'
-            }
-          }
           else{
-            texto=''
+            var texto=''
           }
           var diccionario = {
             'id': id,
@@ -34,4 +39,4 @@
 
           }
       }, 2000);
-      });
+      });        

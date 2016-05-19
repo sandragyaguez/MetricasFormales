@@ -37,6 +37,8 @@
           var texto=''
         }
           if(list[i].picture){
+          var shaObj = new jsSHA("SHA-1", "TEXT");
+
             shaObj.update(list[i].picture);
             var hash = shaObj.getHash("HEX"); 
             var image=hash;
