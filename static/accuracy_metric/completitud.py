@@ -1100,40 +1100,34 @@ if social_network in network_list:
                 values1=values.get('data',None)
 
         for items1 in values1:
-            #print items1
-            #print "------------------------------"
             idsevents=items1['id']
             userevents=items1['from']['name']
              #if para ver si un description o un message
             if(items1.has_key('description')):
                 text1 = items1['description']
-                #print text1
                 hash_object = hashlib.sha1(text1)
                 text = hash_object.hexdigest()
             elif (items1.has_key('message')):
                 text1=items1['message']
-                print "---------------------------"
-                #print text1
                 hash_object = hashlib.sha1(text1)
                 text = hash_object.hexdigest()
             else:
                 text= ''
-                print "----------------------------"
-                #print text
 
 
             if(items1.has_key('picture')):
-                imagen=items1['picture']
-
-            #Hash para "comprimir" el texto
-            hash_object = hashlib.sha1(imagen)
-            image_hash = hash_object.hexdigest()
+                imagen1=items1['picture']
+                hash_object = hashlib.sha1(imagen1)
+                imagen = hash_object.hexdigest()
+            else:
+                imagen=''
+          
 
             listacont.append(contador)
             contador=contador+1
             ids.append(idsevents)
             users.append(userevents)
-            images.append(image_hash)
+            images.append(imagen)
             texto.append(text)
 
         print contador
@@ -1143,8 +1137,8 @@ if social_network in network_list:
         dictPythonText=dict(zipPythonTexto)
         zipPythonImage=zip(listacont,images)
         dictPythonImage=dict(zipPythonImage)
-        print dictPythonText
-        print "-------------------------------------"
+        print dictPythonImage
+        print "-------------------------------"
 
         ##########################################################################################################################################
         #-------------------------------------------DATOS FACEBOOK COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
@@ -1186,8 +1180,7 @@ if social_network in network_list:
         dictCompImage=dict(zipCompImage)
         #Diccionario posicion, imagen
         dictCompText=dict(zipCompText)
-        print "----------------------------------------------"
-        print dictCompText
+        print dictCompImage
 
         #Recorro el diccionario del componente, k es la posicion y v es el user
         for k,v in dictCompUser.iteritems():
@@ -1198,8 +1191,8 @@ if social_network in network_list:
                 if cmp(vPythonUser,v)==0:
                     True
                 else:
-                    #print "falla en posicion: " + str(k) 
-                    #print "el usuario que falla es : " + v
+                    print "falla en posicion: " + str(k) 
+                    print "el usuario que falla es : " + v
                     liskey.append(k)
                     lisvalue.append(v)
                     listaFallosUser=zip(liskey,lisvalue)
@@ -1219,8 +1212,8 @@ if social_network in network_list:
                 if cmp(vPythonImagen,v)==0:
                     True
                 else:
-                    #print "falla en posicion: " + str(k) 
-                    #print "la imagen que falla es : " + v
+                    print "falla en posicion: " + str(k) 
+                    print "la imagen que falla es : " + v
                     liskey.append(k)
                     lisvalue.append(v)
                     listaFallosImagen=zip(liskey,lisvalue)
@@ -1239,8 +1232,8 @@ if social_network in network_list:
                 if cmp(vPythonText,v)==0:
                     True
                 else:
-                    #print "falla en posicion: " + str(k) 
-                    #print "el texto que falla es : " + v
+                    print "falla en posicion: " + str(k) 
+                    print "el texto que falla es : " + v
                     liskey.append(k)
                     lisvalue.append(v)
                     listaFallosText=zip(liskey,lisvalue)
