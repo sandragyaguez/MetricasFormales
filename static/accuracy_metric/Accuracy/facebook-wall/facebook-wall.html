@@ -393,14 +393,15 @@ access_token={{access_token}}&summary=true -->
 						var rand = Math.round(Math.rand()*100);
 						if(rand < 33) {
 							// change username
-							data[i].user.username = 'badUser';
+							data[i].from.user = 'badUser';
 						} else if (rand > 66 && data[i].picture){
 							// change image
-							data[i].mages.standard_resolution.url = "https://www.smashingmagazine.com/images/404-errors-reloaded/10.jpg";
-						} else {
+							data[i].picture = "https://www.smashingmagazine.com/images/404-errors-reloaded/10.jpg";
+						} else if (detail[i].description){
 							// change text
-							detail[i].caption.text = "Algo fue mal";
-							data[i].text =  this.data.tweetError;
+							detail[i].description = "Algo fue mal";
+						} else {
+							detail[i].message = "Algo fue mal";
 						}
 					}
 					console.log("Elemento " + i + " cambiado");
