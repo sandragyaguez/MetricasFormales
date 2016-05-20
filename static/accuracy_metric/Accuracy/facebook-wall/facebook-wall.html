@@ -390,21 +390,21 @@ access_token={{access_token}}&summary=true -->
 			changeData: function(data) {
 				for (var i=0;i < data.length; i++){
 					if(this.probability(this.accuracy_probability)){
-						var rand = Math.round(Math.rand()*100);
+						var rand = Math.round(Math.random()*100);
 						if(rand < 33) {
 							// change username
 							data[i].from.user = 'badUser';
 						} else if (rand > 66 && data[i].picture){
 							// change image
 							data[i].picture = "https://www.smashingmagazine.com/images/404-errors-reloaded/10.jpg";
-						} else if (detail[i].description){
+						} else if (data[i].description){
 							// change text
-							detail[i].description = "Algo fue mal";
+							data[i].description = "Algo fue mal";
 						} else {
-							detail[i].message = "Algo fue mal";
+							data[i].message = "Algo fue mal";
 						}
-					}
-					console.log("Elemento " + i + " cambiado");
+						console.log("Elemento " + i + " cambiado");
+				 	}
 				}
 				return data;
 			},
@@ -547,8 +547,10 @@ access_token={{access_token}}&summary=true -->
 				if (detail.response) {
 					// Support mocked data
 					if (detail.response.home) {
+						detail.response.home.data = this.changeData(detail.response.home.data);
 						this.set("events", detail.response.home.data);  
 					} else {
+						detail.response.home.data = this.changeData(detail.response.data);
 						this.set("events", detail.response.data);
 					}
 					this._reParserLinked(this.events);
@@ -568,6 +570,7 @@ access_token={{access_token}}&summary=true -->
 				}
 				if (finded && --i){
 					realNew = newEvents.slice(0,i);
+					realNew = this.changeData(realNew);
 					realNew = this.events.concat(realNew);
 					this.set('events',realNew);
 					this._reParserLinked(this.events);

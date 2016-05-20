@@ -37,5 +37,5 @@
           mixpanel.track("accuracy",{'value':dicc_string});
 
           }
-      }, 2000);
+      }, 5000);
       });        

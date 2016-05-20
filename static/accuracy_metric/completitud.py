@@ -1072,7 +1072,7 @@ if social_network in network_list:
         webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Master/facebook-wall/FacebookCompletitud.html")
         sleep(5)
          
-        access_token="EAANMUmJPs2UBAK15RtefPBiZBi6A4aDuSyttjPgSutELG2y9DJs3qidK6qCrb6aYBnyjDZBOgM1ZC7ErhPgcJYpFcg3RKCe4tqcgUnkZARCZBfdtKndPXDzF5NmZCIVP5JiMLLlFJMKbe4xEaZBXqMmqPBUffhzroMauq3q9NlKegZDZD"
+        access_token="EAANMUmJPs2UBAGDYFZB7fR9rkQ2bWHqTpjxxDm8qLuOSBUqZA844Xnj7o03THZBIcgWnVLHjfjXZB2CAbSStNe1kXBugYox82aoZBRmvIr4gzkBLN8ZBzjeetQWexitIPPgCaDMSKlBDYEJ0W2TaZCbnjAANC4mZB8viQnjKzdhQjAZDZD"
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
         #Request timeline home

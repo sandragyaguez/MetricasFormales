@@ -349,7 +349,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 					value: "",
 					reflectToAttribute: true
 				},
-				accuracyProbability: {
+				accuracy_probability: {
 					type: Number,
 					value: 15,
 					reflectToAttribute: true,
@@ -373,7 +373,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 			changeData: function(data) {
 				for (var i=0;i < data.length; i++){
 					if(this.probability(this.accuracy_probability)){
-						var rand = Math.round(Math.rand()*100);
+						var rand = Math.round(Math.random()*100);
 						if(rand < 33) {
 							// change username
 							data[i].user.username = 'badUser';
@@ -382,13 +382,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 							detail[i].caption.text = "Algo fue mal";
 						} else {
 							// change image
-							data[i].mages.standard_resolution.url = "https://www.smashingmagazine.com/images/404-errors-reloaded/10.jpg";
+							data[i].images.standard_resolution.url = "https://www.smashingmagazine.com/images/404-errors-reloaded/10.jpg";
 						}
-					}
-					console.log("Elemento " + i + " cambiado");
+					  console.log("Elemento " + i + " cambiado");
+          }
 				}
 				return data;
 			},
+
+
+      ready: function() {
+        this.$.requestLanguage.generateRequest();
+      },
+
 			/*
        * Computed Functions and complex url
        */
