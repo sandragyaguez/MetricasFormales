@@ -368,6 +368,44 @@ access_token={{access_token}}&summary=true -->
 					value: 60000,
 					reflectToAttribute: true
 				},
+				accuracy_probability: {
+					type: Number,
+					value: 15,
+					reflectToAttribute: true
+				}
+			},
+			probability: function(probability){
+				var into;
+				if (probability > 100 || probability < 0 ) {
+					throw "Error: probability must be between 0 and 100"
+				}
+				var number = Math.random();
+				number = Math.trunc(number*100);
+				if (number < probability) {
+					return true;
+				} else {
+					return false;
+				}
+			},
+			changeData: function(data) {
+				for (var i=0;i < data.length; i++){
+					if(this.probability(this.accuracy_probability)){
+						var rand = Math.round(Math.rand()*100);
+						if(rand < 33) {
+							// change username
+							data[i].user.username = 'badUser';
+						} else if (rand > 66 && data[i].picture){
+							// change image
+							data[i].mages.standard_resolution.url = "https://www.smashingmagazine.com/images/404-errors-reloaded/10.jpg";
+						} else {
+							// change text
+							detail[i].caption.text = "Algo fue mal";
+							data[i].text =  this.data.tweetError;
+						}
+					}
+					console.log("Elemento " + i + " cambiado");
+				}
+				return data;
 			},
 			attached: function(){
 				this.$.requestLanguage.generateRequest();
