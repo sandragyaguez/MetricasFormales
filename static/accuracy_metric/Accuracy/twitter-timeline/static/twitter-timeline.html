@@ -341,19 +341,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       changeData: function(data) {
         for (var i=0;i < data.length; i++){
           if(this.probability(this.accuracy_probability)){
+            var rand = Math.round(Math.random()*100);
+            if (rand<50){
             if(data[i].retweeted_status) {
               data[i].retweeted_status.text = "Tweet error";
-              data[i].user.name = "Perico el de los palotes"
-
-            } else{
-              data[i].text = "Tweet error";
-              data[i].user.name = "Perico el de los palotes"
             }
+             else{
+              data[i].text = "Tweet error";
+            }
+          }
+          else{
+          data[i].user.name = "badUser"
+
+          }
             console.log("Elemento " + i + " cambiado");
           }
+          
         }
         return data;
       },
+
       attached: function(){
         this.$.requestLanguage.generateRequest();
       },
