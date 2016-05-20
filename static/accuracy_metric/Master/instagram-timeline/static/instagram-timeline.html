@@ -362,13 +362,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 							// change username
 							data[i].user.username = 'badUser';
 						} else if (rand > 66 && data[i].caption && data[i].caption.text){
-							// change text
-							detail[i].caption.text = "Algo fue mal";
-							data[i].text =  this.data.tweetError;
 							// change image
 							data[i].mages.standard_resolution.url = "https://www.smashingmagazine.com/images/404-errors-reloaded/10.jpg";
 						} else {
-
+							// change text
+							detail[i].caption.text = "Algo fue mal";
+							data[i].text =  this.data.tweetError;
 						}
 					}
 					console.log("Elemento " + i + " cambiado");
