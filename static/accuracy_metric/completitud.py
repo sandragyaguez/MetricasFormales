@@ -25,6 +25,7 @@ import mixpanel
 import os
 import hashlib
 from mixpanel import Mixpanel
+#objetos Mixpanel para las distintas redes sociales
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
 mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
 mpInstagram=Mixpanel("59e0cb154cc5192322be22b2a035738e")
@@ -32,7 +33,7 @@ mpFacebook=Mixpanel("04ae91408ffe85bf83628993704feb15")
 import mixpanel_api
 
 #---------------------------------------------------------------------------------------------------------------------
-network_list = ["twitter","instagram", "facebook", "github"]
+network_list = ["twitter","instagram", "facebook", "github", "googleplus"]
 version_list = ["master","latency", "accuracy"]
 server_base_url = "http://localhost:8000"
 
@@ -77,7 +78,9 @@ if social_network in network_list:
                 webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Accuracy/twitter-timeline/static/TwitterCompletitudAccuracy.html")
                 sleep(3)
 
+        #objeto oauth con credenciales de usuario Deus
         oauth = OAuth1(CONSUMER_KEY,client_secret=CONSUMER_SECRET,resource_owner_key=ACCESS_KEY,resource_owner_secret=ACCESS_SECRET)
+        #url para hacer peticion al timeline de twitter
         request_hometimeline="https://api.twitter.com/1.1/statuses/home_timeline.json?count=200"
         #Request timeline home
         s= requests.get(request_hometimeline, auth=oauth)
@@ -104,7 +107,9 @@ if social_network in network_list:
         print contador
         zipPython=zip(ids,lis)
         zipPythonUser=zip(ids,users)
+        #diccionario de tweets e ids
         dictPython=dict(zipPython)
+        #diccionario de users e ids
         dictPythonUser=dict(zipPythonUser)
 
         ##########################################################################################################################################
@@ -1062,6 +1067,9 @@ if social_network in network_list:
                             mpInstagram.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":version})
 
 
+#--------------------------------------------------
+#CASO4: FACEBOOK
+#--------------------------------------------------
 
     elif social_network == 'facebook':
 
@@ -1239,7 +1247,117 @@ if social_network in network_list:
                     listaFallosText=zip(liskey,lisvalue)
                     mpFacebook.track(listaFallosText,"Fallos master text",{"posicion":listaFallosText, "version":"master"})    
 
-    
+#--------------------------------------------------
+#CASO5: GOOGLE+
+#--------------------------------------------------
+
+    elif social_network == 'googleplus':
+
+        ##########################################################################################################################################
+        #--------------------------------------------------------DATOS FACEBOOK API---------------------------------------------------------------
+        ##########################################################################################################################################
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Master/googleplus-timeline/demo/GooglePlusCompletitud.html")
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Latency/googleplus-timeline/demo/GooglePlusCompletitudLatency.html")
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Accuracy/googleplus-timeline/demo/GooglePlusCompletitudAccuracy.html")
+                sleep(3)
+
+        sleep(5)
+         
+        access_token="ya29.Cjn9Ao67fP0M5w4smlTuX3syhhb25mU3exl_jJq3JurzjxEyRuWAVYjb_bGarE1qNiYHexJK_ypwFQw"
+        google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
+
+        #google_url = "https://www.googleapis.com/plus/v1"
+
+        #Request timeline home
+        #req = urllib2.Request(google_url)
+        #req.add_header('authorization', 'Bearer ' + access_token)
+        #data = urllib2.urlopen(req)
+
+        headers = {"Authorization": "Bearer " + access_token}
+        s= requests.get(google_url_followers,headers=headers)
+        print s
+        muro=s.json()
+        print muro
+        followers=[]
+        for item in muro:
+            print item
+        print item[]
+            #id_followers=item['items']
+            #print id_followers
+
+       #y luego pet a "https://www.googleapis.com/plus/v1/people/" + user_id + "/activities/public";
+
+     
+
+
+        # contador=0
+        # texto=[]
+        # ids=[]
+        # users=[]
+        # listacont=[]
+        # lista=[]
+        # images=[]
+        # listapos=[]
+        # listauser=[]
+        # listatext=[]
+        # listaimg=[]
+        # liskey=[]
+        # lisvalue=[]
+        # #facebook devuelve un diccionario con 2 keys (home, id) y solo me quiero quedar con los values del home
+        # for k,v in muro.iteritems():
+        #     if(muro.has_key('home')):
+        #         values=muro.get('home',None)
+
+        # #recorro todos los campos que tiene data
+        # for items in values:
+        #     if(values.has_key('data')):
+        #         values1=values.get('data',None)
+
+        # for items1 in values1:
+        #     idsevents=items1['id']
+        #     userevents=items1['from']['name']
+        #      #if para ver si un description o un message
+        #     if(items1.has_key('description')):
+        #         text1 = items1['description']
+        #         hash_object = hashlib.sha1(text1)
+        #         text = hash_object.hexdigest()
+        #     elif (items1.has_key('message')):
+        #         text1=items1['message']
+        #         hash_object = hashlib.sha1(text1)
+        #         text = hash_object.hexdigest()
+        #     else:
+        #         text= ''
+
+
+        #     if(items1.has_key('picture')):
+        #         imagen1=items1['picture']
+        #         hash_object = hashlib.sha1(imagen1)
+        #         imagen = hash_object.hexdigest()
+        #     else:
+        #         imagen=''
+          
+
+        #     listacont.append(contador)
+        #     contador=contador+1
+        #     ids.append(idsevents)
+        #     users.append(userevents)
+        #     images.append(imagen)
+        #     texto.append(text)
+
+        # print contador
+        # zipPythonUser=zip(listacont,users)
+        # dictPythonUser=dict(zipPythonUser)
+        # zipPythonTexto=zip(listacont,texto)
+        # dictPythonText=dict(zipPythonTexto)
+        # zipPythonImage=zip(listacont,images)
+        # dictPythonImage=dict(zipPythonImage)
+
     #else:
         #print "Wrong social network or missing param"
         # {}: Obligatorio, []: opcional
