@@ -1269,30 +1269,34 @@ if social_network in network_list:
 
         sleep(5)
          
-        access_token="ya29.Cjn9Ao67fP0M5w4smlTuX3syhhb25mU3exl_jJq3JurzjxEyRuWAVYjb_bGarE1qNiYHexJK_ypwFQw"
+        access_token=" ya29.CjkAA86rQkloUCBRZLMxZdj7I7XBMuhVDEdEn3OjeLq0PctDqvlrQfpjn9mbSWqBs12CYDt5DtuXVIc"
         google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
-
-        #google_url = "https://www.googleapis.com/plus/v1"
-
-        #Request timeline home
-        #req = urllib2.Request(google_url)
-        #req.add_header('authorization', 'Bearer ' + access_token)
-        #data = urllib2.urlopen(req)
-
         headers = {"Authorization": "Bearer " + access_token}
+        
+        #Request a followers de Deus
         s= requests.get(google_url_followers,headers=headers)
         print s
         muro=s.json()
-        print muro
+        #print muro
         followers=[]
-        for item in muro:
-            print item
-        print item[]
-            #id_followers=item['items']
-            #print id_followers
+        if(muro.has_key('items')):
+            values1=muro.get('items',None)
+            for n in values1:
+                id_followers=n['id']
+                followers.append(id_followers)
+        print followers
 
-       #y luego pet a "https://www.googleapis.com/plus/v1/people/" + user_id + "/activities/public";
-
+        #Request a timeline Deus
+        google_url="https://www.googleapis.com/plus/v1/people/" + followers[1] + "/activities/public"
+        pet= requests.get(google_url,headers=headers)
+        print pet
+        timeline=pet.json()
+        print timeline
+        if(timeline.has_key('items')):
+            values1=timeline.get('items',None)
+            for n in values1:
+                users_name=n['actor']['displayName']
+                print users_name
      
 
 
