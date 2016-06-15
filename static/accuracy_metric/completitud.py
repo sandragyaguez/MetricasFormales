@@ -1254,7 +1254,7 @@ if social_network in network_list:
     elif social_network == 'googleplus':
 
         ##########################################################################################################################################
-        #--------------------------------------------------------DATOS FACEBOOK API---------------------------------------------------------------
+        #--------------------------------------------------------DATOS GOOGLE+ API---------------------------------------------------------------
         ##########################################################################################################################################
         if version in version_list:
             if(version=="master"):
@@ -1269,7 +1269,7 @@ if social_network in network_list:
 
         sleep(5)
          
-        access_token=" ya29.CjkAA86rQkloUCBRZLMxZdj7I7XBMuhVDEdEn3OjeLq0PctDqvlrQfpjn9mbSWqBs12CYDt5DtuXVIc"
+        access_token=" ya29.CjkCAw7IryPiQ_moEWsTMrUC9sXj8-pCpdYUP6hEzhc3edV8cK_jsKbPbT2NoZUeuawiycH63MsNpSk"
         google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
         headers = {"Authorization": "Bearer " + access_token}
         
@@ -1284,83 +1284,62 @@ if social_network in network_list:
             for n in values1:
                 id_followers=n['id']
                 followers.append(id_followers)
-        print followers
+        #print followers
+
+
+        texto=[]
+        ids=[]
+        users=[]
+        listacont=[]
+        lista=[]
+        images=[]
+        listapos=[]
+        listauser=[]
+        listatext=[]
+        listaimg=[]
+        liskey=[]
+        lisvalue=[]
+
 
         #Request a timeline Deus
         google_url="https://www.googleapis.com/plus/v1/people/" + followers[1] + "/activities/public"
         pet= requests.get(google_url,headers=headers)
         print pet
         timeline=pet.json()
-        print timeline
+        #print timeline
         if(timeline.has_key('items')):
             values1=timeline.get('items',None)
             for n in values1:
                 users_name=n['actor']['displayName']
                 print users_name
-     
+                text1=n['object']['content']
+                hash_object = hashlib.sha1(text1)
+                text = hash_object.hexdigest()
+                print text
+                id_user=n['id']
+                print id_user
 
 
-        # contador=0
-        # texto=[]
-        # ids=[]
-        # users=[]
-        # listacont=[]
-        # lista=[]
-        # images=[]
-        # listapos=[]
-        # listauser=[]
-        # listatext=[]
-        # listaimg=[]
-        # liskey=[]
-        # lisvalue=[]
-        # #facebook devuelve un diccionario con 2 keys (home, id) y solo me quiero quedar con los values del home
-        # for k,v in muro.iteritems():
-        #     if(muro.has_key('home')):
-        #         values=muro.get('home',None)
-
-        # #recorro todos los campos que tiene data
-        # for items in values:
-        #     if(values.has_key('data')):
-        #         values1=values.get('data',None)
-
-        # for items1 in values1:
-        #     idsevents=items1['id']
-        #     userevents=items1['from']['name']
-        #      #if para ver si un description o un message
-        #     if(items1.has_key('description')):
-        #         text1 = items1['description']
-        #         hash_object = hashlib.sha1(text1)
-        #         text = hash_object.hexdigest()
-        #     elif (items1.has_key('message')):
-        #         text1=items1['message']
-        #         hash_object = hashlib.sha1(text1)
-        #         text = hash_object.hexdigest()
-        #     else:
-        #         text= ''
-
-
-        #     if(items1.has_key('picture')):
-        #         imagen1=items1['picture']
-        #         hash_object = hashlib.sha1(imagen1)
-        #         imagen = hash_object.hexdigest()
-        #     else:
-        #         imagen=''
           
+        ids.append(id_user)
+        users.append(users_name)
+        texto.append(text)
 
-        #     listacont.append(contador)
-        #     contador=contador+1
-        #     ids.append(idsevents)
-        #     users.append(userevents)
-        #     images.append(imagen)
-        #     texto.append(text)
+        zipPythonUser=zip(ids,users)
+        dictPythonUser=dict(zipPythonUser)
+        zipPythonTexto=zip(ids,texto)
+        dictPythonText=dict(zipPythonTexto)
 
-        # print contador
-        # zipPythonUser=zip(listacont,users)
-        # dictPythonUser=dict(zipPythonUser)
-        # zipPythonTexto=zip(listacont,texto)
-        # dictPythonText=dict(zipPythonTexto)
-        # zipPythonImage=zip(listacont,images)
-        # dictPythonImage=dict(zipPythonImage)
+
+        ##########################################################################################################################################
+        #-------------------------------------------DATOS GOOGLE+ COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
+        ##########################################################################################################################################
+
+        sleep(10)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("","")
+
+
 
     #else:
         #print "Wrong social network or missing param"
