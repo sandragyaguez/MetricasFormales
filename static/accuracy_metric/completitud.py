@@ -30,6 +30,7 @@ mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
 mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
 mpInstagram=Mixpanel("59e0cb154cc5192322be22b2a035738e")
 mpFacebook=Mixpanel("04ae91408ffe85bf83628993704feb15")
+mpGoogle=Mixpanel("f2655b08b62cc657d6865f8af003bdd9")
 import mixpanel_api
 
 #---------------------------------------------------------------------------------------------------------------------
@@ -1269,7 +1270,7 @@ if social_network in network_list:
 
         sleep(5)
          
-        access_token=" ya29.CjkCAw7IryPiQ_moEWsTMrUC9sXj8-pCpdYUP6hEzhc3edV8cK_jsKbPbT2NoZUeuawiycH63MsNpSk"
+        access_token=" ya29.CjkEAybzd_vA364dwUMgxhv6OWe8e69Slhzx51W6aJHHa0No5JkyIZuHCIfHHZEl0hRLI_Z6RPLmxTc"
         google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
         headers = {"Authorization": "Bearer " + access_token}
         
@@ -1286,7 +1287,6 @@ if social_network in network_list:
                 followers.append(id_followers)
         #print followers
 
-
         texto=[]
         ids=[]
         users=[]
@@ -1299,7 +1299,7 @@ if social_network in network_list:
         listaimg=[]
         liskey=[]
         lisvalue=[]
-
+        contador=0
 
         #Request a timeline Deus
         google_url="https://www.googleapis.com/plus/v1/people/" + followers[1] + "/activities/public"
@@ -1311,24 +1311,28 @@ if social_network in network_list:
             values1=timeline.get('items',None)
             for n in values1:
                 users_name=n['actor']['displayName']
-                print users_name
+                #print users_name
                 text1=n['object']['content']
                 hash_object = hashlib.sha1(text1)
                 text = hash_object.hexdigest()
-                print text
+                #print text
                 id_user=n['id']
-                print id_user
+                #print id_user
 
 
-          
+        listacont.append(contador)
+        contador=contador+1 
         ids.append(id_user)
         users.append(users_name)
         texto.append(text)
 
-        zipPythonUser=zip(ids,users)
+        print contador
+        zipPythonUser=zip(listacont,users)
         dictPythonUser=dict(zipPythonUser)
-        zipPythonTexto=zip(ids,texto)
+        zipPythonTexto=zip(listacont,texto)
         dictPythonText=dict(zipPythonTexto)
+        print dictPythonUser
+        print dictPythonText
 
 
         ##########################################################################################################################################
@@ -1337,7 +1341,22 @@ if social_network in network_list:
 
         sleep(10)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("","")
+        x=mixpanel_api.Mixpanel("b9eb42288e7e416028ddf3ee70ae4ca9","0c24b55a9806c9eb41cb3d5f3a7e7ef6")
+
+        # if version in version_list:
+        #     if version=="master":
+        #         #defino los parametros necesarios para la peticion
+        #         params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+        #         respuesta=x.request(['events/properties/values'], params, format='json')
+
+        #         for x in respuesta:
+        #             #pasar de unicode a dict
+        #             resp = ast.literal_eval(x)
+        #             lista.append(resp)
+
+        #         #ordeno la lista de diccionarios por el id
+        #         newlist = sorted(lista, key=lambda posicion: posicion['i'])
+
 
 
 
