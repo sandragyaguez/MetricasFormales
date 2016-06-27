@@ -1295,6 +1295,7 @@ if social_network in network_list:
         images=[]
         listapos=[]
         listauser=[]
+        listapub=[]
         listatext=[]
         listaid=[]
         liskey=[]
@@ -1331,9 +1332,12 @@ if social_network in network_list:
                 publicado.append(publish)
         time_pub=zip(publicado,users)
         for time in time_pub:
-            if (contador<=16):
+            if (cont<=16):
                 zipPythonUser=sorted(time_pub, reverse=True)
-        print zipPythonUser
+                cont=cont+1
+        print zipPythonUser[0:17]
+
+        print cont        
         print contador
 
         dictPythonUser=dict(zipPythonUser)
@@ -1368,14 +1372,22 @@ if social_network in network_list:
                     poscomp=y.items()[0][1]
                     textcomp=y.items()[1][1]
                     idcomp=y.items()[2][1]
-                    usercomp=y.items()[3][1]
+                    publishcomp=y.items()[3][1]
+                    usercomp=y.items()[4][1]
                     listapos.append(poscomp)
                     listauser.append(usercomp)
                     listatext.append(textcomp)
                     listaid.append(idcomp)
+                    listapub.append(publishcomp)
+
+                    #Ordenar el user con el timestamp y ver si coincide con los timestamp de la pet a api google+
+                    #zipPythonUser=sorted(time_pub, reverse=True)
+
+
                     zipCompUser=zip(listapos,listauser)
                     zipCompText=zip(listapos,listatext)
                     zipCompId=zip(listapos,listaid)
+                    zipCompPub=zip(listapos,listapub)
                     #Diccionario posicion, user
                     dictCompUser=dict(zipCompUser)
                     #Diccionario posicion, imagen
