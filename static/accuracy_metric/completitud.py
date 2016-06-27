@@ -24,6 +24,7 @@ import calendar
 import mixpanel
 import os
 import hashlib
+from random import randrange
 from mixpanel import Mixpanel
 #objetos Mixpanel para las distintas redes sociales
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
@@ -1270,13 +1271,12 @@ if social_network in network_list:
 
         sleep(5)
          
-        access_token=" ya29.CjkEAybzd_vA364dwUMgxhv6OWe8e69Slhzx51W6aJHHa0No5JkyIZuHCIfHHZEl0hRLI_Z6RPLmxTc"
+        access_token=" ya29.CjkOAw03ITwmtr6PTIMiTUpUQ6dDFw8gxRgXqJMwRADOhkcDol6ydRHGNr6BLra5MCMRxJYADRxul2Y"
         google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
         headers = {"Authorization": "Bearer " + access_token}
         
         #Request a followers de Deus
         s= requests.get(google_url_followers,headers=headers)
-        print s
         muro=s.json()
         #print muro
         followers=[]
@@ -1284,8 +1284,8 @@ if social_network in network_list:
             values1=muro.get('items',None)
             for n in values1:
                 id_followers=n['id']
+                id_followers=int(id_followers)
                 followers.append(id_followers)
-        #print followers
 
         texto=[]
         ids=[]
@@ -1296,43 +1296,50 @@ if social_network in network_list:
         listapos=[]
         listauser=[]
         listatext=[]
-        listaimg=[]
+        listaid=[]
         liskey=[]
         lisvalue=[]
+        publicado=[]
         contador=0
+        cont=0
 
-        #Request a timeline Deus
-        google_url="https://www.googleapis.com/plus/v1/people/" + followers[1] + "/activities/public"
-        pet= requests.get(google_url,headers=headers)
-        print pet
-        timeline=pet.json()
-        #print timeline
-        if(timeline.has_key('items')):
-            values1=timeline.get('items',None)
+        #Request a timeline Deus para todos los usuarios
+        for i in followers:
+            #hay que poner str(i) porque sino no se puede concatenar string con un long (int)
+            google_url="https://www.googleapis.com/plus/v1/people/" + str(i) + "/activities/public"
+            pet= requests.get(google_url,headers=headers)
+            print pet
+
+            timeline=pet.json()
+            if(timeline.has_key('items')):
+                values1=timeline.get('items',None)
             for n in values1:
                 users_name=n['actor']['displayName']
-                #print users_name
                 text1=n['object']['content']
                 hash_object = hashlib.sha1(text1)
                 text = hash_object.hexdigest()
-                #print text
                 id_user=n['id']
-                #print id_user
+                published=n['published']
 
-
-        listacont.append(contador)
-        contador=contador+1 
-        ids.append(id_user)
-        users.append(users_name)
-        texto.append(text)
-
+                listacont.append(contador)
+                contador=contador+1 
+                ids.append(id_user)
+                users.append(users_name)
+                texto.append(text)
+                publish=time.mktime(datetime.datetime.strptime(published, "%Y-%m-%dT%H:%M:%S.%fZ").timetuple())
+                publish=int(float(publish))
+                publicado.append(publish)
+        time_pub=zip(publicado,users)
+        for time in time_pub:
+            if (contador<=16):
+                zipPythonUser=sorted(time_pub, reverse=True)
+        print zipPythonUser
         print contador
-        zipPythonUser=zip(listacont,users)
+
         dictPythonUser=dict(zipPythonUser)
-        zipPythonTexto=zip(listacont,texto)
+        zipPythonTexto=zip(publicado,texto)
         dictPythonText=dict(zipPythonTexto)
-        print dictPythonUser
-        print dictPythonText
+
 
 
         ##########################################################################################################################################
@@ -1343,19 +1350,59 @@ if social_network in network_list:
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("b9eb42288e7e416028ddf3ee70ae4ca9","0c24b55a9806c9eb41cb3d5f3a7e7ef6")
 
-        # if version in version_list:
-        #     if version=="master":
-        #         #defino los parametros necesarios para la peticion
-        #         params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-        #         respuesta=x.request(['events/properties/values'], params, format='json')
+        if version in version_list:
+            if version=="master":
+            #defino los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
 
-        #         for x in respuesta:
-        #             #pasar de unicode a dict
-        #             resp = ast.literal_eval(x)
-        #             lista.append(resp)
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
 
-        #         #ordeno la lista de diccionarios por el id
-        #         newlist = sorted(lista, key=lambda posicion: posicion['i'])
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda posicion: posicion['i'])
+
+                for y in newlist:
+                    poscomp=y.items()[0][1]
+                    textcomp=y.items()[1][1]
+                    idcomp=y.items()[2][1]
+                    usercomp=y.items()[3][1]
+                    listapos.append(poscomp)
+                    listauser.append(usercomp)
+                    listatext.append(textcomp)
+                    listaid.append(idcomp)
+                    zipCompUser=zip(listapos,listauser)
+                    zipCompText=zip(listapos,listatext)
+                    zipCompId=zip(listapos,listaid)
+                    #Diccionario posicion, user
+                    dictCompUser=dict(zipCompUser)
+                    #Diccionario posicion, imagen
+                    dictCompText=dict(zipCompText)
+                    #Diccionario posicion, id
+                    dictCompId=dict(zipCompId)
+
+                print "-----------------"
+                print dictCompUser
+
+                # #Recorro el diccionario del componente, k es la posicion y v es el user
+                # for k,v in dictCompUser.iteritems():
+                # #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                #     if(dictPythonUser.has_key(k)):
+                #     #si es asi, cojo los values de python y del componente y los comparo
+                #         vPythonUser=dictPythonUser.get(k,None)
+                #         if cmp(vPythonUser,v)==0:
+                #             True
+                #         else:
+                #             print "falla en posicion: " + str(k) 
+                #             print "el usuario que falla es : " + v
+                #             liskey.append(k)
+                #             lisvalue.append(v)
+                #             listaFallosUser=zip(liskey,lisvalue)
+                #             mpGoogle.track(listaFallosUser,"Fallos master user",{"posicion":listaFallosUser, "version":"master"})
+
+
 
 
 
