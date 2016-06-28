@@ -1271,7 +1271,7 @@ if social_network in network_list:
 
         sleep(5)
          
-        access_token=" ya29.CjkPA3x-swjnLFYcA_JSF9fkhPd2WavJzVdwvA9qDz3K_rSeXpdswVwlFqj63B5nj9ZpKfTGvH6HnVQ"
+        access_token=" ya29.CjkPA_WTm-yiFC3eHC2-9dceV9fMUAYPourSef2Ha75OoUbVuI8ZeDT0kRVFy_gtNrN3ui0YzK1I224"
         google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
         headers = {"Authorization": "Bearer " + access_token}
         
@@ -1395,6 +1395,7 @@ if social_network in network_list:
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
                             True
+                            print "OK"
                         else:
                             print "falla en posicion: " + str(k) 
                             print "el usuario que falla es : " + v
@@ -1435,6 +1436,7 @@ if social_network in network_list:
 
                 #ordeno la lista de diccionarios por el id
                 newlist = sorted(lista, key=lambda posicion: posicion['publish'], reverse=True)
+                print newlist
 
                 for y in newlist:
                     poscomp=y.items()[0][1]
@@ -1463,6 +1465,7 @@ if social_network in network_list:
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
                             True
+                            print "OK"
                         else:
                             print "falla en posicion: " + str(k) 
                             print "el usuario que falla es : " + v
@@ -1490,6 +1493,75 @@ if social_network in network_list:
                             listaFallosText=zip(liskey,lisvalue)
                             mpGoogle.track(listaFallosText,"Fallos latency text",{"posicion":listaFallosText, "version":"latency"})
 
+
+            elif version=="accuracy":
+                #defino los parametros necesarios para la peticion
+                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda posicion: posicion['publish'], reverse=True)
+                print newlist
+
+                for y in newlist:
+                    poscomp=y.items()[0][1]
+                    textcomp=y.items()[1][1]
+                    usercomp=y.items()[2][1]
+                    publishcomp=y.items()[3][1]
+                    listapos.append(poscomp)
+                    listauser.append(usercomp)
+                    listatext.append(textcomp)
+                    listapub.append(publishcomp)
+
+                zipCompUser=zip(listapub,listauser)
+                zipCompText=zip(listapub,listatext)
+                zipCompPub=zip(listapub,listapub)
+                #Diccionario posicion, user
+                dictCompUser=dict(zipCompUser)
+                #Diccionario posicion, imagen
+                dictCompText=dict(zipCompText)
+
+
+                #Recorro el diccionario del componente, k es el tiempo de publicacion y v es el user
+                for k,v in dictCompUser.iteritems():
+                #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonUser.has_key(k)):
+                    #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonUser=dictPythonUser.get(k,None)
+                        if cmp(vPythonUser,v)==0:
+                            True
+                            print "OK"
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el usuario que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosUser=zip(liskey,lisvalue)
+                            mpGoogle.track(listaFallosUser,"Fallos accuracy user",{"posicion":listaFallosUser, "version":"accuracy"})
+
+
+
+                #Recorro el diccionario del componente, k es el tiempo de publicacion y v es el texto
+                for k,v in dictCompText.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonText.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonText=dictPythonText.get(k,None)
+                        if cmp(vPythonText,v)==0:
+                            True
+                            print "OK"
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el texto que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosText=zip(liskey,lisvalue)
+                            mpGoogle.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":"accuracy"})    
     #else:
         #print "Wrong social network or missing param"
         # {}: Obligatorio, []: opcional
