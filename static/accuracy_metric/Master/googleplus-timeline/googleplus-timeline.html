@@ -902,7 +902,7 @@ width="380px" height="285px" ><google-youtube> -->
     },
 
     _hasArticleCaption: function(item){
-      return (typeof item.object.attachments[0].image.url == 'undefined') && item.object.attachments[0].image.width > 360;
+      return item.object.attachments[0].image && (typeof item.object.attachments[0].image.url == 'undefined') && item.object.attachments[0].image.width > 360;
     },
 
     _isSharedPost: function(item){

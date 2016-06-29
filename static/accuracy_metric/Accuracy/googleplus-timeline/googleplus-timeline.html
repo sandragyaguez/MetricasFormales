@@ -925,8 +925,8 @@ Example:
       && item.object.attachments[0].hasOwnProperty('embed');
     },
 
-    _hasArticleCaption: function(item){
-      return item.object.attachments[0].image.url && item.object.attachments[0].image.width > 360;
+     _hasArticleCaption: function(item){
+      return item.object.attachments[0].image && (typeof item.object.attachments[0].image.url == 'undefined') && item.object.attachments[0].image.width > 360;
     },
 
     _isSharedPost: function(item){
