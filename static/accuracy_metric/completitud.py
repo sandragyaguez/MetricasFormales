@@ -37,7 +37,6 @@ import mixpanel_api
 #---------------------------------------------------------------------------------------------------------------------
 network_list = ["twitter","instagram", "facebook", "github", "googleplus"]
 version_list = ["master","latency", "accuracy"]
-server_base_url = "http://localhost:8000"
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),consola: python completitud.py twitter coge la "variable" twitter
 if len(sys.argv) >= 2:
@@ -67,8 +66,8 @@ if social_network in network_list:
         CONSUMER_SECRET = '8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf' #Consumer secret
         ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
         ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
-        # Lanzamos una pestana por cada version del componente
 
+        # Lanzamos una pestana por cada version del componente
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Master/twitter-timeline/static/TwitterCompletitud.html")
@@ -104,7 +103,6 @@ if social_network in network_list:
             contador=contador+1
             lis.append(text)
             users.append(user)
-            #Twitter devuelve los id de los tweets cronologicamente (comprobado)
             ids.append(id_tweet1)
         print contador
         zipPython=zip(ids,lis)
@@ -494,6 +492,7 @@ if social_network in network_list:
                 #ordeno la lista de diccionarios por el id
                 newlist = sorted(lista, key=lambda id_event: id_event['id'])
                 newlist.reverse()
+                print newlist
 
                 for y in newlist:
                     #la k son los la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
@@ -1271,7 +1270,7 @@ if social_network in network_list:
 
         sleep(5)
          
-        access_token=" ya29.CjkPA_WTm-yiFC3eHC2-9dceV9fMUAYPourSef2Ha75OoUbVuI8ZeDT0kRVFy_gtNrN3ui0YzK1I224"
+        access_token=" ya29.CjkQA_6BChiXN9LP0rPXTQ4ot5r3Zl8kqHIvHFyJLUV-MfY8mWi80C4nYSS0Rj3ma_x7MkdHhdOCxtI"
         google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
         headers = {"Authorization": "Bearer " + access_token}
         
@@ -1506,7 +1505,6 @@ if social_network in network_list:
 
                 #ordeno la lista de diccionarios por el id
                 newlist = sorted(lista, key=lambda posicion: posicion['publish'], reverse=True)
-                print newlist
 
                 for y in newlist:
                     poscomp=y.items()[0][1]
@@ -1537,6 +1535,8 @@ if social_network in network_list:
                             True
                             print "OK"
                         else:
+                            #devuelvo el timestampo del que falla, pero no devuelvo la posicion porque no corresponde a lo que se muestra en el timeline, ya que Ana
+                            #no ordena las fechas por hora, minutos y segundos. Solo los ordena por dia, por lo que los posts del mismo dia aparecen "como quieren"
                             print "falla en posicion: " + str(k) 
                             print "el usuario que falla es : " + v
                             liskey.append(k)

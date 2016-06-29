@@ -296,7 +296,7 @@ Example:
       margin-bottom: 10px;*/
       font-weight: bold;
       font-size: 15px;
-      padding-right: 10px;
+      padding-right: 10px;_changeUserId(item)
       padding-left: 3px;
     }
     .share_icon{
@@ -347,7 +347,7 @@ Example:
                   <!-- HEADER: user's avatar, user identifier and time information -->
                   <div class="header horizontal layout">
                     <a href="{{item.actor.url}}" target="_blank" class="header_text"><iron-icon src="{{item.actor.image.url}}" class="userAvatarPost"></iron-icon></a>
-                    <div class="flex name"><a href="{{item.actor.url}}" target="_blank" class="header_text"> {{_changeUserId(item)}}</a>
+                    <div class="flex name"><a href="{{item.actor.url}}" target="_blank" class="header_text"> {{item.actor.displayName}}</a>
                     </div>
                     <span class="date"><a href="{{item.url}}" target="_blank" class="header_text"> {{item.published_pretty}}</a></span>
                   </div>
@@ -698,6 +698,7 @@ Example:
     _updateTimelinePosts: function(user_post){
       // If the post was published inside the period fixed for the page, we add it to the 
       // list of post that are being showed to the user
+      user_post.actor.displayName =  this._changeUserId(user_post);
       if(user_post.published >= this.page_timestamp){
         this.push('timeline_posts', user_post);
         //We increment the var that represents the posts displayed per page
@@ -736,7 +737,8 @@ Example:
 
         // We obtain the next page for the user_posts, in order to obtain all the post in a given period (specified by page_timestamp)
 
-        this._obtainNextPagePost(current_page_details.author, current_page_details.timestamp, current_page_details.nextPageToken);  
+        this._obtainNextPagePost(current_page_details.author, current_page_details.timestamp, current_page_details.nextPageToken); 
+        
       }
     },
 

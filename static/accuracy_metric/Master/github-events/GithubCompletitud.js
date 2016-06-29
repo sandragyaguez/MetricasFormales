@@ -12,8 +12,33 @@
           var id= element.events[i].id
           console.log(id)
           var user=element.events[i].actor.login
-          //var texto=element.events[i].payload.commits[0].message
-          //console.log(texto)
+          if(element.events[i].payload.commits[0].message){
+            var texto=element.events[i].payload.commits[0].message
+          }
+          else if(element.events[i].payload.action){
+            var texto=element.events[i].payload.action
+          }
+          else if(element.events[i].createEvent){
+            var texto=element.events[i].createEvent
+          }
+          //MIRAR SI TENGO QUE ESPECIFICAR QUE SEA UNA ISSUE OPENENED
+          else if(element.events[i].payload.issue.title){
+            var texto=element.events[i].payload.issue.title
+          }
+          else if(element.events[i].payload.forkee){
+            var texto="Realizo un fork"
+          }
+          else if(element.events[i].pullRequestAction){
+            var texto=element.events[i].pullRequestAction
+          }
+
+
+  
+
+          else{
+
+
+          }
           var diccionario = {
             'id': id,
             'user': user,
