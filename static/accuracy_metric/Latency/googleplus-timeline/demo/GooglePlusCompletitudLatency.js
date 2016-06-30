@@ -27,5 +27,5 @@
           mixpanel.track("latency",{'value':dicc_string});
 
           }
-      }, 2000);
+      }, 3000);
       });

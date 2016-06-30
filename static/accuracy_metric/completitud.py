@@ -1270,7 +1270,7 @@ if social_network in network_list:
 
         sleep(5)
          
-        access_token=" ya29.CjkQA6V3tAx35600wet3Q7CYsuK_Q-9Y8fgz_lu5uuM8CeZBT87qMz-z7hd5SV0Z6bNI-aSn675Kr20"
+        access_token=" ya29.CjkRAyYODwEOPnuYiQ09rOMs34IKMUipFaGhQX6CXCBtWgG0VQwTyyLoN3OvbgAjq0Ay4-dXyOXMUv0"
         google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
         headers = {"Authorization": "Bearer " + access_token}
         
@@ -1394,7 +1394,6 @@ if social_network in network_list:
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
                             True
-                            print "OK"
                         else:
                             print "falla en posicion: " + str(k) 
                             print "el usuario que falla es : " + v
@@ -1413,7 +1412,6 @@ if social_network in network_list:
                         vPythonText=dictPythonText.get(k,None)
                         if cmp(vPythonText,v)==0:
                             True
-                            print "OK"
                         else:
                             print "falla en posicion: " + str(k) 
                             print "el texto que falla es : " + v
@@ -1435,7 +1433,6 @@ if social_network in network_list:
 
                 #ordeno la lista de diccionarios por el id
                 newlist = sorted(lista, key=lambda posicion: posicion['publish'], reverse=True)
-                print newlist
 
                 for y in newlist:
                     poscomp=y.items()[0][1]
@@ -1464,7 +1461,6 @@ if social_network in network_list:
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
                             True
-                            print "OK"
                         else:
                             print "falla en posicion: " + str(k) 
                             print "el usuario que falla es : " + v
@@ -1483,7 +1479,6 @@ if social_network in network_list:
                         vPythonText=dictPythonText.get(k,None)
                         if cmp(vPythonText,v)==0:
                             True
-                            print "OK"
                         else:
                             print "falla en posicion: " + str(k) 
                             print "el texto que falla es : " + v
