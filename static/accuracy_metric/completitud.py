@@ -443,6 +443,7 @@ if social_network in network_list:
         listapos=[]
         listaid=[]
         listauser=[]
+        listacomp=[]
         liskey=[]
         lisvalue=[]
         listavalores=[]
@@ -459,15 +460,31 @@ if social_network in network_list:
             idsevents=int(idsevents)
             userevents=events['actor']['login']
             contador=contador+1
-            #lis.append(message)
+            if (events['type']=="PushEvent"):
+                message=events['payload']['commits'][0]['message']
+            elif(events['type']=="WatchEvent"):
+                message=events['payload']['action']
+            elif(events['type']=="CreateEvent"):
+                message="Creo un repositorio/ Creo una rama"
+            elif(events['type']=="PullRequestEvent"):
+                message=events['payload']['pull_request']['title']
+            elif(events['type']=="IssuesEvent"):
+                message=events['payload']['issue']['title']
+            elif(events['type']=="MemberEvent"):
+                message=events['payload']['action']
+            elif(events['type']=="ForkEvent"):
+                message="Realizo un fork"
+            else:
+                message=''
+            lis.append(message)
             users.append(userevents)
             ids.append(idsevents)
         print contador
         ids.sort()
         ids.reverse()
-        #zipPython=zip(ids,lis)
+        zipPython=zip(ids,lis)
         zipPythonUser=zip(ids,users)
-        #dictPython=dict(zipPython)
+        dictPython=dict(zipPython)
         dictPythonUser=dict(zipPythonUser)
 
 
@@ -492,31 +509,30 @@ if social_network in network_list:
                 #ordeno la lista de diccionarios por el id
                 newlist = sorted(lista, key=lambda id_event: id_event['id'])
                 newlist.reverse()
-                print newlist
 
                 for y in newlist:
                     #la k son los la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
                     poscomp=y.items()[0][1]
-                    #textocomp=y.items()[1][1]
-                    idcomp=y.items()[1][1]
+                    textocomp=y.items()[1][1]
+                    idcomp=y.items()[2][1]
                     idcomp=int(idcomp)
-                    usercomp=y.items()[2][1]
+                    usercomp=y.items()[3][1]
                     listapos.append(poscomp)
-                    #listacomp.append(textocomp)
+                    listacomp.append(textocomp)
                     listaid.append(idcomp)
                     listauser.append(usercomp)
 
-                #zipComp=zip(listaid,listacomp)
+                zipComp=zip(listaid,listacomp)
                 zipCompUser=zip(listaid,listauser)
                 zipPos=zip(listaid,listapos)
                 #Diccionario id, text
-                #dictComp=dict(zipComp)
+                dictComp=dict(zipComp)
                 #Diccionario id, user
                 dictCompUser=dict(zipCompUser)
                 #Diccionario id, posicion
                 dictCompPos=dict(zipPos)
 
-                #Recorro el diccionario del componente, k es el id del tweet y v es el user del tweet
+                #Recorro el diccionario del componente, k es el id del post y v es el user del post
                 for k,v in dictCompUser.iteritems():
                      #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonUser.has_key(k)):
@@ -531,12 +547,26 @@ if social_network in network_list:
                             lisvalue.append(v)
                             listaFallosUser=zip(liskey,lisvalue)
 
-                    else:
-                        print "el user que no esta es: " + v
-                        print "corresponde al id: " + str(k)
+
+                #Recorro el diccionario del componente, key es el id del post y value es el texto del post
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        valuesP=dictPython.get(key,None)
+                        if cmp(valuesP,value)==0:
+                            True
+                        else:
+                            print "falla en: " + str(key)
+                            print "falla en: " + value
+                            liskey.append(key)
+                            lisvalue.append(value)
+                            listaFallosText=zip(liskey,lisvalue)
 
                 #diccionario de users erroneos con su id
                 dictFallosUser=dict(listaFallosUser)
+                #diccionario de textos erroneos con su id
+                dictFallosText=dict(listaFallosText)
 
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
@@ -544,7 +574,18 @@ if social_network in network_list:
                         mpGithub.track(valores1,"Fallos master user",{"posicion":valores1, "version":version})
                     listavalores1.append(valores1)
                 listavalores1.sort()
-                    
+
+             
+                #Cojo el diccionario de los tweets fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
+                for clave, valor in dictFallosText.iteritems():
+                    if(dictCompPos.has_key(clave)):
+                        valores=dictCompPos.get(clave,None)
+                        mpGithub.track(valores,"Fallos master text",{"posicion":valores ,"tweet": valor, "version":version})
+                    listavalores.append(valores)
+                listavalores.sort()
+                         
+
+
             elif version=="latency":
                         #defino los parametros necesarios para la peticion
                 params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
@@ -562,26 +603,26 @@ if social_network in network_list:
                 for y in newlist:
                     #la k son los la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
                     poscomp=y.items()[0][1]
-                    #textocomp=y.items()[1][1]
-                    idcomp=y.items()[1][1]
+                    textocomp=y.items()[1][1]
+                    idcomp=y.items()[2][1]
                     idcomp=int(idcomp)
-                    usercomp=y.items()[2][1]
+                    usercomp=y.items()[3][1]
                     listapos.append(poscomp)
-                    #listacomp.append(textocomp)
+                    listacomp.append(textocomp)
                     listaid.append(idcomp)
                     listauser.append(usercomp)
 
-                #zipComp=zip(listaid,listacomp)
+                zipComp=zip(listaid,listacomp)
                 zipCompUser=zip(listaid,listauser)
                 zipPos=zip(listaid,listapos)
                 #Diccionario id, text
-                #dictComp=dict(zipComp)
+                dictComp=dict(zipComp)
                 #Diccionario id, user
                 dictCompUser=dict(zipCompUser)
                 #Diccionario id, posicion
                 dictCompPos=dict(zipPos)
 
-                #Recorro el diccionario del componente, k es el id del tweet y v es el user del tweet
+                #Recorro el diccionario del componente, k es el id del post y v es el user del post
                 for k,v in dictCompUser.iteritems():
                      #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonUser.has_key(k)):
@@ -596,12 +637,26 @@ if social_network in network_list:
                             lisvalue.append(v)
                             listaFallosUser=zip(liskey,lisvalue)
 
-                    else:
-                        print "el user que no esta es: " + v
-                        print "corresponde al id: " + str(k)
+
+                #Recorro el diccionario del componente, key es el id del post y value es el texto del post
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        valuesP=dictPython.get(key,None)
+                        if cmp(valuesP,value)==0:
+                            True
+                        else:
+                            print "falla en: " + str(key)
+                            print "falla en: " + value
+                            liskey.append(key)
+                            lisvalue.append(value)
+                            listaFallosText=zip(liskey,lisvalue)
 
                 #diccionario de users erroneos con su id
                 dictFallosUser=dict(listaFallosUser)
+                #diccionario de textos erroneos con su id
+                dictFallosText=dict(listaFallosText)
 
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
@@ -609,10 +664,20 @@ if social_network in network_list:
                         mpGithub.track(valores1,"Fallos latency user",{"posicion":valores1, "version":version})
                     listavalores1.append(valores1)
                 listavalores1.sort()
+
+             
+                #Cojo el diccionario de los tweets fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
+                for clave, valor in dictFallosText.iteritems():
+                    if(dictCompPos.has_key(clave)):
+                        valores=dictCompPos.get(clave,None)
+                        mpGithub.track(valores,"Fallos latency text",{"posicion":valores ,"tweet": valor, "version":version})
+                    listavalores.append(valores)
+                listavalores.sort()
+                         
                
 
             elif version=="accuracy":
-                             #defino los parametros necesarios para la peticion
+                #defino los parametros necesarios para la peticion
                 params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
 
@@ -628,26 +693,26 @@ if social_network in network_list:
                 for y in newlist:
                     #la k son los la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
                     poscomp=y.items()[0][1]
-                    #textocomp=y.items()[1][1]
-                    idcomp=y.items()[1][1]
+                    textocomp=y.items()[1][1]
+                    idcomp=y.items()[2][1]
                     idcomp=int(idcomp)
-                    usercomp=y.items()[2][1]
+                    usercomp=y.items()[3][1]
                     listapos.append(poscomp)
-                    #listacomp.append(textocomp)
+                    listacomp.append(textocomp)
                     listaid.append(idcomp)
                     listauser.append(usercomp)
 
-                #zipComp=zip(listaid,listacomp)
+                zipComp=zip(listaid,listacomp)
                 zipCompUser=zip(listaid,listauser)
                 zipPos=zip(listaid,listapos)
                 #Diccionario id, text
-                #dictComp=dict(zipComp)
+                dictComp=dict(zipComp)
                 #Diccionario id, user
                 dictCompUser=dict(zipCompUser)
                 #Diccionario id, posicion
                 dictCompPos=dict(zipPos)
 
-                #Recorro el diccionario del componente, k es el id del tweet y v es el user del tweet
+                 #Recorro el diccionario del componente, k es el id del post y v es el user del post
                 for k,v in dictCompUser.iteritems():
                      #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonUser.has_key(k)):
@@ -662,20 +727,44 @@ if social_network in network_list:
                             lisvalue.append(v)
                             listaFallosUser=zip(liskey,lisvalue)
 
-                    else:
-                        print "el user que no esta es: " + v
-                        print "corresponde al id: " + str(k)
+
+                #Recorro el diccionario del componente, key es el id del post y value es el texto del post
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        valuesP=dictPython.get(key,None)
+                        if cmp(valuesP,value)==0:
+                            True
+                        else:
+                            print "falla en: " + str(key)
+                            print "falla en: " + value
+                            liskey.append(key)
+                            lisvalue.append(value)
+                            listaFallosText=zip(liskey,lisvalue)
 
                 #diccionario de users erroneos con su id
                 dictFallosUser=dict(listaFallosUser)
+                #diccionario de textos erroneos con su id
+                dictFallosText=dict(listaFallosText)
 
                 for clave1, valor1 in dictFallosUser.iteritems():
+                    print valor1
                     if(dictCompPos.has_key(clave1)):
                         valores1=dictCompPos.get(clave1,None)
                         mpGithub.track(valores1,"Fallos accuracy user",{"posicion":valores1, "version":version})
                     listavalores1.append(valores1)
                 listavalores1.sort()
-                print listavalores1
+
+             
+                #Cojo el diccionario de los tweets fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
+                for clave, valor in dictFallosText.iteritems():
+                    if(dictCompPos.has_key(clave)):
+                        valores=dictCompPos.get(clave,None)
+                        mpGithub.track(valores,"Fallos accuracy text",{"posicion":valores ,"tweet": valor, "version":version})
+                    listavalores.append(valores)
+                listavalores.sort()
+                         
 
 
 
@@ -1169,7 +1258,6 @@ if social_network in network_list:
 
         #ordeno la lista de diccionarios por el id
         newlist = sorted(lista, key=lambda posicion: posicion['i'])
-        #print newlist
 
         for y in newlist:
             poscomp=y.items()[0][1]
@@ -1431,7 +1519,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por el tiempo de publicacion
                 newlist = sorted(lista, key=lambda posicion: posicion['publish'], reverse=True)
 
                 for y in newlist:
@@ -1528,7 +1616,6 @@ if social_network in network_list:
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
                             True
-                            print "OK"
                         else:
                             #devuelvo el timestampo del que falla, pero no devuelvo la posicion porque no corresponde a lo que se muestra en el timeline, ya que Ana
                             #no ordena las fechas por hora, minutos y segundos. Solo los ordena por dia, por lo que los posts del mismo dia aparecen "como quieren"
@@ -1549,7 +1636,6 @@ if social_network in network_list:
                         vPythonText=dictPythonText.get(k,None)
                         if cmp(vPythonText,v)==0:
                             True
-                            print "OK"
                         else:
                             print "falla en posicion: " + str(k) 
                             print "el texto que falla es : " + v
