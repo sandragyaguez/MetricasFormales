@@ -147,14 +147,15 @@ respuesta = objeto.get_auth_token()
 
 
 
+
 ##########################################################################################################################################
 ##########################################################################################################################################
-#----------------------------------------------------------------REFRESCO----------------------------------------------------------------
+#------------------------------------------------------------METRICA REFRESCO-------------------------------------------------------------
 ##########################################################################################################################################
 ##########################################################################################################################################
 
 
-network_list = ["twitter","instagram", "facebook", "github"]
+network_list = ["twitter", "facebook", "github"]
 version_list = ["master","latency", "accuracy"]
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),consola: python completitud.py twitter coge la "variable" twitter
@@ -188,10 +189,6 @@ if social_network in network_list:
 
         listestado=[]
         listtpubl_ms=[]
-
-        #digits = "".join( [random.choice(string.digits) for i in xrange(8)] )
-        #chars = "".join( [random.choice(string.letters) for i in xrange(15)] )
-        #print digits + chars
 
         #funcion random para crear tweets aleatorios
         def randomword(length):
@@ -366,6 +363,11 @@ if social_network in network_list:
                         print "final_time: " + str(final_time)
                         mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":"master"})
 
+
+
+#--------------------------------------------------
+#CASO2: FACEBOOK
+#--------------------------------------------------
     elif social_network == 'facebook':
 
         ##########################################################################################################################################
@@ -376,10 +378,20 @@ if social_network in network_list:
             return ''.join(random.choice(string.lowercase) for i in range(length))
 
         message=randomword(10)
-        webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/facebook-wall/FacebookRefresco.html" + "?" + message)
-        sleep(5)
 
-        access_token='EAANMUmJPs2UBAByPVjgRjDH7V2vnEz1ydn5zydrAOw6cyUFaSBVqpQ08V0l1fuatvWHSW01XZBeStHOKEQ3Hc3gZBGZCjVrfO6xBTlTkezP5aOorOCIvzmbpwVGr92sHZAwByvj7W0vCnH2vDqLatmyqFhHNnVdGXGkUMIBGZCAZDZD'
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/facebook-wall/FacebookRefresco.html" + "?" + message)
+                sleep(5)
+            elif(version=="latency"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Latency/facebook-wall/FacebookRefrescoLatency.html" + "?" + message)
+                sleep(5)
+            elif(version=="accuracy"):
+                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html" + "?" + message)
+                sleep(5)
+
+
+        access_token='EAANMUmJPs2UBAHotDhenr6acOhnZC1jjNg6syL8zBcoW5A2nHbMFIOE1XWBzhsh3gZAZBmcTl9lYgh0NusE5ZAlJKAknZAYQ0C0rY5H9HEYVuZBHdZCnU6OE2GuMqCFWFUPb4ZCsZBi9HlwyBz6VgZADr8GqNoMZAIy4fBbHknedNOMAAZDZD'
 
         listestado=[]
         listtpubl_ms=[]
@@ -410,37 +422,113 @@ if social_network in network_list:
         listacomp=[]
         listatime=[]
 
-        #Cuando lo tengas, defines los parametros necesarios para la peticion
-        params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-        respuesta=x.request(['events/properties/values'], params, format='json')
+        if version in version_list:
+            if version=="master":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
 
-        for x in respuesta:
-            #pasar de unicode a dict
-            resp = ast.literal_eval(x)
-            lista.append(resp)
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
 
-        #ordeno la lista de diccionarios por el id
-        newlist = sorted(lista, key=lambda post: post['post'])
-        for y in newlist:
-            textocomp=y.items()[0][1]
-            timecomp=y.items()[1][1]
-            listacomp.append(textocomp)
-            listatime.append(timecomp)
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    textocomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(textocomp)
+                    listatime.append(timecomp)
 
-        zipComp=zip(listacomp,listatime)
-        #Diccionario tweet, time
-        dictComp=dict(zipComp)
-        print dictComp
+                zipComp=zip(listacomp,listatime)
+                #Diccionario tweet, time
+                dictComp=dict(zipComp)
+                print dictComp
 
-        #la key es el texto del tweet y el value son los times de refresco en el componente
-        for key,value in dictComp.iteritems():
-            #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-            if(dictPython.has_key(key)):
-                #si es asi, cojo los values de python y del componente y los comparo
-                    valuesP=dictPython.get(key,None)
-                    final_time=int(value)-int(valuesP)
-                    print "final_time: " + str(final_time)
-                    mpFacebook.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
+                #la key es el texto del tweet y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                            valuesP=dictPython.get(key,None)
+                            final_time=int(value)-int(valuesP)
+                            print "final_time: " + str(final_time)
+                            mpFacebook.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
+
+
+            elif version=="latency":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    textocomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(textocomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario tweet, time
+                dictComp=dict(zipComp)
+                print dictComp
+
+                #la key es el texto del tweet y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                            valuesP=dictPython.get(key,None)
+                            final_time=int(value)-int(valuesP)
+                            print "final_time: " + str(final_time)
+                            mpFacebook.track(final_time, "Final time latency",{"time final": final_time, "tweet": key, "version":version})
+
+
+            elif version=="accuracy":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el id
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    textocomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(textocomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario post, time
+                dictComp=dict(zipComp)
+                print dictComp
+
+                #la key es el texto del tweet y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                            valuesP=dictPython.get(key,None)
+                            final_time=int(value)-int(valuesP)
+                            print "final_time: " + str(final_time)
+                            mpFacebook.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})
+
+                
+
+#--------------------------------------------------
+#CASO3: GITHUB
+#--------------------------------------------------
 
     elif social_network == 'github':
 
@@ -496,7 +584,7 @@ if social_network in network_list:
 
         ##########################################################################################################################################
         #-------------------------------------------DATOS GITHUB COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
-        # ##########################################################################################################################################
+        ###########################################################################################################################################
 
 
         sleep(70)
@@ -527,7 +615,7 @@ if social_network in network_list:
                     listatime.append(timecomp)
 
                 zipComp=zip(listacomp,listatime)
-                #Diccionario tweet, time
+                #Diccionario post, time
                 dictComp=dict(zipComp)
                 print dictComp
 
@@ -562,7 +650,7 @@ if social_network in network_list:
                     listatime.append(timecomp)
 
                 zipComp=zip(listacomp,listatime)
-                #Diccionario tweet, time
+                #Diccionario post, time
                 dictComp=dict(zipComp)
                 print dictComp
 
@@ -596,7 +684,7 @@ if social_network in network_list:
                     listatime.append(timecomp)
 
                 zipComp=zip(listacomp,listatime)
-                #Diccionario tweet, time
+                #Diccionario post, time
                 dictComp=dict(zipComp)
                 print dictComp
 

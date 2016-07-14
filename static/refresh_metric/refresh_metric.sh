@@ -17,7 +17,6 @@ python refresco.py twitter master
 sleep 10
 killall chrome
 
-
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version latency"
 python refresco.py twitter latency
@@ -38,6 +37,18 @@ pkill chrome
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version master"
 python refresco.py facebook master
+sleep 10
+pkill chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version latency"
+python refresco.py facebook latency
+sleep 10
+pkill chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version accuracy"
+python refresco.py facebook accuracy
 sleep 10
 pkill chrome
 

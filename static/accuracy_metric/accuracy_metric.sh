@@ -1,17 +1,16 @@
 #!/bin/bash 
 
 
-
 ##############################################################################################################
 #-----------------------------------------PRUEBAS DE COMPLETITUD----------------------------------------------
 ##############################################################################################################
 
+# Ejecutamos scripts para medir y recolectar los datos
 
 #---------#
 #TWITTER
 #---------#
 
-# Ejecutamos scripts para medir y recolectar los datos
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version master"
 python completitud.py twitter master
@@ -34,7 +33,6 @@ pkill chrome
 #GITHUB
 #---------#
 
-# Ejecutamos scripts para medir y recolectar los datos
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente github-events: metrica completitud version master"
 python completitud.py github master
@@ -58,7 +56,6 @@ pkill chrome
 #INSTAGRAM
 #---------#
 
-# Ejecutamos scripts para medir y recolectar los datos
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente instagram-timeline: metrica completitud version master"
 python completitud.py instagram master
@@ -76,6 +73,53 @@ echo "Realizando pruebas sobre el componente instagram-timeline: metrica complet
 python completitud.py instagram accuracy
 sleep 10
 pkill chrome
+
+
+#---------#
+#FACEBOOK
+#---------#
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente facebook-wall: metrica completitud version master"
+python completitud.py facebook master
+sleep 10
+pkill chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente facebook-wall: metrica completitud version latency"
+python completitud.py facebook latency
+sleep 10
+pkill chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente facebook-wall: metrica completitud version accuracy"
+python completitud.py facebook accuracy
+sleep 10
+pkill chrome
+
+
+#---------#
+#GOOGLE+
+#---------#
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente googleplus-timeline: metrica completitud version master"
+python completitud.py googleplus master
+sleep 10
+pkill chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente googleplus-timeline: metrica completitud version latency"
+python completitud.py googleplus latency
+sleep 10
+pkill chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente googleplus-timeline: metrica completitud version accuracy"
+python completitud.py googleplus accuracy
+sleep 10
+pkill chrome
+
 
 
 echo "##################################################################"
