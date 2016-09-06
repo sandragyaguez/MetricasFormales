@@ -7,21 +7,21 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-header-panel/paper-header-panel.html">
-<link rel="import" href="../paper-toolbar/paper-toolbar.html">
-<link rel="import" href="../iron-ajax/iron-ajax.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-icons/social-icons.html">
-<link rel="import" href="../iron-icons/av-icons.html">
-<link rel="import" href="../iron-icons/image-icons.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-icons/social-icons.html">
+<link rel="import" href="bower_components/iron-icons/av-icons.html">
+<link rel="import" href="bower_components/iron-icons/image-icons.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
 
-<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="../paper-styles/paper-styles.html">
-<link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
 <!-- <link rel="import" href="../google-youtube/google-youtube.html"> -->
 
 <!--
@@ -39,25 +39,21 @@ Example:
 
 <dom-module id="googleplus-timeline">
 
-  <style is="custom-style">
+    <style is="custom-style">
     :host {
       display: inline-block;
-      width:  --github-events-width: 450px;
-      height:  --github-events-height: 450px;
-      min-height: 200px;
-      min-width: 200px;
-
+      --google-events-width: 450px;
+      --google-events-height: 450px;
       font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       color:#2e2e2e;
     }
 
     /* Header styles */
     paper-header-panel {
-      width: 100%;
-      height: 100%;
+      width: var(--google-events-width);
+      height: var(--google-events-height);
       @apply(--shadow-elevation-3dp);
       border-radius: 8px;
-      background-color: #fff;
     }
     div.paper-header {
       height: 60px;
@@ -100,7 +96,6 @@ Example:
 
     .post .content {
       margin: 10px 3px;
-      background-color:red;
     }
     .postShadow{
       margin: 15px 8px;
@@ -113,7 +108,7 @@ Example:
       font-size: 14px;
     }
     .header .header_text {
-      margin: auto 5px;
+      margin: auto 5px;      
     }
     .header iron-icon {
       width: 40px;
@@ -142,17 +137,17 @@ Example:
       color: black;
       font-weight: bold;
     }
-
+    
     a:hover{
       color: #1976D2;
     }
-
+    
     /* Post content styles */
     .text{
       padding: 0px 15px 15px 15px;
     }
     /* Attachment styles */
-
+    
     .media_icon{
       width: 15px;
       height: 15px;
@@ -169,7 +164,7 @@ Example:
       border-color: #BDBDBD;
       margin-bottom: 15px;
       margin-left: 13px;
-      width: 90%;
+      width: 380px;
       height: auto;
     }
     #video_caption{
@@ -193,14 +188,14 @@ Example:
     }
     #video_title:hover{
       color: #1976D2;
-    }
+    } 
     #article_title_container {
       padding-left: 15px;
       padding-top: 10px;
       float: left;
     }
     .attached_photo{
-      width: 90%;
+      width: 348px;
       height: auto;
       padding: 0px 15px 15px 15px;
     }
@@ -212,14 +207,14 @@ Example:
       vertical-align: middle;
       padding: 10px 0px 5px 15px;
     }
-
+    
     #article_subtitle{
       font: normal 13px Roboto,arial,sans-serif;
       margin-top: 0px;
       margin-bottom: 10px;
       padding-left: 15px;
       text-decoration: none;
-      color: #757575;
+      color: #757575; 
     }
 
     #article_title:hover{
@@ -231,9 +226,9 @@ Example:
     }
 
     /*.post:hover #article_title{
-    color: #1976D2;
+      color: #1976D2;
     }*/
-
+    
     .post:hover #original-post-link{
       color: #1976D2;
     }
@@ -257,7 +252,7 @@ Example:
     #album_title{
       font: normal 14px Roboto,arial,sans-serif;
       color: #404040;
-      padding-bottom: 10px;
+      padding-bottom: 10px; 
     }
 
     #album_title:hover{
@@ -283,7 +278,7 @@ Example:
       color: white;
       font-weight: bold;
     }
-
+    
     /* Button styles */
     #loadMoreDiv{
       padding-bottom: 10px;
@@ -312,14 +307,9 @@ Example:
     #likeContainer span {
       vertical-align: -1px;
       margin-left: -5px;
-      margin-top: 20px;
+      margin-top: 20px;  
     }
-    #loadingGif{
-      margin-top:10%;
-      text-align: center;
-    }
-
-  </style>
+    </style>
 
   <template id="template">
     <iron-ajax

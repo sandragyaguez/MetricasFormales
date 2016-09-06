@@ -62,12 +62,13 @@ if social_network in network_list:
         #---------------------------------------------------------DATOS TWITTER API---------------------------------------------------------------
         ##########################################################################################################################################
 
+        #Las credenciales no cambian, a no ser que se quieran hacer peticiones con un usuarios que no sea Deus
         CONSUMER_KEY = 'J4bjMZmJ6hh7r0wlG9H90cgEe' #Consumer key
         CONSUMER_SECRET = '8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf' #Consumer secret
         ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
         ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
 
-        # Lanzamos una pestana por cada version del componente
+        #Lanzamos una pestana por cada version del componente
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Master/twitter-timeline/static/TwitterCompletitud.html")
@@ -95,10 +96,12 @@ if social_network in network_list:
             if(tweet.has_key('retweeted_status')):
                 text = tweet['retweeted_status']['text']
             else:
+                #guardo texto del tweet
                 text=tweet['text']
-
+            #guardo id del tweet
             id_tweet1=tweet['id_str']
             id_tweet1=int(id_tweet1)
+            #guardo el usuario que ha publicado el tweet
             user=tweet['user']['name']
             contador=contador+1
             lis.append(text)
@@ -146,7 +149,7 @@ if social_network in network_list:
                 newlist.reverse()
 
                 for y in newlist:
-                    #la k son los la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
+                    #la k son la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
                     poscomp=y.items()[0][1]
                     textocomp=y.items()[1][1]
                     idcomp=y.items()[2][1]
@@ -173,6 +176,7 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
+                        #si coinciden devuelvo true, sino muestro que tweet es el que ha fallado
                         if cmp(valuesP,value)==0:
                             True
                         else:
@@ -187,9 +191,9 @@ if social_network in network_list:
 
                 #Recorro el diccionario del componente, k es el id del tweet y v es el user del tweet
                 for k,v in dictCompUser.iteritems():
-                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonUser.has_key(k)):
-                         #si es asi, cojo los values de python y del componente y los comparo
+                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
                             True
@@ -456,10 +460,13 @@ if social_network in network_list:
         print peticion
         muro=peticion.json()
         for events in muro:
+            #guardo id de cada evento
             idsevents=events['id']
             idsevents=int(idsevents)
+            #guardo el usuario de cada evento
             userevents=events['actor']['login']
             contador=contador+1
+            #voy comprobando de que evento se trata y guardando su contenido
             if (events['type']=="PushEvent"):
                 message=events['payload']['commits'][0]['message']
             elif(events['type']=="WatchEvent"):
@@ -484,7 +491,9 @@ if social_network in network_list:
         ids.reverse()
         zipPython=zip(ids,lis)
         zipPythonUser=zip(ids,users)
+        #diccionario de ids y los textos
         dictPython=dict(zipPython)
+        #diccionario de ids y los usuarios
         dictPythonUser=dict(zipPythonUser)
 
 
@@ -492,7 +501,7 @@ if social_network in network_list:
         #------------------------------------------DATOS GITHUB COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
         sleep(10)
-                # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("1119893e7fea6aad13e030ad514595be","bf69f1d1620ca5a5bb2b116c3e3a9944")
 
         if version in version_list:
@@ -534,9 +543,9 @@ if social_network in network_list:
 
                 #Recorro el diccionario del componente, k es el id del post y v es el user del post
                 for k,v in dictCompUser.iteritems():
-                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonUser.has_key(k)):
-                         #si es asi, cojo los values de python y del componente y los comparo
+                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
                             True
@@ -568,6 +577,7 @@ if social_network in network_list:
                 #diccionario de textos erroneos con su id
                 dictFallosText=dict(listaFallosText)
 
+                #Cojo el diccionario de los usuarios fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
                         valores1=dictCompPos.get(clave1,None)
@@ -624,9 +634,9 @@ if social_network in network_list:
 
                 #Recorro el diccionario del componente, k es el id del post y v es el user del post
                 for k,v in dictCompUser.iteritems():
-                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonUser.has_key(k)):
-                         #si es asi, cojo los values de python y del componente y los comparo
+                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
                             True
@@ -658,6 +668,7 @@ if social_network in network_list:
                 #diccionario de textos erroneos con su id
                 dictFallosText=dict(listaFallosText)
 
+                #Cojo el diccionario de los usuarios fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
                         valores1=dictCompPos.get(clave1,None)
@@ -674,7 +685,6 @@ if social_network in network_list:
                     listavalores.append(valores)
                 listavalores.sort()
                          
-               
 
             elif version=="accuracy":
                 #defino los parametros necesarios para la peticion
@@ -712,11 +722,11 @@ if social_network in network_list:
                 #Diccionario id, posicion
                 dictCompPos=dict(zipPos)
 
-                 #Recorro el diccionario del componente, k es el id del post y v es el user del post
+                #Recorro el diccionario del componente, k es el id del post y v es el user del post
                 for k,v in dictCompUser.iteritems():
-                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonUser.has_key(k)):
-                         #si es asi, cojo los values de python y del componente y los comparo
+                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonUser=dictPythonUser.get(k,None)
                         if cmp(vPythonUser,v)==0:
                             True
@@ -748,6 +758,7 @@ if social_network in network_list:
                 #diccionario de textos erroneos con su id
                 dictFallosText=dict(listaFallosText)
 
+                #Cojo el diccionario de los usuarios fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
                 for clave1, valor1 in dictFallosUser.iteritems():
                     print valor1
                     if(dictCompPos.has_key(clave1)):
@@ -790,7 +801,7 @@ if social_network in network_list:
                 sleep(3)
 
  
-
+        #cambiar token cada hora y media: https://www.instagram.com/developer/
         insta_url="https://api.instagram.com/v1/users/self/feed?access_token=2062815740.34af286.169a9c42e1404ae58591d066c00cb979"
         pet= requests.get(insta_url)
         print pet
@@ -822,11 +833,16 @@ if social_network in network_list:
                 values=timeline.get('data',None)
         #recorro todos los campos que tiene data
         for items in values:
+            #guardo el id del evento
             idsevents=items['id']
+            #guardo el usuario del evento
             userevents=items['user']['username']
+            #guardo la imagen del evento
             imageevents=items['images']['standard_resolution']['url']
+            #hago un hash de la imagen para "comprimirla"
             hash_object = hashlib.sha1(imageevents)
             imageevents = hash_object.hexdigest()
+            #verificamos si el post contiene algun texto. En caso de que si, lo guardamos
             if(items['caption']!=None):
                 textevents=items['caption']['text']
                 listatex.append(textevents)
@@ -847,10 +863,13 @@ if social_network in network_list:
 
         print contador
         zipPythonUser=zip(listacont,users)
+        #diccionario de contador y usuarios
         dictPythonUser=dict(zipPythonUser)
         zipPythonImage=zip(listacont,images)
+        #diccionario de contador e imagenes
         dictPythonImage=dict(zipPythonImage)
         zipPythonText=zip(ids,texts)
+        #diccionario de ids y textos
         dictPythonText=dict(zipPythonText)
 
         ##########################################################################################################################################
@@ -871,7 +890,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por la posicion
                 newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
                 for y in newlist:
@@ -943,7 +962,6 @@ if social_network in network_list:
                         print "corresponde a la posicion: " + str(k)
 
 
-
                 #Recorro el diccionario del componente, k es la posicion y v es la imagen
                 for k,v in dictCompText.iteritems():
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
@@ -971,7 +989,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por la posicion
                 newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
                 for y in newlist:
@@ -1070,7 +1088,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por la posicion
                 newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
                 for y in newlist:
@@ -1183,8 +1201,8 @@ if social_network in network_list:
                 webbrowser.open_new("http://metricas-formales.appspot.com/app/accuracy_metric/Accuracy/facebook-wall/FacebookCompletitudAccuracy.html")
                 sleep(5)
 
-         
-        access_token="EAANMUmJPs2UBAAJMxvWKGTYdTF2Ioa925a3g71FrPcHFhg7UGU8SvjdMF0OLwGVpMtVagU4XazMJkvHpR9RNrMAzbGFzUvvjz3ZAnFdUTZAnkqk7c9VZA8tQ2Gz9UtCVwrvQ4GrGtrGlu3pGxdDNsTU6l5bICuNdC8bREIHVAZDZD"
+        #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
+        access_token="EAANMUmJPs2UBADlumZA4z9ZBJPAFczLhPliTS0SepEXUGd9DsPEl6bVsM953ja4WfXRj10ouLT3OuhZBltXR5yBjLB82DLYA1SQmYiNPeSEnsZAvO1cV2KcWiw6J040OO6ImHE0worFkJIt841HVsCvWRDgU6gy8wos0gMCZB8AZDZD"
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
         #Request timeline home
@@ -1215,9 +1233,11 @@ if social_network in network_list:
                 values1=values.get('data',None)
 
         for items1 in values1:
+            #guardo el id de la publicacion
             idsevents=items1['id']
+            #guardo el usuario de la publicacion
             userevents=items1['from']['name']
-             #if para ver si un description o un message
+            #if para ver si un description o un message
             if(items1.has_key('description')):
                 text1 = items1['description']
                 hash_object = hashlib.sha1(text1)
@@ -1229,7 +1249,7 @@ if social_network in network_list:
             else:
                 text= ''
 
-
+            #en casa de haber una imagen, la guardo
             if(items1.has_key('picture')):
                 imagen1=items1['picture']
                 hash_object = hashlib.sha1(imagen1)
@@ -1247,10 +1267,13 @@ if social_network in network_list:
 
         print contador
         zipPythonUser=zip(listacont,users)
+        #diccionario contador y usuarios
         dictPythonUser=dict(zipPythonUser)
         zipPythonTexto=zip(listacont,texto)
+        #diccionario contador y textos
         dictPythonText=dict(zipPythonTexto)
         zipPythonImage=zip(listacont,images)
+        #diccionario contador e imagenes
         dictPythonImage=dict(zipPythonImage)
 
         ##########################################################################################################################################
@@ -1556,8 +1579,9 @@ if social_network in network_list:
                 sleep(3)
 
         sleep(5)
-         
-        access_token=" ya29.CjkRAyYODwEOPnuYiQ09rOMs34IKMUipFaGhQX6CXCBtWgG0VQwTyyLoN3OvbgAjq0Ay4-dXyOXMUv0"
+        
+        #cambiar token cada hora y media: https://developers.google.com/+/web/api/rest/latest/activities/list?authuser=1
+        access_token=" ya29.CjlWA4xYJpCG2Wg3yexB48TikGoKYeuciK0UEwwS6VQiJTZRUviicI9VICkJW9bNoH3-Ub2OUnMPH5A"
         google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
         headers = {"Authorization": "Bearer " + access_token}
         
@@ -1568,6 +1592,7 @@ if social_network in network_list:
         if(muro.has_key('items')):
             values1=muro.get('items',None)
             for n in values1:
+                #guardo el id del follower
                 id_followers=n['id']
                 id_followers=int(id_followers)
                 followers.append(id_followers)
@@ -1588,7 +1613,7 @@ if social_network in network_list:
         contador=0
         cont=0
 
-        #Request a timeline Deus para todos los usuarios
+        #Request a timeline Deus para todos los usuarios. Para obtener la informacion de los post, previamente he tenido que obtener los followers
         for i in followers:
             #hay que poner str(i) porque sino no se puede concatenar string con un long (int)
             google_url="https://www.googleapis.com/plus/v1/people/" + str(i) + "/activities/public"
@@ -1599,11 +1624,16 @@ if social_network in network_list:
             if(timeline.has_key('items')):
                 values1=timeline.get('items',None)
             for n in values1:
+                #guardo el usuario del post
                 users_name=n['actor']['displayName']
+                #guardo el contenido del post
                 text1=n['object']['content']
+                #hash para "comprimir" el texto
                 hash_object = hashlib.sha1(text1)
                 text = hash_object.hexdigest()
+                #guardo el id del post
                 id_user=n['id']
+                #guardo el tiempo de publicacion
                 published=n['published']
                 #uso calendar.timegm porque me devuelve el tiempo desde el epoch time (al igual que javascript). Si utilizo time.mktime me lo devuelve como localtime
                 publish=calendar.timegm(datetime.datetime.strptime(published, "%Y-%m-%dT%H:%M:%S.%fZ").timetuple())
@@ -1622,7 +1652,6 @@ if social_network in network_list:
         zipPythonUser1=zipPythonUser[0:16]
         #diccionario de Python de usuarios ordenado por tiempo de publicacion
         dictPythonUser=dict(zipPythonUser1)
-
 
         texto_pub=zip(publicado,texto)
         for texto1 in texto_pub:
@@ -1785,7 +1814,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por el tiempo de publicacion
                 newlist = sorted(lista, key=lambda posicion: posicion['publish'], reverse=True)
 
                 for y in newlist:
@@ -1816,7 +1845,7 @@ if social_network in network_list:
                         if cmp(vPythonUser,v)==0:
                             True
                         else:
-                            #devuelvo el timestampo del que falla, pero no devuelvo la posicion porque no corresponde a lo que se muestra en el timeline, ya que Ana
+                            #devuelvo el timestamp del que falla, pero no devuelvo la posicion porque no corresponde a lo que se muestra en el timeline, ya que Ana
                             #no ordena las fechas por hora, minutos y segundos. Solo los ordena por dia, por lo que los posts del mismo dia aparecen "como quieren"
                             print "falla en posicion: " + str(k) 
                             print "el usuario que falla es : " + v

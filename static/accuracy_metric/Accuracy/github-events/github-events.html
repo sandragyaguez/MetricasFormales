@@ -580,6 +580,14 @@ Element providing solution to no problem in particular.
 										<p>{{item.payload.comment.body}}</p>
 									</div>
 								</template>
+								<!-- ERROR EVENT-->
+								<template is="dom-if" if="[[compareString(item.type, 'ErrorEvent')]]">
+									<div class="horizontal layout">
+										<p class="text">
+											Mensaje de error</p>
+									</div>
+								</template>
+
 							</div>
 						</div>
 					</paper-material>						
@@ -681,7 +689,7 @@ Element providing solution to no problem in particular.
 				},
 				accuracy_probability: {
 					type: Number,
-					value: 15,
+					value: 50,
 					reflectToAttribute: true,
 					notify: true
 				}
@@ -705,6 +713,10 @@ Element providing solution to no problem in particular.
 					if(this.probability(this.accuracy_probability)){
 						data[i].actor.login = "Usuario";
 					}
+					if(this.probability(this.accuracy_probability)){
+										
+						data[i].type="ErrorEvent"
+     			 }
 				}
 				return data;
 			},

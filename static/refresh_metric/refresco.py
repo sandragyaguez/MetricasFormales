@@ -158,7 +158,7 @@ respuesta = objeto.get_auth_token()
 network_list = ["twitter", "facebook", "github"]
 version_list = ["master","latency", "accuracy"]
 
-#de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),consola: python completitud.py twitter coge la "variable" twitter
+#de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),consola: python refresco.py twitter coge la "variable" twitter
 if len(sys.argv) >= 2:
     social_network = sys.argv[1]
 else:
@@ -182,6 +182,7 @@ if social_network in network_list:
         #---------------------------------------------------------DATOS TWITTER API---------------------------------------------------------------
         ##########################################################################################################################################
 
+        #Las credenciales no cambian, a no ser que se quieran hacer peticiones con un usuarios que no sea Deus
         CONSUMER_KEY = 'J4bjMZmJ6hh7r0wlG9H90cgEe' #Consumer key
         CONSUMER_SECRET = '8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf' #Consumer secret
         ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
@@ -241,6 +242,7 @@ if social_network in network_list:
         #Pruebas
         publicar(estado)
 
+        #zip con todos los post y sus correspondientes tiempos de publicacion
         zipPython=zip(listestado,listtpubl_ms)
         dictPython=dict(zipPython)
 
@@ -266,12 +268,15 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por el tweet
                 newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
 
                 for y in newlist:
+                    #obtengo el texto de cada post recogido del componente
                     textocomp=y.items()[0][1]
+                    #obtengo el tiempo de cada post recogido del componente
                     timecomp=y.items()[1][1]
+                    #voy guardando ambos datos en dos listas diferentes
                     listacomp.append(textocomp)
                     listatime.append(timecomp)
 
@@ -288,9 +293,10 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
-                        #if cmp(valuesP,value)==0:
+                        #resto el tiempo obtenido del componente menos el tiempo que me devuelve directamente la api al postear
                         final_time=int(value)-int(valuesP)
                         print "final_time: " + str(final_time)
+                        #mando a Mixpanel el tiempo final obtenido de la resta, el post al que pertenece esa diferencia de tiempo y la version que estamos tratando
                         mpTwitter.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
 
             elif version=="latency":
@@ -303,7 +309,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por el tweet
                 newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
 
                 for y in newlist:
@@ -323,7 +329,6 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
-                        #if cmp(valuesP,value)==0:
                         final_time=int(value)-int(valuesP)
                         print "final_time: " + str(final_time)
                         mpTwitter.track(final_time, "Final time latency",{"time final": final_time, "tweet": key, "version":version})
@@ -338,7 +343,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por el tweet
                 newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
 
                 for y in newlist:
@@ -358,7 +363,6 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
-                        #if cmp(valuesP,value)==0:
                         final_time=int(value)-int(valuesP)
                         print "final_time: " + str(final_time)
                         mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":"master"})
@@ -374,6 +378,7 @@ if social_network in network_list:
         #---------------------------------------------------------DATOS FACEBOOK API--------------------------------------------------------------
         ##########################################################################################################################################
         
+        #funcion random para crear publicaciones aleatorias
         def randomword(length):
             return ''.join(random.choice(string.lowercase) for i in range(length))
 
@@ -390,12 +395,13 @@ if social_network in network_list:
                 webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html" + "?" + message)
                 sleep(5)
 
-
-        access_token='EAANMUmJPs2UBAAJMxvWKGTYdTF2Ioa925a3g71FrPcHFhg7UGU8SvjdMF0OLwGVpMtVagU4XazMJkvHpR9RNrMAzbGFzUvvjz3ZAnFdUTZAnkqk7c9VZA8tQ2Gz9UtCVwrvQ4GrGtrGlu3pGxdDNsTU6l5bICuNdC8bREIHVAZDZD'
+        #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
+        access_token='EAACEdEose0cBAE5bEFEuNzQr4Iv7Dlc4NXdi9oUZAJZAv7Xniepo5TZAkf30I3LHgwDG7sJNszCoCHR8uIc9iTsNebX7LOlXknSUZCohAHfzvkJxDisy0VJZAQQ49Yy7DfZC9RbfvzxwEvvlKqMdyLEPyZCGduZAQ7e8JOG53fiZAZAQZDZD'
 
         listestado=[]
         listtpubl_ms=[]
 
+        #uso la API de facebook pasandole como parametro el access token y la version de la api que utilizamos
         graph = facebook.GraphAPI(access_token=access_token, version='2.3')
 
         #POST EN FACEBOOK
@@ -408,6 +414,7 @@ if social_network in network_list:
         listtpubl_ms.append(tpubl_ms)
 
         zipPython=zip(listestado,listtpubl_ms)
+        #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
         print dictPython
 
@@ -433,7 +440,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por el post
                 newlist = sorted(lista, key=lambda post: post['post'])
                 for y in newlist:
                     textocomp=y.items()[0][1]
@@ -442,11 +449,11 @@ if social_network in network_list:
                     listatime.append(timecomp)
 
                 zipComp=zip(listacomp,listatime)
-                #Diccionario tweet, time
+                #Diccionario post, time
                 dictComp=dict(zipComp)
                 print dictComp
 
-                #la key es el texto del tweet y el value son los times de refresco en el componente
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPython.has_key(key)):
@@ -467,7 +474,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por el post
                 newlist = sorted(lista, key=lambda post: post['post'])
                 for y in newlist:
                     textocomp=y.items()[0][1]
@@ -476,11 +483,11 @@ if social_network in network_list:
                     listatime.append(timecomp)
 
                 zipComp=zip(listacomp,listatime)
-                #Diccionario tweet, time
+                #Diccionario post, time
                 dictComp=dict(zipComp)
                 print dictComp
 
-                #la key es el texto del tweet y el value son los times de refresco en el componente
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPython.has_key(key)):
@@ -501,7 +508,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por el post
                 newlist = sorted(lista, key=lambda post: post['post'])
                 for y in newlist:
                     textocomp=y.items()[0][1]
@@ -514,7 +521,7 @@ if social_network in network_list:
                 dictComp=dict(zipComp)
                 print dictComp
 
-                #la key es el texto del tweet y el value son los times de refresco en el componente
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPython.has_key(key)):
@@ -550,14 +557,16 @@ if social_network in network_list:
                 webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/github-events/GithubRefrescoAccuracy.html"  + "?" + payload)
                 sleep(3)
 
-        
-        headers = {'Authorization': 'token 6edbffbb4b5e233''44400ec482c792106ad2033e0' }
+        #se ha de cambiar el token: https://github.com/settings/tokens
+        headers = {'Authorization': 'token dda3ad66696''f12542b7b14a2372c6f9f4225ca71' }
 
+        #funcion crear un repositorio
         def post_repo():
             url='https://api.github.com/user/repos'
             payload = {'name': 'sandraguapa2', 'auto_init': True, 'private':False, 'gitignore_template': 'nanoc'}
             r = requests.post(url=url,data=json.dumps(payload),headers=headers)
 
+        #funcion crear una issue
         def post_issue():
             url='https://api.github.com/repos/sandragyaguez/prueba/issues'
             payload = { "title": "Found a new bug","body": "I'm having a problem with this."}
@@ -565,6 +574,7 @@ if social_network in network_list:
             #print r.status_code
             #print r.text
 
+        #funcion crear una pull request
         def post_pullrequest():
             url='https://api.github.com/repos/sandragyaguez/prueba/pulls'
             payload = { "title": "Amazing new feature","body": "Please pull this in!","head": "rama_prueba","base": "master"}
@@ -577,6 +587,7 @@ if social_network in network_list:
         listestado.append(payload)
         listtpubl_ms.append(tpubl_ms)
 
+        #zip con mensaje posteado y el tiemnpo de publicacion
         zipPython=zip(listestado,listtpubl_ms)
         dictPython=dict(zipPython)
         print dictPython
@@ -605,7 +616,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por el post
                 newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
 
                 for y in newlist:
@@ -624,7 +635,6 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
-                        #if cmp(valuesP,value)==0:
                         final_time=int(value)-int(valuesP)
                         print "final_time: " + str(final_time)
                         mpGithub.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
@@ -640,7 +650,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por el post
                 newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
 
                 for y in newlist:
@@ -659,7 +669,6 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
-                        #if cmp(valuesP,value)==0:
                         final_time=int(value)-int(valuesP)
                         print "final_time: " + str(final_time)
                         mpGithub.track(final_time, "Final time latency",{"time final": final_time, "tweet": key, "version":version})
@@ -674,7 +683,7 @@ if social_network in network_list:
                     resp = ast.literal_eval(x)
                     lista.append(resp)
 
-                #ordeno la lista de diccionarios por el id
+                #ordeno la lista de diccionarios por el post
                 newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
 
                 for y in newlist:
@@ -693,7 +702,6 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
-                        #if cmp(valuesP,value)==0:
                         final_time=int(value)-int(valuesP)
                         print "final_time: " + str(final_time)
                         mpGithub.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})

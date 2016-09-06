@@ -1,16 +1,23 @@
+//Codigo javascript que escucha el componente para detectar los cambios (nuevos datos) y mandarlos a mixpanel
+// Hay que escuchar la funcion de polymer de cuando un componente esta listo (mirar webcomponents)
 
 
  document.addEventListener('WebComponentsReady', function() {
+        //selecccionamos el componente de github con el querySelector
         var element= document.querySelector("github-events");
         window.setTimeout(function() {
         console.log(element);
         console.log(element.events.length)
+        //recorro todos los elementos del timeline de github
         for (var i = 0; i<element.events.length;i++){
           console.log(i)
+          //guardo el id de cada elemento
           var id= element.events[i].id
           console.log(id)
+          //guardo el usuario de cada post
           var user=element.events[i].actor.login
           console.log(user)
+          //guardo el texto segun el event que se realice
           //PushEvent (1) Realiazo un push a tal rama
           if(element.events[i].type=="PushEvent"){
             var texto=element.events[i].payload.commits[0].message
@@ -43,6 +50,7 @@
           else{
             var texto=''
           }
+          //almaceno todo en un diccionario
           var diccionario = {
             'id': id,
             'user': user,
@@ -50,6 +58,7 @@
             'i':i
           }
           var dicc_string = JSON.stringify(diccionario);
+          //mando a mixpanel los campos recogidos en el diccionario
           mixpanel.track("accuracy",{'value':dicc_string});
 
           }
