@@ -15,3 +15,25 @@ handlers:
 libraries:
 - name: webapp2
   version: latest
+
+skip_files:
+ - (.*/)node_modules
+ - ^(.*/)build$
+ - (.*/)grunt(.*)
+ - (.*/)?.*\.py[co]$
+ - ^test
+ - (.*/).*.md$
+ - (.*/).*.coffee$
+ - (.*/).*.opts$
+ - (.*/).*.less$
+ - (.*/).*.scss$
+ - (.*/).*.Makefile$
+ - (.*/).*.Makefile.1$
+ - (.*/).*marked.*
+ - (.*/).*.log$
+ - (.*/).*.map$
+ - (.*/)?\..*$
+ - (.*/).*~$
+ - (.*/)LICENSE
+ - (.*/).*.gzip$
+ - static/(.*/).*.yaml$
