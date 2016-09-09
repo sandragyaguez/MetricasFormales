@@ -136,7 +136,7 @@ def main():
 			    'request': github_url
 			})
 			# Lanzamos una pestaña por cada versión del componente
-			webbrowser.open_new("http://metricas-formales.appspot.com/app/latency_metric/Stable/GithubEventsLatency.html?experiment="+ experiment_id)
+			webbrowser.open_new(server_base_url + "/Stable/GithubEventsLatency.html?experiment="+ experiment_id)
 			time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Accuracy/GithubEventsLatency.html?experiment="+ experiment_id)
 			time.sleep(10)
@@ -168,6 +168,13 @@ def main():
 			# Lanzamos una pestaña por cada versión del componente (El componente de Facebook tiene solo una version implementada)
 			webbrowser.open_new(server_base_url + "/Stable/FacebookWallLatency.html?experiment="+ experiment_id +
 			 "&facebook_token=" + access_token)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Latency/FacebookWallLatency.html?experiment="+ experiment_id +
+			 "&facebook_token=" + access_token)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Accuracy/FacebookWallLatency.html?experiment="+ experiment_id +
+			 "&facebook_token=" + access_token)
+
 
 		elif social_network == 'twitter':
 			#twitter_url = "http://metricas-formales.appspot.com/oauth/twitter"
