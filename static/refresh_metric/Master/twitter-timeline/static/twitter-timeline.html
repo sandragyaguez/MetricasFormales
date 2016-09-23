@@ -442,7 +442,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       parseHashtag: function(tweet) {
         return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
           var tag = t.replace("#","")
-          return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
+          return '<a style="color:rgb(57, 145, 212)
+          " href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
         });
       },
       /* Function that handles paging tweets*/
