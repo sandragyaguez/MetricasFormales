@@ -32,6 +32,7 @@ echo "##################################################################"
 echo "Realizando pruebas sobre el componente facebook-wall..."
 python measureLatency.py facebook $FACEBOOK_TOKEN
 
+#lo tengo en latency_metric_ana por falta de espacion al desplegar en app engine
 #sleep 10
 #echo "##################################################################"
 #echo "Realizando pruebas sobre el componente googleplus-timeline..."
@@ -49,3 +50,5 @@ echo "Métricas calculadas"
 
 # Matamos el proceso correspondiente al servidor local de componentes de python
 kill -9 $PID
+
+#twitter esta desplegado en remoto
