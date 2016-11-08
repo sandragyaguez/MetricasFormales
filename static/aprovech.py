@@ -7,6 +7,9 @@ import re
 import urllib
 import unicodedata
 from bs4 import BeautifulSoup
+from mixpanel import Mixpanel
+
+mpResults = Mixpanel("6656474c876da699f51ccc6f480a0d6c")
 
 
 network_list = ["twitter","facebook","github","googleplus","instagram"]
@@ -54,7 +57,7 @@ if social_network in network_list:
 
 	elif social_network == 'facebook':
 
-		access_token="EAANMUmJPs2UBAHL47dg0mZAX04ifmK2FlZC4OoUa9UyY6l2fmXKmKhrzA7c9j8aRPyVCZC7wFAJZALBb4BJ45qgtZButZBAGq8cAKPuduSkDv6pkZA1w4v73ZCJKRIDuOJFEXOupmvUIQIREyxDlMZCijshil8Kf6zCZCKR69SK0iSxgZDZD"
+		access_token="EAANMUmJPs2UBAB8LIgErCGXNR4DgN9kZCkh52J23OjxVzPVZBAiULkOVll6RIaFgQa3mf1Edq7Kl2ZB6kLrFPg1DlswToZCqb3T1Ge7bNBGdmIOCZCf7l3ddZCOxTyzDdOagf1VLcG6VZCv70QoMYcSwRnuIfr4ZAcYlZCtX8o51SyAZDZD"
 		facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 		s= requests.get(facebook_url)
 		timeline=s.json()
@@ -80,7 +83,6 @@ if social_network in network_list:
 		github_url = "https://api.github.com/users/mortega5/received_events?per_page=50"
 		peticion= requests.get(github_url)
 		timeline=peticion.json()
-		print timeline
 
 		if version in version_list:
 			if(version=="master"):
@@ -92,16 +94,30 @@ if social_network in network_list:
 
 	elif social_network == 'googleplus':
 
-		access_token="ya29.CjmQA_vaigup3T7ViOcvuFYQuMyOP7cr4XFyrkK4-IA6NnXdeavy7YbLAGVBrFr8aRAFOrdaz06QrHo"
+		access_token="ya29.CjmQA3LcCsuY1E6e7zcYwxze_b7O75YGepaeG_n-7NbhDhjBh0yUg6_NlRLMSSHjJyb6-2PvjzTT7TE"
 		google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
 		headers = {"Authorization": "Bearer " + access_token}
 
 		s= requests.get(google_url_followers,headers=headers)
 		timeline=s.json()
-		print timeline
+		followers=[]
 		#para acceder a los recursos de googleplus
 		if(timeline.has_key('items')):
-			timeline=timeline.get('items',None)
+			values=timeline.get('items',None)
+			for n in values:
+			#guardo el id del follower
+				id_followers=n['id']
+                id_followers=int(id_followers)
+                followers.append(id_followers)
+               
+        #Request a timeline Deus para todos los usuarios. Para obtener la informacion de los post, previamente he tenido que obtener los followers
+        for i in followers:
+            #hay que poner str(i) porque sino no se puede concatenar string con un long (int)
+            google_url="https://www.googleapis.com/plus/v1/people/" + str(i) + "/activities/public"
+            pet= requests.get(google_url,headers=headers)
+            timeline1=pet.json()
+            if(timeline1.has_key('items')):
+                timeline=timeline1.get('items',None)
 
 		if version in version_list:
 			if(version=="master"):
@@ -166,4 +182,11 @@ for clave in claves:
  		if (coind>=0 and clave not in matching):
  			matching.append(clave)
 
-print "he encontrado:", matching
+print "recursos encontrados:", matching
+
+nclaves=float(len(claves))
+nmatching=float(len(matching))
+aprov=(nmatching/nclaves)*100
+print aprov
+
+mpResults.track("Aprovechamiento de recursos", social_network,{"aprov %":aprov,"componente":social_network,"version":version})
