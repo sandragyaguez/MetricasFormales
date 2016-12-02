@@ -26,16 +26,20 @@ import os
 import hashlib
 from random import randrange
 from mixpanel import Mixpanel
-#objetos Mixpanel para las distintas redes sociales
-mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
-mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
-mpInstagram=Mixpanel("59e0cb154cc5192322be22b2a035738e")
-mpFacebook=Mixpanel("04ae91408ffe85bf83628993704feb15")
-mpGoogle=Mixpanel("f2655b08b62cc657d6865f8af003bdd9")
 import mixpanel_api
 
+#objetos Mixpanel para las distintas redes sociales
+mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
+mpFacebook=Mixpanel("04ae91408ffe85bf83628993704feb15")
+mpGoogle=Mixpanel("f2655b08b62cc657d6865f8af003bdd9")
+
+#mpInstagram=Mixpanel("59e0cb154cc5192322be22b2a035738e")
+#mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
+
+
+
 #---------------------------------------------------------------------------------------------------------------------
-network_list = ["twitter","instagram", "facebook", "github", "googleplus"]
+network_list = ["twitter","instagram", "facebook", "github", "googleplus", "pinterest"]
 version_list = ["master","latency", "accuracy"]
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),consola: python completitud.py twitter coge la "variable" twitter
@@ -52,9 +56,13 @@ else:
 #CASOS:
 if social_network in network_list:
 
-#--------------------------------------------------
-#CASO1: TWITTER
-#--------------------------------------------------
+
+############################################
+############################################
+            #CASO1: TWITTER
+############################################
+############################################
+
 
     if social_network == 'twitter':
 
@@ -417,9 +425,11 @@ if social_network in network_list:
 
 
 
-#--------------------------------------------------
-#CASO2: GITHUB
-#--------------------------------------------------
+############################################
+############################################
+            #CASO2: GITHUB
+############################################
+############################################
                 
     elif social_network == 'github':
 
@@ -779,9 +789,11 @@ if social_network in network_list:
 
 
 
-#--------------------------------------------------
-#CASO3: INSTAGRAM
-#--------------------------------------------------
+############################################
+############################################
+            #CASO3: INSTAGRAM
+############################################
+############################################
 
     elif social_network == 'instagram':
 
@@ -1175,9 +1187,11 @@ if social_network in network_list:
                             mpInstagram.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":version})
 
 
-#--------------------------------------------------
-#CASO4: FACEBOOK
-#--------------------------------------------------
+############################################
+############################################
+            #CASO4: FACEBOOK
+############################################
+############################################
 
     elif social_network == 'facebook':
 
@@ -1558,9 +1572,11 @@ if social_network in network_list:
                             mpFacebook.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":"accuracy"})  
 
 
-#--------------------------------------------------
-#CASO5: GOOGLE+
-#--------------------------------------------------
+############################################
+############################################
+            #CASO5: GOOGLE+
+############################################
+############################################
 
     elif social_network == 'googleplus':
 
@@ -1870,7 +1886,83 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosText=zip(liskey,lisvalue)
-                            mpGoogle.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":"accuracy"})    
+                            mpGoogle.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":"accuracy"}) 
+
+
+############################################
+############################################
+            #CASO6: PINTEREST
+############################################
+############################################
+
+    elif social_network == 'pinterest':
+
+        ##########################################################################################################################################
+        #-------------------------------------------------------DATOS PINTEREST API---------------------------------------------------------------
+        ##########################################################################################################################################
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new("http://localhost:8000/accuracy_metric/Master/pinterest-timeline/demo/PinterestCompletitud.html")
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new("http://localhost:8000/accuracy_metric/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new("http://localhost:8000/accuracy_metric/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
+                sleep(3)
+
+        sleep(5)
+        request_my_board= "https://api.pinterest.com/v1/me/boards/?access_token=AWUtjB9R2kV_3N57_1FMG92SMOvQFIxoM937k-lDmW-C0gBCfwAAAAA"
+        request_others= "https://api.pinterest.com/v1/me/following/boards/?access_token=AWUtjB9R2kV_3N57_1FMG92SMOvQFIxoM937k-lDmW-C0gBCfwAAAAA"
+        
+        
+        s= requests.get(request_others)
+        timeline=s.json()
+
+        lista_img=[]
+        username=[]
+        board=[]
+        pets=[]
+        for k,v in timeline.iteritems():
+            if(timeline.has_key('data')):
+                values1=timeline.get('data',None)
+        for m in values1:
+            if(m.has_key('url')):
+                values3=m.get('url',None)
+            print values3
+            lista_img.append(values3)
+
+
+        for image in lista_img:
+            new=image.split("/")
+            #cojo todos los username a los que sigo para poder hacer la siguiente peticion
+            new[3]=str(new[3])
+            username.append(new[3])
+            #cojo todos los nombres de los tableros
+            new[4]=str(new[4])
+            board.append(new[4])
+   
+        zipUserBoard=zip(username,board)
+        
+        for user,tablero in zipUserBoard:
+            request_images="https://api.pinterest.com/v1/boards/" + user + "/" + tablero + "/pins/?access_token=AWUtjB9R2kV_3N57_1FMG92SMOvQFIxoM937k-lDmW-C0gBCfwAAAAA"
+            pet= requests.get(request_images)
+            print pet
+            pet=pet.json()
+            print "--------------------------------"
+            print "--------------------------------"
+
+            pets.append(pet)
+
+        print pets[0]
+        #de cada peticion tengo que coger las url de cada post (ver si estan todas,Javi: next page)
+        #despues tengo que hacer el js que coja los datos del componente
+        #lo que tengo que comparar es la url!
+        #y mandar a mixpanel
+        #hacer lo mismo con version accuracy y version latency
+
+
+
     else:
         print "Wrong social network or missing param"
         # {}: Obligatorio, []: opcional
