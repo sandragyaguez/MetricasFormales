@@ -32,6 +32,7 @@ import mixpanel_api
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
 mpFacebook=Mixpanel("04ae91408ffe85bf83628993704feb15")
 mpGoogle=Mixpanel("f2655b08b62cc657d6865f8af003bdd9")
+mpPinterest=Mixpanel("6ceb3a37029277deb7f530ac7d65d7d4")
 
 #mpInstagram=Mixpanel("59e0cb154cc5192322be22b2a035738e")
 #mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
@@ -1905,13 +1906,13 @@ if social_network in network_list:
                 webbrowser.open_new("http://localhost:8000/accuracy_metric/Master/pinterest-timeline/demo/PinterestCompletitud.html")
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new("http://localhost:8000/accuracy_metric/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
+                #webbrowser.open_new("http://localhost:8000/accuracy_metric/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new("http://localhost:8000/accuracy_metric/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
+                #webbrowser.open_new("http://localhost:8000/accuracy_metric/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
                 sleep(3)
 
-        sleep(5)
+        #sleep(5)
         request_my_board= "https://api.pinterest.com/v1/me/boards/?access_token=AWUtjB9R2kV_3N57_1FMG92SMOvQFIxoM937k-lDmW-C0gBCfwAAAAA"
         request_others= "https://api.pinterest.com/v1/me/following/boards/?access_token=AWUtjB9R2kV_3N57_1FMG92SMOvQFIxoM937k-lDmW-C0gBCfwAAAAA"
         
@@ -1923,13 +1924,13 @@ if social_network in network_list:
         username=[]
         board=[]
         pets=[]
+        urlsimag=[]
         for k,v in timeline.iteritems():
             if(timeline.has_key('data')):
                 values1=timeline.get('data',None)
         for m in values1:
             if(m.has_key('url')):
                 values3=m.get('url',None)
-            print values3
             lista_img.append(values3)
 
 
@@ -1945,16 +1946,50 @@ if social_network in network_list:
         zipUserBoard=zip(username,board)
         
         for user,tablero in zipUserBoard:
-            request_images="https://api.pinterest.com/v1/boards/" + user + "/" + tablero + "/pins/?access_token=AWUtjB9R2kV_3N57_1FMG92SMOvQFIxoM937k-lDmW-C0gBCfwAAAAA"
-            pet= requests.get(request_images)
-            print pet
-            pet=pet.json()
-            print "--------------------------------"
-            print "--------------------------------"
-
+            pet="https://api.pinterest.com/v1/boards/" + user + "/" + tablero + "/pins/?access_token=AcESGCEHz8epw-CQ_-lp4Ajq3HfRFI1ZZUUe5cdDmW-C0gBCfwAAAAA&limit=100"
             pets.append(pet)
+            #pets=[pet]
 
-        print pets[0]
+        def makeRequest(url):
+            pet= requests.get(url)
+            return pet.json()
+            
+        def getData(pets):
+            for pet in pets:
+                request=makeRequest(pet)
+                data= request.get('data',None)
+                for urls in data:
+                    url=urls.get('url', None)
+                    urlsimag.append(url)           
+                siguiente=request.get('page',None).get('next',None)
+                while(siguiente):
+                    request=makeRequest(siguiente)
+                    for urls in data:
+                        url=urls.get('url', None)
+                        urlsimag.append(url)
+                    siguiente=request.get('page',None).get('next',None)
+                    
+        getData(pets)
+        #print urlsimag
+
+        #recorro la lista de los tableros a los que sigo
+        # for listapet in pets:
+        #     for k,v in listapet.iteritems():
+        #         data=listapet.get('data', None)
+        #         page=listapet.get('page',None)
+        #     for urls in data:
+        #         for k,v in urls.iteritems():
+        #             url=urls.get('url', None)
+        #         urlsimag.append(url)
+        #     for k,v in page.iteritems():
+        #         siguiente=page.get('next',None)
+        #     print siguiente
+
+        #     request_nextpage=siguiente
+        #     pet_nextpage=requests.get(siguiente)
+
+               
+
         #de cada peticion tengo que coger las url de cada post (ver si estan todas,Javi: next page)
         #despues tengo que hacer el js que coja los datos del componente
         #lo que tengo que comparar es la url!
