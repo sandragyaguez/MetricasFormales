@@ -1903,20 +1903,20 @@ if social_network in network_list:
         ##########################################################################################################################################
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new("http://localhost:8000/accuracy_metric/Master/pinterest-timeline/demo/PinterestCompletitud.html")
+                webbrowser.open_new("http://localhost:8080/accuracy_metric/Master/pinterest-timeline/demo/PinterestCompletitud.html")
                 sleep(3)
             elif(version=="latency"):
-                #webbrowser.open_new("http://localhost:8000/accuracy_metric/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
+                webbrowser.open_new("http://localhost:8080/accuracy_metric/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
                 sleep(3)
             elif(version=="accuracy"):
-                #webbrowser.open_new("http://localhost:8000/accuracy_metric/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
+                webbrowser.open_new("http://localhost:8080/accuracy_metric/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
                 sleep(3)
 
-        #sleep(5)
-        request_my_board= "https://api.pinterest.com/v1/me/boards/?access_token=AWUtjB9R2kV_3N57_1FMG92SMOvQFIxoM937k-lDmW-C0gBCfwAAAAA"
-        request_others= "https://api.pinterest.com/v1/me/following/boards/?access_token=AWUtjB9R2kV_3N57_1FMG92SMOvQFIxoM937k-lDmW-C0gBCfwAAAAA"
-        
-        
+        access_token="AYzOkS8gPFoFyhU56X9RjekH8IQFFI3y549FYk9DmW-C0gBCfwAAAAA"
+        request_my_board= "https://api.pinterest.com/v1/me/pins/?access_token=" + access_token  + "&limit=60"
+        request_others= "https://api.pinterest.com/v1/me/following/boards/?access_token=" + access_token
+
+        #tengo que hacer una primera peticion a los boards de a los que sigo para poder pedir sus pins (imagenes)
         s= requests.get(request_others)
         timeline=s.json()
 
@@ -1924,7 +1924,9 @@ if social_network in network_list:
         username=[]
         board=[]
         pets=[]
-        urlsimag=[]
+        imagAPI=[]
+
+        #recorro el timeline y cojo de la clave data sus valores y dentro de sus valores la url de cada tablero
         for k,v in timeline.iteritems():
             if(timeline.has_key('data')):
                 values1=timeline.get('data',None)
@@ -1933,7 +1935,7 @@ if social_network in network_list:
                 values3=m.get('url',None)
             lista_img.append(values3)
 
-
+        # de cada url separo por / para poder coger el nombre del usuario y del tablero para despues poder hacer peticion de pins
         for image in lista_img:
             new=image.split("/")
             #cojo todos los username a los que sigo para poder hacer la siguiente peticion
@@ -1942,59 +1944,130 @@ if social_network in network_list:
             #cojo todos los nombres de los tableros
             new[4]=str(new[4])
             board.append(new[4])
-   
+
+        #junto cada usuario con su tablero
         zipUserBoard=zip(username,board)
         
+        #voy a crear todas las urls a las que tengo que hacer peticion con su usuario y tablero correspondiente
+        #los anido todos en una lista y finalmente le anado la url de my board (cuidado si tengo mas de un board creado, que pasa?)
         for user,tablero in zipUserBoard:
-            pet="https://api.pinterest.com/v1/boards/" + user + "/" + tablero + "/pins/?access_token=AcESGCEHz8epw-CQ_-lp4Ajq3HfRFI1ZZUUe5cdDmW-C0gBCfwAAAAA&limit=100"
+            pet="https://api.pinterest.com/v1/boards/" + user + "/" + tablero + "/pins/?access_token=" + access_token + "&limit=60"
             pets.append(pet)
-            #pets=[pet]
+        pets.append(request_my_board)
 
+        #metodo que hace todas las peticiones pasandole la lista de urls
         def makeRequest(url):
             pet= requests.get(url)
             return pet.json()
             
+        #metodo que coge las urls de las imagenes (60 como maximo por cada tablero)
         def getData(pets):
             for pet in pets:
                 request=makeRequest(pet)
                 data= request.get('data',None)
                 for urls in data:
                     url=urls.get('url', None)
-                    urlsimag.append(url)           
-                siguiente=request.get('page',None).get('next',None)
-                while(siguiente):
-                    request=makeRequest(siguiente)
-                    for urls in data:
-                        url=urls.get('url', None)
-                        urlsimag.append(url)
-                    siguiente=request.get('page',None).get('next',None)
+                    imagAPI.append(url) 
+
+                # hacer las siguiente 60 peticiones          
+                # siguiente=request.get('page',None).get('next',None)
+                # while(siguiente):
+                #     request=makeRequest(siguiente)
+                #     for urls in data:
+                #         url=urls.get('url', None)
+                #         imagAPI.append(url)
+                #     siguiente=request.get('page',None).get('next',None)
                     
         getData(pets)
-        #print urlsimag
+        print len(imagAPI)
+        
 
-        #recorro la lista de los tableros a los que sigo
-        # for listapet in pets:
-        #     for k,v in listapet.iteritems():
-        #         data=listapet.get('data', None)
-        #         page=listapet.get('page',None)
-        #     for urls in data:
-        #         for k,v in urls.iteritems():
-        #             url=urls.get('url', None)
-        #         urlsimag.append(url)
-        #     for k,v in page.iteritems():
-        #         siguiente=page.get('next',None)
-        #     print siguiente
+        ##########################################################################################################################################
+        #------------------------------------------DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
+        ##########################################################################################################################################
 
-        #     request_nextpage=siguiente
-        #     pet_nextpage=requests.get(siguiente)
+        sleep(10)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("55736dc621aade0a3e80ea2f7f28f42b","5d34c88bc7f29c166e56484966b1c85b")
 
-               
+        imagComp=[]
+        if version in version_list:
+            if version=="master":
+            #defino los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
 
-        #de cada peticion tengo que coger las url de cada post (ver si estan todas,Javi: next page)
-        #despues tengo que hacer el js que coja los datos del componente
-        #lo que tengo que comparar es la url!
-        #y mandar a mixpanel
-        #hacer lo mismo con version accuracy y version latency
+                for x in respuesta:
+                    resp=str(x)
+                    imagComp.append(resp)
+                print len(imagComp)
+                #metodo que me compara la lista de imagenes obtenidas por la API con la lista de imagenes cogidas en el componente
+                def comp(list1, list2):
+                    fallos=[]
+                    if len(list1) != len(list2):
+                        print "no tienen la misma longitud"
+                        return False
+                    for val in list1:
+                        if not (val in list2):
+                            fallos.append(val)        
+                    return fallos
+
+                fallos=comp(imagAPI,imagComp)
+                print fallos
+
+                mpPinterest.track(fallos,"Fallos master imagenes",{"imagen":fallos, "version":"master"}) 
+
+            elif version=="latency":
+                #defino los parametros necesarios para la peticion
+                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    resp=str(x)
+                    imagComp.append(resp)
+                print len(imagComp)
+                #metodo que me compara la lista de imagenes obtenidas por la API con la lista de imagenes cogidas en el componente
+                def comp(list1, list2):
+                    fallos=[]
+                    if len(list1) != len(list2):
+                        print "no tienen la misma longitud"
+                        return False
+                    for val in list1:
+                        if not (val in list2):
+                            fallos.append(val)        
+                    return fallos
+
+                fallos=comp(imagAPI,imagComp)
+                print fallos
+
+                mpPinterest.track(fallos,"Fallos latency imagenes",{"imagen":fallos, "version":"latency"}) 
+
+            elif version=="accuracy":
+                #defino los parametros necesarios para la peticion
+                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    resp=str(x)
+                    imagComp.append(resp)
+                print len(imagComp)
+                #metodo que me compara la lista de imagenes obtenidas por la API con la lista de imagenes cogidas en el componente
+                def comp(list1, list2):
+                    fallos=[]
+                    if len(list1) != len(list2):
+                        print "no tienen la misma longitud"
+                        return False
+                    for val in list1:
+                        if not (val in list2):
+                            fallos.append(val)        
+                    return fallos
+
+                fallos=comp(imagAPI,imagComp)
+                print fallos
+
+                mpPinterest.track(fallos,"Fallos accuracy imagenes",{"imagen":fallos, "version":"accuracy"}) 
+
+                
 
 
 
