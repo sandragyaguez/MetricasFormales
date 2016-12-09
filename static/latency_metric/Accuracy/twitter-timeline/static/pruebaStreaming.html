@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+	<head>
+		<title> Prueba de websockets </title>
+	</head>
+	<body>
+		<script type="text/javascript">
+		var consumer_token = "IlLfZvZuwELpVOLe4QMbTuqYs"
+		var consumer_secret = "ZR92TcgY3PZgBmQ3kSxW2wcHL67wOa3hpwWk8uBEUA26P94RaG"
+		var token_id = "73358235-VXWlEdF04VjDldVYAU8v3a01mYVEcqBxwxnhqOz1i"
+		var token_secret = "22yrgpEIc0b85oqITEwWkMRXsEe7aZb6vIY73K3mdCm8p"
+		var uri = 'wss://userstream.twitter.com/1.1/user.json' 
+		// uri+= "?consumer_token=" + consumer_token;
+		// uri+= "&consumer_secret=" + consumer_secret;
+		// uri+= "&token_id=" + token_id;
+		// uri+= "&token_secret=" + token_secret;
+		var connection = new WebSocket(uri)
+		connection.send(JSON.stringify({
+ 		 "consumer_token": consumer_token,
+ 		 "consumer_secret": consumer_secret,
+ 		 "token_id": token_id,
+ 		 "token_secret": token_secret
+		}));
+
+		//When the connection is open, print a message
+		connection.onopen = function(){
+			console.log("Conexion llevada a cabo con exito");
+		};
+
+		//Log errors
+		connection.onerror = function (error) {
+			console.log('WebSocket error: ' + error);
+		};
+
+		//Log messages from the server
+		connection.onmessage = function (e) {
+			console.log('Data received: ' + e.data);
+		};
+
+		</script>
+
+	</body>
+</html>
