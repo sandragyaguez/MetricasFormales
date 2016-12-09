@@ -32,6 +32,7 @@ from mixpanel import Mixpanel
 mpTwitter = Mixpanel("070bf8a01a6127ebf78325716490697a")
 mpFacebook=Mixpanel("f9177cf864c2778e099d5ec71113d0bf")
 mpGithub=Mixpanel("870ae6fd08343fcfb154ad6ed5227c47")
+mpPinterest=Mixpanel("98b144c253b549db5cdeb812a9323ca3")
 
 
 ##########################################################################################################################################
@@ -155,7 +156,7 @@ respuesta = objeto.get_auth_token()
 ##########################################################################################################################################
 
 
-network_list = ["twitter", "facebook", "github"]
+network_list = ["twitter", "facebook", "github","pinterest"]
 version_list = ["master","latency", "accuracy"]
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),consola: python refresco.py twitter coge la "variable" twitter
@@ -705,3 +706,53 @@ if social_network in network_list:
                         final_time=int(value)-int(valuesP)
                         print "final_time: " + str(final_time)
                         mpGithub.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})
+
+
+#--------------------------------------------------
+#CASO4: PINTEREST
+#--------------------------------------------------
+
+    elif social_network == 'pinterest':
+
+        ##########################################################################################################################################
+        #-------------------------------------------------------DATOS PINTEREST API---------------------------------------------------------------
+        ##########################################################################################################################################
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new("http://localhost:8080/refresh_metric/Master/pinterest-timeline/demo/PinterestCompletitud.html")
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new("http://localhost:8080/refresh_metric/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new("http://localhost:8080/refresh_metric/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
+                sleep(3)
+
+        access_token="AXh-Xld9fy7jeDuI23ovntIthRVjFI6N-kmb11xDmW-C0gBCfwAAAAA"
+        post_my_board= "https://api.pinterest.com/v1/me/pins/?access_token=" + access_token
+        image_url="https://www.pinterest.com/pin/687643436823691338/"
+        note="Take a look, it is GitHub"
+        link="https://www.pinterest.com/r/pin/687643436823691338/4779055074072594921/3cdbba8c79c29eba41db0a63e1b7ea42ff8a705745fc44e54f86ec42ecd50874"
+        #"id": "687643436823691338"}
+        board="Tablero 1"
+        #url="https://api.pinterest.com/v1/boards/anapinskywalker/wanderlust/pins/?"
+        #r = requests.post(url=post_my_board,data={"status":"https://www.google.es/search?q=imagen+perro&espv=2&biw=1855&bih=966&tbm=isch&imgil=BUZ0QjOy-024-M%253A%253BIFiRlwaSmIYu2M%253Bhttp%25253A%25252F%25252Fwww.todoperros.com%25252F&source=iu&pf=m&fir=BUZ0QjOy-024-M%253A%252CIFiRlwaSmIYu2M%252C_&usg=__1xfgSCfQ9SeDEmHfz-5d5zzLjvs%3D&ved=0ahUKEwi6rYvu6ubQAhUCvBQKHT9gDRYQyjcIMw&ei=Tn5KWLrOBIL4Ur_AtbAB#imgrc=BUZ0QjOy-024-M%3A"})
+        #print r
+
+        import urllib.request
+        from urllib.request import urlopen
+
+        def post_pin(access_token, board, note, link, image_url):
+            response = urlopen(
+                'https://api.pinterest.com/v1/pins/',
+                data=urlencode(dict(
+                    access_token=access_token,
+                    board=board,
+                    note=note,
+                    link=link,
+                    image_url=image_url,
+                )))
+            response_data = json.load(response)
+            return response_data
+
+        print post_pin(access_token, board, note, link, image_url)
