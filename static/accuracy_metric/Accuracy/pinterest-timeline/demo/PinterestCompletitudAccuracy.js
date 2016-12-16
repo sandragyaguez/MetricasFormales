@@ -11,7 +11,7 @@ document.addEventListener('WebComponentsReady', function() {
           window.setTimeout(function(){
             contador=0;      
             for(var j=0;j<element.pins_cache.length;j++){
-              url=element.pins_cache[j].url;
+              url=element.pins_cache[j].image.original.url;
               contador++;
               mixpanel.track("accuracy",{'value':url});
             }

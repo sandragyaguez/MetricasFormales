@@ -34,13 +34,8 @@ mpFacebook=Mixpanel("04ae91408ffe85bf83628993704feb15")
 mpGoogle=Mixpanel("f2655b08b62cc657d6865f8af003bdd9")
 mpPinterest=Mixpanel("6ceb3a37029277deb7f530ac7d65d7d4")
 
-#mpInstagram=Mixpanel("59e0cb154cc5192322be22b2a035738e")
-#mpGithub=Mixpanel("6dbce2a15a7e5bbd608908e8d0ed8518")
-
-
-
 #---------------------------------------------------------------------------------------------------------------------
-network_list = ["twitter","instagram", "facebook", "github", "googleplus", "pinterest"]
+network_list = ["twitter", "facebook", "googleplus", "pinterest"]
 version_list = ["master","latency", "accuracy"]
 url_base_remote= "http://metricas-formales.appspot.com/app/accuracy_metric"
 url_base_local= "http://localhost:8080/accuracy_metric"
@@ -232,18 +227,18 @@ if social_network in network_list:
                 for clave, valor in dictFallosText.iteritems():
                     if(dictCompPos.has_key(clave)):
                         valores=dictCompPos.get(clave,None)
-                        mpTwitter.track(valores,"Fallos master text",{"posicion":valores ,"tweet": valor, "version":version})
+                        #mpTwitter.track(valores,"Fallos master text",{"posicion":valores ,"tweet": valor, "version":version})
                     listavalores.append(valores)
                 listavalores.sort()
 
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
                         valores1=dictCompPos.get(clave1,None)
-                        mpTwitter.track(valores1,"Fallos master user",{"posicion":valores1 ,"tweet": valor1, "version":version})
+                        #mpTwitter.track(valores1,"Fallos master user",{"posicion":valores1 ,"tweet": valor1, "version":version})
                     listavalores1.append(valores1)
                 listavalores1.sort()
 
-                contadorFallos=contadorFallos/contador
+                contadorFallos=contadorFallos/float(contador)
                 mpTwitter.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})                           
 
                     
@@ -330,18 +325,18 @@ if social_network in network_list:
                 for clave, valor in dictFallosText.iteritems():
                     if(dictCompPos.has_key(clave)):
                         valores=dictCompPos.get(clave,None)
-                        mpTwitter.track(valores,"Fallos latency text",{"posicion":valores ,"tweet": valor, "version":version})
+                        #mpTwitter.track(valores,"Fallos latency text",{"posicion":valores ,"tweet": valor, "version":version})
                     listavalores.append(valores)
                 listavalores.sort()
 
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
                         valores1=dictCompPos.get(clave1,None)
-                        mpTwitter.track(valores1,"Fallos latency user",{"posicion":valores1 ,"tweet": valor1, "version":version})
+                        #mpTwitter.track(valores1,"Fallos latency user",{"posicion":valores1 ,"tweet": valor1, "version":version})
                     listavalores1.append(valores1)
                 listavalores1.sort() 
 
-                contadorFallos=contadorFallos/contador
+                contadorFallos=contadorFallos/float(contador)
                 mpTwitter.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})                            
 
 
@@ -395,7 +390,6 @@ if social_network in network_list:
                             liskey.append(key)
                             lisvalue.append(value)
                             contadorFallos=contadorFallos+1
-                            print contadorFallos
                             listaFallosText=zip(liskey,lisvalue)
 
                     else:
@@ -414,12 +408,12 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             contadorFallos=contadorFallos+1
-                            print contadorFallos
                             listaFallosUser=zip(liskey,lisvalue)
 
                     else:
                         print "el user que no esta es: " + v
 
+                
                 #diccionario de textos erroneos con su id
                 dictFallosText=dict(listaFallosText)
                 #diccionario de users erroneos con su id
@@ -429,7 +423,7 @@ if social_network in network_list:
                 for clave, valor in dictFallosText.iteritems():
                     if(dictCompPos.has_key(clave)):
                         valores=dictCompPos.get(clave,None)
-                        mpTwitter.track(valores,"Fallos accuracy text",{"posicion":valores ,"tweet": valor, "version":version})
+                        #mpTwitter.track(valores,"Fallos accuracy text",{"posicion":valores ,"tweet": valor, "version":version})
                     listavalores.append(valores)
                 listavalores.sort()
                 print listavalores
@@ -437,782 +431,19 @@ if social_network in network_list:
                 for clave1, valor1 in dictFallosUser.iteritems():
                     if(dictCompPos.has_key(clave1)):
                         valores1=dictCompPos.get(clave1,None)
-                        mpTwitter.track(valores1,"Fallos accuracy user",{"posicion":valores1 ,"tweet": valor1, "version":version})
+                        #mpTwitter.track(valores1,"Fallos accuracy user",{"posicion":valores1 ,"tweet": valor1, "version":version})
                     listavalores1.append(valores1)
                 listavalores1.sort()
                 print listavalores1
 
-                contadorFallos=contadorFallos/contador
-                print contadorFallos
+                fallosTotales=contadorFallos/float(contador)
+                print fallosTotales
                 mpTwitter.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
                            
 
-
 ############################################
 ############################################
-            #CASO2: GITHUB
-############################################
-############################################
-                
-    elif social_network == 'github':
-
-        if version in version_list:
-            if(version=="master"):
-                webbrowser.open_new(url_base_remote + "/Master/GithubCompletitud.html")
-                sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_remote + "/Latency/GithubCompletitudLatency.html")
-                sleep(3)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_remote + "/Accuracy/GithubCompletitudAccuracy.html")
-                sleep(3)
-
-
-        ##########################################################################################################################################
-        #----------------------------------------------------------DATOS GITHUB API---------------------------------------------------------------
-        ##########################################################################################################################################
-
-        contador=0
-        lis=[]
-        ids=[]
-        users=[]
-        lista=[]
-        listapos=[]
-        listaid=[]
-        listauser=[]
-        listacomp=[]
-        liskey=[]
-        lisvalue=[]
-        listavalores=[]
-        listavalores1=[]
-        listaFallosText=[]
-        listaFallosUser=[]
-
-        github_url = "https://api.github.com/users/mortega5/received_events?per_page=50"
-        peticion= requests.get(github_url)
-        print peticion
-        muro=peticion.json()
-        for events in muro:
-            #guardo id de cada evento
-            idsevents=events['id']
-            idsevents=int(idsevents)
-            #guardo el usuario de cada evento
-            userevents=events['actor']['login']
-            contador=contador+1
-            #voy comprobando de que evento se trata y guardando su contenido
-            if (events['type']=="PushEvent"):
-                message=events['payload']['commits'][0]['message']
-            elif(events['type']=="WatchEvent"):
-                message=events['payload']['action']
-            elif(events['type']=="CreateEvent"):
-                message="Creo un repositorio/ Creo una rama"
-            elif(events['type']=="PullRequestEvent"):
-                message=events['payload']['pull_request']['title']
-            elif(events['type']=="IssuesEvent"):
-                message=events['payload']['issue']['title']
-            elif(events['type']=="MemberEvent"):
-                message=events['payload']['action']
-            elif(events['type']=="ForkEvent"):
-                message="Realizo un fork"
-            else:
-                message=''
-            lis.append(message)
-            users.append(userevents)
-            ids.append(idsevents)
-        print contador
-        ids.sort()
-        ids.reverse()
-        zipPython=zip(ids,lis)
-        zipPythonUser=zip(ids,users)
-        #diccionario de ids y los textos
-        dictPython=dict(zipPython)
-        #diccionario de ids y los usuarios
-        dictPythonUser=dict(zipPythonUser)
-
-
-        ##########################################################################################################################################
-        #------------------------------------------DATOS GITHUB COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
-        ##########################################################################################################################################
-        sleep(10)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("1119893e7fea6aad13e030ad514595be","bf69f1d1620ca5a5bb2b116c3e3a9944")
-
-        if version in version_list:
-            if version=="master":
-                #defino los parametros necesarios para la peticion
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el id
-                newlist = sorted(lista, key=lambda id_event: id_event['id'])
-                newlist.reverse()
-
-                for y in newlist:
-                    #la k son los la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
-                    poscomp=y.items()[0][1]
-                    textocomp=y.items()[1][1]
-                    idcomp=y.items()[2][1]
-                    idcomp=int(idcomp)
-                    usercomp=y.items()[3][1]
-                    listapos.append(poscomp)
-                    listacomp.append(textocomp)
-                    listaid.append(idcomp)
-                    listauser.append(usercomp)
-
-                zipComp=zip(listaid,listacomp)
-                zipCompUser=zip(listaid,listauser)
-                zipPos=zip(listaid,listapos)
-                #Diccionario id, text
-                dictComp=dict(zipComp)
-                #Diccionario id, user
-                dictCompUser=dict(zipCompUser)
-                #Diccionario id, posicion
-                dictCompPos=dict(zipPos)
-
-                #Recorro el diccionario del componente, k es el id del post y v es el user del post
-                for k,v in dictCompUser.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonUser.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonUser=dictPythonUser.get(k,None)
-                        if cmp(vPythonUser,v)==0:
-                            True
-                        else:
-                            print "falla en: " + str(k) 
-                            print "falla en: " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosUser=zip(liskey,lisvalue)
-
-
-                #Recorro el diccionario del componente, key es el id del post y value es el texto del post
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        if cmp(valuesP,value)==0:
-                            True
-                        else:
-                            print "falla en: " + str(key)
-                            print "falla en: " + value
-                            liskey.append(key)
-                            lisvalue.append(value)
-                            listaFallosText=zip(liskey,lisvalue)
-
-                #diccionario de users erroneos con su id
-                dictFallosUser=dict(listaFallosUser)
-                #diccionario de textos erroneos con su id
-                dictFallosText=dict(listaFallosText)
-
-                #Cojo el diccionario de los usuarios fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
-                for clave1, valor1 in dictFallosUser.iteritems():
-                    if(dictCompPos.has_key(clave1)):
-                        valores1=dictCompPos.get(clave1,None)
-                        mpGithub.track(valores1,"Fallos master user",{"posicion":valores1, "version":version})
-                    listavalores1.append(valores1)
-                listavalores1.sort()
-
-             
-                #Cojo el diccionario de los tweets fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
-                for clave, valor in dictFallosText.iteritems():
-                    if(dictCompPos.has_key(clave)):
-                        valores=dictCompPos.get(clave,None)
-                        mpGithub.track(valores,"Fallos master text",{"posicion":valores ,"tweet": valor, "version":version})
-                    listavalores.append(valores)
-                listavalores.sort()
-                         
-
-
-            elif version=="latency":
-                        #defino los parametros necesarios para la peticion
-                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el id
-                newlist = sorted(lista, key=lambda id_event: id_event['id'])
-                newlist.reverse()
-
-                for y in newlist:
-                    #la k son los la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
-                    poscomp=y.items()[0][1]
-                    textocomp=y.items()[1][1]
-                    idcomp=y.items()[2][1]
-                    idcomp=int(idcomp)
-                    usercomp=y.items()[3][1]
-                    listapos.append(poscomp)
-                    listacomp.append(textocomp)
-                    listaid.append(idcomp)
-                    listauser.append(usercomp)
-
-                zipComp=zip(listaid,listacomp)
-                zipCompUser=zip(listaid,listauser)
-                zipPos=zip(listaid,listapos)
-                #Diccionario id, text
-                dictComp=dict(zipComp)
-                #Diccionario id, user
-                dictCompUser=dict(zipCompUser)
-                #Diccionario id, posicion
-                dictCompPos=dict(zipPos)
-
-                #Recorro el diccionario del componente, k es el id del post y v es el user del post
-                for k,v in dictCompUser.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonUser.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonUser=dictPythonUser.get(k,None)
-                        if cmp(vPythonUser,v)==0:
-                            True
-                        else:
-                            print "falla en: " + str(k) 
-                            print "falla en: " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosUser=zip(liskey,lisvalue)
-
-
-                #Recorro el diccionario del componente, key es el id del post y value es el texto del post
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        if cmp(valuesP,value)==0:
-                            True
-                        else:
-                            print "falla en: " + str(key)
-                            print "falla en: " + value
-                            liskey.append(key)
-                            lisvalue.append(value)
-                            listaFallosText=zip(liskey,lisvalue)
-
-                #diccionario de users erroneos con su id
-                dictFallosUser=dict(listaFallosUser)
-                #diccionario de textos erroneos con su id
-                dictFallosText=dict(listaFallosText)
-
-                #Cojo el diccionario de los usuarios fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
-                for clave1, valor1 in dictFallosUser.iteritems():
-                    if(dictCompPos.has_key(clave1)):
-                        valores1=dictCompPos.get(clave1,None)
-                        mpGithub.track(valores1,"Fallos latency user",{"posicion":valores1, "version":version})
-                    listavalores1.append(valores1)
-                listavalores1.sort()
-
-             
-                #Cojo el diccionario de los tweets fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
-                for clave, valor in dictFallosText.iteritems():
-                    if(dictCompPos.has_key(clave)):
-                        valores=dictCompPos.get(clave,None)
-                        mpGithub.track(valores,"Fallos latency text",{"posicion":valores ,"tweet": valor, "version":version})
-                    listavalores.append(valores)
-                listavalores.sort()
-                         
-
-            elif version=="accuracy":
-                #defino los parametros necesarios para la peticion
-                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el id
-                newlist = sorted(lista, key=lambda id_event: id_event['id'])
-                newlist.reverse()
-
-                for y in newlist:
-                    #la k son los la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
-                    poscomp=y.items()[0][1]
-                    textocomp=y.items()[1][1]
-                    idcomp=y.items()[2][1]
-                    idcomp=int(idcomp)
-                    usercomp=y.items()[3][1]
-                    listapos.append(poscomp)
-                    listacomp.append(textocomp)
-                    listaid.append(idcomp)
-                    listauser.append(usercomp)
-
-                zipComp=zip(listaid,listacomp)
-                zipCompUser=zip(listaid,listauser)
-                zipPos=zip(listaid,listapos)
-                #Diccionario id, text
-                dictComp=dict(zipComp)
-                #Diccionario id, user
-                dictCompUser=dict(zipCompUser)
-                #Diccionario id, posicion
-                dictCompPos=dict(zipPos)
-
-                #Recorro el diccionario del componente, k es el id del post y v es el user del post
-                for k,v in dictCompUser.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonUser.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonUser=dictPythonUser.get(k,None)
-                        if cmp(vPythonUser,v)==0:
-                            True
-                        else:
-                            print "falla en: " + str(k) 
-                            print "falla en: " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosUser=zip(liskey,lisvalue)
-
-
-                #Recorro el diccionario del componente, key es el id del post y value es el texto del post
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        if cmp(valuesP,value)==0:
-                            True
-                        else:
-                            print "falla en: " + str(key)
-                            print "falla en: " + value
-                            liskey.append(key)
-                            lisvalue.append(value)
-                            listaFallosText=zip(liskey,lisvalue)
-
-                #diccionario de users erroneos con su id
-                dictFallosUser=dict(listaFallosUser)
-                #diccionario de textos erroneos con su id
-                dictFallosText=dict(listaFallosText)
-
-                #Cojo el diccionario de los usuarios fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
-                for clave1, valor1 in dictFallosUser.iteritems():
-                    print valor1
-                    if(dictCompPos.has_key(clave1)):
-                        valores1=dictCompPos.get(clave1,None)
-                        mpGithub.track(valores1,"Fallos accuracy user",{"posicion":valores1, "version":version})
-                    listavalores1.append(valores1)
-                listavalores1.sort()
-
-             
-                #Cojo el diccionario de los tweets fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
-                for clave, valor in dictFallosText.iteritems():
-                    if(dictCompPos.has_key(clave)):
-                        valores=dictCompPos.get(clave,None)
-                        mpGithub.track(valores,"Fallos accuracy text",{"posicion":valores ,"tweet": valor, "version":version})
-                    listavalores.append(valores)
-                listavalores.sort()
-                         
-
-
-
-############################################
-############################################
-            #CASO3: INSTAGRAM
-############################################
-############################################
-
-    elif social_network == 'instagram':
-
-            ##########################################################################################################################################
-            #-------------------------------------------------------DATOS INSTAGRAM API---------------------------------------------------------------
-            ##########################################################################################################################################
-
-        if version in version_list:
-            if(version=="master"):
-                webbrowser.open_new(url_base_remote + "/Master/instagram-timeline/static/InstagramCompletitud.html")
-                sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_remote + "/Latency/instagram-timeline/static/InstagramCompletitudLatency.html")
-                sleep(3)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_remote + "/Accuracy/instagram-timeline/static/InstagramCompletitudAccuracy.html")
-                sleep(3)
-
- 
-        #cambiar token cada hora y media: https://www.instagram.com/developer/
-        insta_url="https://api.instagram.com/v1/users/self/feed?access_token=2062815740.34af286.169a9c42e1404ae58591d066c00cb979"
-        pet= requests.get(insta_url)
-        print pet
-        timeline=pet.json()
-
-        contador=0
-        listacont=[]
-        texts=[]
-        ids=[]
-        users=[]
-        images=[]
-        lista=[]
-        listapos=[]
-        listaid=[]
-        listaimage=[]
-        listauser=[]
-        liskey=[]
-        lisvalue=[]
-        listavalores=[]
-        listavalores1=[]
-        listaFallosText=[]
-        listaFallosUser=[]
-        listatext=[]
-        listatex=[]
-
-        #instagram devuelve un diccionario con 3 keys (pagination, meta y data) y solo quiero quedar con el contenido de data
-        for k,v in timeline.iteritems():
-            if(timeline.has_key('data')):
-                values=timeline.get('data',None)
-        #recorro todos los campos que tiene data
-        for items in values:
-            #guardo el id del evento
-            idsevents=items['id']
-            #guardo el usuario del evento
-            userevents=items['user']['username']
-            #guardo la imagen del evento
-            imageevents=items['images']['standard_resolution']['url']
-            #hago un hash de la imagen para "comprimirla"
-            hash_object = hashlib.sha1(imageevents)
-            imageevents = hash_object.hexdigest()
-            #verificamos si el post contiene algun texto. En caso de que si, lo guardamos
-            if(items['caption']!=None):
-                textevents=items['caption']['text']
-                listatex.append(textevents)
-                for itemtext in listatex:
-                    itemtext=str(itemtext)
-                    #necesito restringir el texto porque sino no puedo comparar con los datos de Mixpanel ya que restringe el num de caracteres
-                    hash_object = hashlib.sha1(itemtext)
-                    textevents = hash_object.hexdigest()
-                    texts.append(textevents)
-            else:
-                texts.append('')
-
-            listacont.append(contador)
-            contador=contador+1
-            ids.append(idsevents)
-            users.append(userevents)
-            images.append(imageevents)
-
-        print contador
-        zipPythonUser=zip(listacont,users)
-        #diccionario de contador y usuarios
-        dictPythonUser=dict(zipPythonUser)
-        zipPythonImage=zip(listacont,images)
-        #diccionario de contador e imagenes
-        dictPythonImage=dict(zipPythonImage)
-        zipPythonText=zip(ids,texts)
-        #diccionario de ids y textos
-        dictPythonText=dict(zipPythonText)
-
-        ##########################################################################################################################################
-        #-----------------------------------------DATOS INSTAGRAM COMPONENTE (RECOGIDOS DE MIXPANEL)----------------------------------------------
-        ##########################################################################################################################################
-        sleep(10)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("26904a5a94b675f2360d75af0ccbf0b6","2af7a58160fd737d242e81d9055a02c3")
-
-        if version in version_list:
-            if version=="master":
-                #defino los parametros necesarios para la peticion
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por la posicion
-                newlist = sorted(lista, key=lambda posicion: posicion['i'])
-
-                for y in newlist:
-                #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
-                    idcomp=y.items()[3][1]
-                    usercomp=y.items()[4][1]
-                    imagencomp=y.items()[2][1]
-                    poscomp=y.items()[0][1]
-                    textcomp=y.items()[1][1]
-                    listaid.append(idcomp)
-                    listauser.append(usercomp)
-                    listaimage.append(imagencomp)
-                    listapos.append(poscomp)
-                    listatext.append(textcomp)
-        
-
-                zipCompUser=zip(listapos,listauser)
-                zipPos=zip(listapos,listaid)
-                zipCompImage=zip(listapos,listaimage)
-                zipCompText=zip(listapos,listatext)
-                #Diccionario posicion, user
-                dictCompUser=dict(zipCompUser)
-                #Diccionario posicion, id
-                dictCompPos=dict(zipPos)
-                #Diccionario posicion, imagen
-                dictCompImage=dict(zipCompImage)
-                #Diccionario posicion, imagen
-                dictCompText=dict(zipCompText)
-
-                #Recorro el diccionario del componente, k es la posicion y v es el user
-                for k,v in dictCompUser.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonUser.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonUser=dictPythonUser.get(k,None)
-                        if cmp(vPythonUser,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el usuario que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosUser=zip(liskey,lisvalue)
-                            mpInstagram.track(listaFallosUser,"Fallos master user",{"posicion":listaFallosUser, "version":version})
-
-                    else:
-                        print "el user que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
-
-
-                #Recorro el diccionario del componente, k es la posicion y v es la imagen
-                for k,v in dictCompImage.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonImage.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonImagen=dictPythonImage.get(k,None)
-                        if cmp(vPythonImagen,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "la imagen que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosImagen=zip(liskey,lisvalue)
-                            mpInstagram.track(listaFallosImagen,"Fallos master imagen",{"posicion":listaFallosImagen, "version":version})
-
-                    else:
-                        print "la imagen que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
-
-
-                #Recorro el diccionario del componente, k es la posicion y v es la imagen
-                for k,v in dictCompText.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonText.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonText=dictPythonText.get(k,None)
-                        if cmp(vPythonText,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el texto que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
-                            mpInstagram.track(listaFallosText,"Fallos master text",{"posicion":listaFallosText, "version":version})
-
-                    
-            elif version=="latency":
-                #defino los parametros necesarios para la peticion
-                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por la posicion
-                newlist = sorted(lista, key=lambda posicion: posicion['i'])
-
-                for y in newlist:
-                #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
-                    idcomp=y.items()[3][1]
-                    usercomp=y.items()[4][1]
-                    imagencomp=y.items()[2][1]
-                    poscomp=y.items()[0][1]
-                    textcomp=y.items()[1][1]
-                    listaid.append(idcomp)
-                    listauser.append(usercomp)
-                    listaimage.append(imagencomp)
-                    listapos.append(poscomp)
-                    listatext.append(textcomp)
-        
-
-                zipCompUser=zip(listapos,listauser)
-                zipPos=zip(listapos,listaid)
-                zipCompImage=zip(listapos,listaimage)
-                zipCompText=zip(listapos,listatext)
-                #Diccionario posicion, user
-                dictCompUser=dict(zipCompUser)
-                #Diccionario posicion, id
-                dictCompPos=dict(zipPos)
-                #Diccionario posicion, imagen
-                dictCompImage=dict(zipCompImage)
-                #Diccionario posicion, imagen
-                dictCompText=dict(zipCompText)
-
-                #Recorro el diccionario del componente, k es la posicion y v es el user
-                for k,v in dictCompUser.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonUser.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonUser=dictPythonUser.get(k,None)
-                        if cmp(vPythonUser,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el usuario que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosUser=zip(liskey,lisvalue)
-                            mpInstagram.track(listaFallosUser,"Fallos latency user",{"posicion":listaFallosUser, "version":version})
-
-                    else:
-                        print "el user que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
-
-
-                #Recorro el diccionario del componente, k es la posicion y v es la imagen
-                for k,v in dictCompImage.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonImage.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonImagen=dictPythonImage.get(k,None)
-                        if cmp(vPythonImagen,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "la imagen que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosImagen=zip(liskey,lisvalue)
-                            mpInstagram.track(listaFallosImagen,"Fallos latency imagen",{"posicion":listaFallosImagen, "version":version})
-
-                    else:
-                        print "la imagen que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
-
-                #Recorro el diccionario del componente, k es la posicion y v es la imagen
-                for k,v in dictCompText.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonText.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonText=dictPythonText.get(k,None)
-                        if cmp(vPythonText,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el texto que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
-                            mpInstagram.track(listaFallosText,"Fallos latency text",{"posicion":listaFallosText, "version":version})
-
-              
-
-            elif version=="accuracy":
-                #defino los parametros necesarios para la peticion
-                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por la posicion
-                newlist = sorted(lista, key=lambda posicion: posicion['i'])
-
-                for y in newlist:
-                #la k son los la id,user,i(en ese orden) y las v son los valores de cada uno
-                    idcomp=y.items()[3][1]
-                    usercomp=y.items()[4][1]
-                    imagencomp=y.items()[2][1]
-                    poscomp=y.items()[0][1]
-                    textcomp=y.items()[1][1]
-                    listaid.append(idcomp)
-                    listauser.append(usercomp)
-                    listaimage.append(imagencomp)
-                    listapos.append(poscomp)
-                    listatext.append(textcomp)
-
-                zipCompUser=zip(listapos,listauser)
-                zipPos=zip(listapos,listaid)
-                zipCompImage=zip(listapos,listaimage)
-                zipCompText=zip(listapos,listatext)
-                #Diccionario posicion, user
-                dictCompUser=dict(zipCompUser)
-                #Diccionario posicion, id
-                dictCompPos=dict(zipPos)
-                #Diccionario posicion, imagen
-                dictCompImage=dict(zipCompImage)
-                #Diccionario posicion, imagen
-                dictCompText=dict(zipCompText)
-
-                #Recorro el diccionario del componente, k es la posicion y v es el user
-                for k,v in dictCompUser.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonUser.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonUser=dictPythonUser.get(k,None)
-                        if cmp(vPythonUser,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el usuario que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosUser=zip(liskey,lisvalue)
-                            mpInstagram.track(listaFallosUser,"Fallos accuracy user",{"posicion":listaFallosUser, "version":version})
-
-                    else:
-                        print "el user que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
-
-
-                #Recorro el diccionario del componente, k es la posicion y v es la imagen
-                for k,v in dictCompImage.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonImage.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonImagen=dictPythonImage.get(k,None)
-                        if cmp(vPythonImagen,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "la imagen que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosImagen=zip(liskey,lisvalue)
-                            mpInstagram.track(listaFallosImagen,"Fallos accuracy imagen",{"posicion":listaFallosImagen, "version":version})
-
-                    else:
-                        print "la imagen que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
-
-                #Recorro el diccionario del componente, k es la posicion y v es la imagen
-                for k,v in dictCompText.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonText.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonText=dictPythonText.get(k,None)
-                        if cmp(vPythonText,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el texto que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
-                            mpInstagram.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":version})
-
-
-############################################
-############################################
-            #CASO4: FACEBOOK
+            #CASO2: FACEBOOK
 ############################################
 ############################################
 
@@ -1320,6 +551,7 @@ if social_network in network_list:
         sleep(10)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("de21df1c2c63dff29ffce8a1a449494a","a7917928a9ba3dd88592fac7ac36e8a9")
+        contadorFallos=0
 
         if version in version_list:
             if version=="master":
@@ -1369,7 +601,8 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosUser=zip(liskey,lisvalue)
-                            mpFacebook.track(listaFallosUser,"Fallos master user",{"posicion":listaFallosUser, "version":"master"})
+                            contadorFallos=contadorFallos+1
+                            #mpFacebook.track(listaFallosUser,"Fallos master user",{"posicion":listaFallosUser, "version":"master"})
 
                     else:
                         print "el user que no esta es: " + v
@@ -1390,7 +623,8 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosImagen=zip(liskey,lisvalue)
-                            mpFacebook.track(listaFallosImagen,"Fallos master imagen",{"posicion":listaFallosImagen, "version":"master"})
+                            contadorFallos=contadorFallos+1
+                            #mpFacebook.track(listaFallosImagen,"Fallos master imagen",{"posicion":listaFallosImagen, "version":"master"})
 
                     else:
                         print "la imagen que no esta es: " + v
@@ -1410,8 +644,12 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosText=zip(liskey,lisvalue)
-                            mpFacebook.track(listaFallosText,"Fallos master text",{"posicion":listaFallosText, "version":"master"})  
+                            contadorFallos=contadorFallos+1
+                            #mpFacebook.track(listaFallosText,"Fallos master text",{"posicion":listaFallosText, "version":"master"})  
 
+                contadorFallos=contadorFallos/float(contador)
+                print contadorFallos
+                mpFacebook.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
 
             elif version=="latency":
                 #defino los parametros necesarios para la peticion
@@ -1460,7 +698,8 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosUser=zip(liskey,lisvalue)
-                            mpFacebook.track(listaFallosUser,"Fallos latency user",{"posicion":listaFallosUser, "version":"latency"})
+                            contadorFallos=contadorFallos+1
+                            #mpFacebook.track(listaFallosUser,"Fallos latency user",{"posicion":listaFallosUser, "version":"latency"})
 
                     else:
                         print "el user que no esta es: " + v
@@ -1481,7 +720,8 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosImagen=zip(liskey,lisvalue)
-                            mpFacebook.track(listaFallosImagen,"Fallos latency imagen",{"posicion":listaFallosImagen, "version":"latency"})
+                            contadorFallos=contadorFallos+1
+                            #mpFacebook.track(listaFallosImagen,"Fallos latency imagen",{"posicion":listaFallosImagen, "version":"latency"})
 
                     else:
                         print "la imagen que no esta es: " + v
@@ -1501,8 +741,12 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosText=zip(liskey,lisvalue)
-                            mpFacebook.track(listaFallosText,"Fallos latency text",{"posicion":listaFallosText, "version":"latency"})  
+                            contadorFallos=contadorFallos+1
+                            #mpFacebook.track(listaFallosText,"Fallos latency text",{"posicion":listaFallosText, "version":"latency"})  
 
+                contadorFallos=contadorFallos/float(contador)
+                print contadorFallos
+                mpFacebook.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
             
             elif version=="accuracy":
                 #defino los parametros necesarios para la peticion
@@ -1551,7 +795,8 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosUser=zip(liskey,lisvalue)
-                            mpFacebook.track(listaFallosUser,"Fallos accuracy user",{"posicion":listaFallosUser, "version":"accuracy"})
+                            contadorFallos=contadorFallos+1
+                            #mpFacebook.track(listaFallosUser,"Fallos accuracy user",{"posicion":listaFallosUser, "version":"accuracy"})
 
                     else:
                         print "el user que no esta es: " + v
@@ -1572,7 +817,8 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosImagen=zip(liskey,lisvalue)
-                            mpFacebook.track(listaFallosImagen,"Fallos accuracy imagen",{"posicion":listaFallosImagen, "version":"accuracy"})
+                            contadorFallos=contadorFallos+1
+                            #mpFacebook.track(listaFallosImagen,"Fallos accuracy imagen",{"posicion":listaFallosImagen, "version":"accuracy"})
 
                     else:
                         print "la imagen que no esta es: " + v
@@ -1592,12 +838,16 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosText=zip(liskey,lisvalue)
-                            mpFacebook.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":"accuracy"})  
+                            contadorFallos=contadorFallos+1
+                            #mpFacebook.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":"accuracy"})  
 
+                contadorFallos=contadorFallos/float(contador)
+                print contadorFallos
+                mpFacebook.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
 
 ############################################
 ############################################
-            #CASO5: GOOGLE+
+            #CASO3: GOOGLE+
 ############################################
 ############################################
 
@@ -1707,6 +957,7 @@ if social_network in network_list:
         sleep(10)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("b9eb42288e7e416028ddf3ee70ae4ca9","0c24b55a9806c9eb41cb3d5f3a7e7ef6")
+        contadorFallos=0
 
         if version in version_list:
             if version=="master":
@@ -1755,8 +1006,8 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosUser=zip(liskey,lisvalue)
-                            mpGoogle.track(listaFallosUser,"Fallos master user",{"posicion":listaFallosUser, "version":"master"})
-
+                            contadorFallos=contadorFallos+1
+                            #mpGoogle.track(listaFallosUser,"Fallos master user",{"posicion":listaFallosUser, "version":"master"})
 
 
                 #Recorro el diccionario del componente, k es el tiempo de publicacion y v es el texto
@@ -1773,8 +1024,12 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosText=zip(liskey,lisvalue)
-                            mpGoogle.track(listaFallosText,"Fallos master text",{"posicion":listaFallosText, "version":"master"})
+                            contadorFallos=contadorFallos+1
+                            #mpGoogle.track(listaFallosText,"Fallos master text",{"posicion":listaFallosText, "version":"master"})
 
+                contadorFallos=contadorFallos/float(contador)
+                print contadorFallos
+                mpGoogle.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
 
             elif version=="latency":
                 #defino los parametros necesarios para la peticion
@@ -1822,8 +1077,8 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosUser=zip(liskey,lisvalue)
-                            mpGoogle.track(listaFallosUser,"Fallos latency user",{"posicion":listaFallosUser, "version":"latency"})
-
+                            contadorFallos=contadorFallos+1
+                            #mpGoogle.track(listaFallosUser,"Fallos latency user",{"posicion":listaFallosUser, "version":"latency"})
 
 
                 #Recorro el diccionario del componente, k es el tiempo de publicacion y v es el texto
@@ -1840,7 +1095,12 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosText=zip(liskey,lisvalue)
-                            mpGoogle.track(listaFallosText,"Fallos latency text",{"posicion":listaFallosText, "version":"latency"})
+                            contadorFallos=contadorFallos+1
+                            #mpGoogle.track(listaFallosText,"Fallos latency text",{"posicion":listaFallosText, "version":"latency"})
+
+                contadorFallos=contadorFallos/float(contador)
+                print contadorFallos
+                mpGoogle.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
 
 
             elif version=="accuracy":
@@ -1891,8 +1151,8 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosUser=zip(liskey,lisvalue)
-                            mpGoogle.track(listaFallosUser,"Fallos accuracy user",{"posicion":listaFallosUser, "version":"accuracy"})
-
+                            contadorFallos=contadorFallos+1
+                            #mpGoogle.track(listaFallosUser,"Fallos accuracy user",{"posicion":listaFallosUser, "version":"accuracy"})
 
 
                 #Recorro el diccionario del componente, k es el tiempo de publicacion y v es el texto
@@ -1909,12 +1169,16 @@ if social_network in network_list:
                             liskey.append(k)
                             lisvalue.append(v)
                             listaFallosText=zip(liskey,lisvalue)
-                            mpGoogle.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":"accuracy"}) 
+                            contadorFallos=contadorFallos+1
+                            #mpGoogle.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":"accuracy"}) 
 
+                contadorFallos=contadorFallos/float(contador)
+                print contadorFallos
+                mpGoogle.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
 
 ############################################
 ############################################
-            #CASO6: PINTEREST
+            #CASO4: PINTEREST
 ############################################
 ############################################
 
@@ -2013,6 +1277,22 @@ if social_network in network_list:
         x=mixpanel_api.Mixpanel("55736dc621aade0a3e80ea2f7f28f42b","5d34c88bc7f29c166e56484966b1c85b")
 
         imagComp=[]
+        contadorFallos=0
+
+
+       #metodo que me compara la lista de imagenes obtenidas por la API con la lista de imagenes cogidas en el componente
+        def comp(list1, list2):
+            fallos=[]
+            if len(list1) != len(list2):
+                print "no tienen la misma longitud"
+                return False
+            for val in list1:
+                if not (val in list2):
+                    fallos.append(val)
+                    contadorFallos=contadorFallos+1        
+            return fallos   
+
+
         if version in version_list:
             if version=="master":
             #defino los parametros necesarios para la peticion
@@ -2023,21 +1303,14 @@ if social_network in network_list:
                     resp=str(x)
                     imagComp.append(resp)
                 print len(imagComp)
-                #metodo que me compara la lista de imagenes obtenidas por la API con la lista de imagenes cogidas en el componente
-                def comp(list1, list2):
-                    fallos=[]
-                    if len(list1) != len(list2):
-                        print "no tienen la misma longitud"
-                        return False
-                    for val in list1:
-                        if not (val in list2):
-                            fallos.append(val)        
-                    return fallos
 
                 fallos=comp(imagAPI,imagComp)
                 print fallos
 
-                mpPinterest.track(fallos,"Fallos master imagenes",{"imagen":fallos, "version":"master"}) 
+                mpPinterest.track(fallos,"Fallos master imagenes",{"imagen":fallos, "version":"master"})
+                contadorFallos=contadorFallos/float(contador)
+                mpPinterest.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
+ 
 
             elif version=="latency":
                 #defino los parametros necesarios para la peticion
@@ -2048,21 +1321,14 @@ if social_network in network_list:
                     resp=str(x)
                     imagComp.append(resp)
                 print len(imagComp)
-                #metodo que me compara la lista de imagenes obtenidas por la API con la lista de imagenes cogidas en el componente
-                def comp(list1, list2):
-                    fallos=[]
-                    if len(list1) != len(list2):
-                        print "no tienen la misma longitud"
-                        return False
-                    for val in list1:
-                        if not (val in list2):
-                            fallos.append(val)        
-                    return fallos
-
+         
                 fallos=comp(imagAPI,imagComp)
                 print fallos
 
-                mpPinterest.track(fallos,"Fallos latency imagenes",{"imagen":fallos, "version":"latency"}) 
+                mpPinterest.track(fallos,"Fallos latency imagenes",{"imagen":fallos, "version":"latency"})
+                ontadorFallos=contadorFallos/float(contador)
+                mpPinterest.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
+ 
 
             elif version=="accuracy":
                 #defino los parametros necesarios para la peticion
@@ -2073,21 +1339,14 @@ if social_network in network_list:
                     resp=str(x)
                     imagComp.append(resp)
                 print len(imagComp)
-                #metodo que me compara la lista de imagenes obtenidas por la API con la lista de imagenes cogidas en el componente
-                def comp(list1, list2):
-                    fallos=[]
-                    if len(list1) != len(list2):
-                        print "no tienen la misma longitud"
-                        return False
-                    for val in list1:
-                        if not (val in list2):
-                            fallos.append(val)        
-                    return fallos
-
+            
                 fallos=comp(imagAPI,imagComp)
                 print fallos
 
-                mpPinterest.track(fallos,"Fallos accuracy imagenes",{"imagen":fallos, "version":"accuracy"}) 
+                mpPinterest.track(fallos,"Fallos accuracy imagenes",{"imagen":fallos, "version":"accuracy"})
+                ontadorFallos=contadorFallos/float(contador)
+                mpPinterest.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
+ 
 
                 
 
