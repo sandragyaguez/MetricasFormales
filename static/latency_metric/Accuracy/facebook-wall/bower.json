@@ -19,7 +19,8 @@
     "paper-material": "PolymerElements/paper-material",
     "paper-button": "PolymerElements/paper-button",
     "web-component-tester": "Polymer/web-component-tester#~4.2.1",
-    "test-fixture": "PolymerElements/test-fixture#^1.0.0"
+    "test-fixture": "PolymerElements/test-fixture#^1.0.0",
+    "paper-behaviors": "PolymerElements/paper-behaviors#~1.0.12"
   },
   "devDependencies": {
     "polymer-test-tools": "Polymer/polymer-test-tools#master",
