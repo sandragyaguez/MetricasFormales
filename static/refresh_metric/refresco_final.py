@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 #!/usr/bin/python
 # -*- coding: UTF-8 -*
@@ -35,129 +36,10 @@ mpGithub=Mixpanel("870ae6fd08343fcfb154ad6ed5227c47")
 mpPinterest=Mixpanel("98b144c253b549db5cdeb812a9323ca3")
 
 
-##########################################################################################################################################
-##########################################################################################################################################
-#----------------------------------------------------------------OAUTH 1.0----------------------------------------------------------------
-##########################################################################################################################################
-##########################################################################################################################################
-
-CONSUMER_KEY = 'J4bjMZmJ6hh7r0wlG9H90cgEe' #Consumer key
-CONSUMER_SECRET = '8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf' #Consumer secret
-ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
-ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
-
-class OauthTwitter():
-
-  def __init__(self, consumer_key, consumer_secret, access_key, access_secret):
-
-    self.consumer_key = consumer_key
-    self.consumer_secret = consumer_secret
-    self.access_key = access_key
-    self.access_secret = access_secret
-    self.request_url ="https://api.twitter.com/oauth/request_token"
-    self.authenticate_url = "https://api.twitter.com/oauth/authenticate"
-    self.request_usertimeline="https://api.twitter.com/1.1/statuses/user_timeline.json"
-
-  def get_auth_token(self):
-
-    #Crear todos los parametros que se necesitan y meterlos en la cabecera. Los parametros viene especificados por la API de Twitter
-    HEADER_TITLE = "Authorization"
-    #Consumer key
-    HEADER = 'OAuth oauth_consumer_key="' + self.consumer_key + '", '
-    #Nonce
-    nonce= str(getrandbits(64))
-    HEADER += 'oauth_nonce="' + nonce +'", '
-    #Timestamp
-    timestamp= str(int(time.time()))
-    #Signature
-    key= urllib2.quote(self.consumer_secret) + "&" + urllib2.quote (self.access_secret)
-
-    # Join all of the params together
-    #params_str = "&".join(["%s=%s" % (encode(k), encode(HEADER[k])) for k in sorted(HEADER)])
-
-    base_string = 'GET&' + urllib2.quote(self.request_url, safe="") + '&' + urllib2.quote("oauth_consumer_key=" + self.consumer_key + "&oauth_nonce=" + nonce +
-        "&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + timestamp + "&oauth_token=" + self.access_key +"&oauth_version=1.0",safe="")
-
-    #md5.digest()
-    signature= hmac.new(key,base_string, sha1).digest()
-    #para pasar a ascii necesito un codificador (base64)
-    signature = base64.standard_b64encode (signature).decode('ascii')
-    HEADER += 'oauth_signature="' + urllib2.quote(signature, safe="") + '", '
-
-    #Signature Method
-    HEADER += 'oauth_signature_method="HMAC-SHA1", '
-    #Timestamp
-    HEADER += 'oauth_timestamp="' + timestamp + '", '
-    #TOKEn
-    HEADER += 'oauth_token="' + self.access_key + '", '
-    #Version
-    HEADER += 'oauth_version="1.0"'
-
-    #Peticion de token, devuelve oauth_token,oauth_token_secret y oauth_callback_confirmed
-    req= urllib2.Request(self.request_url)
-    req.add_header(HEADER_TITLE, HEADER)
-    response = urllib2.urlopen(req).read()
-    response = [k.split("=") for k in response.split("&")]
-    #response_json = {}
-    #for k in response:
-      #response_json[k[0]] = k[1]
-
-    tokens=[]
-    for v in response:
-        token1=v[1]
-        tokens.append(token1)
-    oauth_token=tokens[0]
-    oauth_token_secret=tokens[1]
-    oauth_verifier1=tokens[2]
-
-#-------------------------------------------------------------------------------------------------------------------
-#Get Authorization URL. Request para permitir autorizacion
-    # authoriza= "https://api.twitter.com/oauth/authorize?oauth_token=%s" % oauth_token
-    # req1=urllib2.Request(authoriza)
-    # response1 = urllib2.urlopen(req1).read()
-    # webbrowser.open(authoriza)
-    # time.sleep(3)
-
-    # oauth_verifier="TnEti5JqFtKcQqVxFtcLMrcpyPrRyuuy"
-    # access_token_url= "https://api.twitter.com/oauth/access_token?oauth_verifier=%s" % oauth_verifier
-
-#Request token y token secret finales
-    # req5= urllib2.Request(access_token_url)
-    # req5.add_header(HEADER_TITLE, HEADER)
-    # response5 = urllib2.urlopen(req5).read()
-
-#     oauth = OAuth1Session(self.consumer_key,self.consumer_secret,oauth_token,oauth_token_secret,oauth_verifier)
-#     oauth_tokens = oauth.fetch_access_token(self.access_token_url)
-#     resource_owner_key = oauth_tokens.get('oauth_token')
-#     resource_owner_secret = oauth_tokens.get('oauth_token_secret')
-
-#---------------------------------------
-#Get Authentication URL.
-    #authorize_url1 = self.authenticate_url +'?'+"oauth_token=" + oauth_token
-    #authent = "https://api.twitter.com/oauth/authenticate?oauth_token=%s" % oauth_token
-    #req2=urllib2.Request(authent)
-    #response2=urllib2.urlopen(req2).read()
-   #mirar como sacar los parametros de la url al hacer esta peticion. O ver donde me devuelve el oauth_token y el oauth_verifier
-    #webbrowser.open(authent)
-#-----------------------------------------
-
-#PRUEBAS
-objeto = OauthTwitter(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_KEY, ACCESS_SECRET)
-respuesta = objeto.get_auth_token()
-
-
-
-
-
-##########################################################################################################################################
-##########################################################################################################################################
-#------------------------------------------------------------METRICA REFRESCO-------------------------------------------------------------
-##########################################################################################################################################
-##########################################################################################################################################
-
-
 network_list = ["twitter", "facebook", "github","pinterest"]
 version_list = ["master","latency", "accuracy"]
+url_base_remote= "http://metricas-formales.appspot.com/app/refresh_metric"
+url_base_local= "http://localhost:8080/refresh_metric"
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),consola: python refresco.py twitter coge la "variable" twitter
 if len(sys.argv) >= 2:
@@ -204,13 +86,13 @@ if social_network in network_list:
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/twitter-timeline/static/TwitterRefresco.html" + "?" + estado)
+                webbrowser.open_new(url_base_remote + "/Master/twitter-timeline/static/TwitterRefresco.html" + "?" + estado)
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Latency/twitter-timeline/static/TwitterRefrescoLatency.html"  + "?" + estado)
+                webbrowser.open_new(url_base_remote + "/Latency/twitter-timeline/static/TwitterRefrescoLatency.html"  + "?" + estado)
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado)
+                webbrowser.open_new(url_base_remote + "/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado)
                 sleep(3)
 
    
@@ -387,13 +269,13 @@ if social_network in network_list:
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/facebook-wall/FacebookRefresco.html" + "?" + message)
+                webbrowser.open_new(url_base_remote + "/Master/facebook-wall/FacebookRefresco.html" + "?" + message)
                 sleep(5)
             elif(version=="latency"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Latency/facebook-wall/FacebookRefrescoLatency.html" + "?" + message)
+                webbrowser.open_new(url_base_remote + "/Latency/facebook-wall/FacebookRefrescoLatency.html" + "?" + message)
                 sleep(5)
             elif(version=="accuracy"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html" + "?" + message)
+                webbrowser.open_new(url_base_remote + "/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html" + "?" + message)
                 sleep(5)
 
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
@@ -535,197 +417,24 @@ if social_network in network_list:
                 
 
 #--------------------------------------------------
-#CASO3: GITHUB
-#--------------------------------------------------
-
-    elif social_network == 'github':
-
-        ##########################################################################################################################################
-        #----------------------------------------------------------DATOS GITHUB API---------------------------------------------------------------
-        ##########################################################################################################################################
-        payload ="Found a new bug"
-        listestado=[]
-        listtpubl_ms=[]
-        
-        if version in version_list:
-            if(version=="master"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Master/github-events/GithubRefresco.html"  + "?" + payload)
-                sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Latency/github-events/GithubRefrescoLatency.html"  + "?" + payload)
-                sleep(3)
-            elif(version=="accuracy"):
-                webbrowser.open_new("http://metricas-formales.appspot.com/app/refresh_metric/Accuracy/github-events/GithubRefrescoAccuracy.html"  + "?" + payload)
-                sleep(3)
-
-        #se ha de cambiar el token: https://github.com/settings/tokens
-        headers = {'Authorization': 'token dda3ad66696''f12542b7b14a2372c6f9f4225ca71' }
-
-        #funcion crear un repositorio
-        def post_repo():
-            url='https://api.github.com/user/repos'
-            payload = {'name': 'sandraguapa2', 'auto_init': True, 'private':False, 'gitignore_template': 'nanoc'}
-            r = requests.post(url=url,data=json.dumps(payload),headers=headers)
-
-        #funcion crear una issue
-        def post_issue():
-            url='https://api.github.com/repos/sandragyaguez/prueba/issues'
-            payload = { "title": "Found a new bug","body": "I'm having a problem with this."}
-            r = requests.post(url=url,data=json.dumps(payload),headers=headers)
-            #print r.status_code
-            #print r.text
-
-        #funcion crear una pull request
-        def post_pullrequest():
-            url='https://api.github.com/repos/sandragyaguez/prueba/pulls'
-            payload = { "title": "Amazing new feature","body": "Please pull this in!","head": "rama_prueba","base": "master"}
-            r = requests.post(url=url,data=json.dumps(payload),headers=headers)
-        
-        post_issue()
-        tpubl=datetime.datetime.now()
-        tpubl_ms=int(time.time()*1000)
-        print "tiempo post en ms: " + str(tpubl_ms)
-        listestado.append(payload)
-        listtpubl_ms.append(tpubl_ms)
-
-        #zip con mensaje posteado y el tiemnpo de publicacion
-        zipPython=zip(listestado,listtpubl_ms)
-        dictPython=dict(zipPython)
-        print dictPython
-
-
-        ##########################################################################################################################################
-        #-------------------------------------------DATOS GITHUB COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
-        ###########################################################################################################################################
-
-
-        sleep(70)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("4fe88dd4a1adad7b14889b4e7da2c204","e38bfa81176f69b094dd41ad1f28292c")
-        lista=[]
-        listacomp=[]
-        listatime=[]
-
-        if version in version_list:
-            if version=="master":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
-
-                for y in newlist:
-                    textocomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(textocomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
-                print dictComp
-
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        final_time=int(value)-int(valuesP)
-                        print "final_time: " + str(final_time)
-                        mpGithub.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
-
-
-            elif version=="latency":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
-
-                for y in newlist:
-                    textocomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(textocomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
-                print dictComp
-
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        final_time=int(value)-int(valuesP)
-                        print "final_time: " + str(final_time)
-                        mpGithub.track(final_time, "Final time latency",{"time final": final_time, "tweet": key, "version":version})
-
-            elif version=="accuracy":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
-
-                for y in newlist:
-                    textocomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(textocomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
-                print dictComp
-
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        final_time=int(value)-int(valuesP)
-                        print "final_time: " + str(final_time)
-                        mpGithub.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})
-
-
-#--------------------------------------------------
-#CASO4: PINTEREST
+#CASO3: PINTEREST
 #--------------------------------------------------
 
     elif social_network == 'pinterest':
+    	print "ha entrado"
 
         ##########################################################################################################################################
         #-------------------------------------------------------DATOS PINTEREST API---------------------------------------------------------------
         ##########################################################################################################################################
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new("http://localhost:8080/refresh_metric/Master/pinterest-timeline/demo/PinterestCompletitud.html")
+                webbrowser.open_new(url_base_local + "/Master/pinterest-timeline/demo/PinterestCompletitud.html")
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new("http://localhost:8080/refresh_metric/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
+                webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new("http://localhost:8080/refresh_metric/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
+                webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
                 sleep(3)
 
         access_token="AXh-Xld9fy7jeDuI23ovntIthRVjFI6N-kmb11xDmW-C0gBCfwAAAAA"

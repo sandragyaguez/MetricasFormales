@@ -1193,7 +1193,7 @@ if social_network in network_list:
                 sleep(3)
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
-                sleep(3)
+                sleep(5)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
                 sleep(3)
@@ -1211,7 +1211,7 @@ if social_network in network_list:
         board=[]
         pets=[]
         imagAPI=[]
-
+    
         #recorro el timeline y cojo de la clave data sus valores y dentro de sus valores la url de cada tablero
         for k,v in timeline.iteritems():
             if(timeline.has_key('data')):
@@ -1248,12 +1248,14 @@ if social_network in network_list:
             
         #metodo que coge las urls de las imagenes (60 como maximo por cada tablero)
         def getData(pets):
+            contador=0
             for pet in pets:
                 request=makeRequest(pet)
                 data= request.get('data',None)
                 for urls in data:
                     url=urls.get('url', None)
-                    imagAPI.append(url) 
+                    imagAPI.append(url)
+                 
 
                 # hacer las siguiente 60 peticiones          
                 # siguiente=request.get('page',None).get('next',None)
@@ -1266,8 +1268,8 @@ if social_network in network_list:
                     
         getData(pets)
         print len(imagAPI)
+       
         
-
         ##########################################################################################################################################
         #------------------------------------------DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
         ##########################################################################################################################################
@@ -1282,6 +1284,8 @@ if social_network in network_list:
 
        #metodo que me compara la lista de imagenes obtenidas por la API con la lista de imagenes cogidas en el componente
         def comp(list1, list2):
+            # variable global para que no me de el fallo "referenciado antes de asignado"
+            global contadorFallos
             fallos=[]
             if len(list1) != len(list2):
                 print "no tienen la misma longitud"
@@ -1305,10 +1309,10 @@ if social_network in network_list:
                 print len(imagComp)
 
                 fallos=comp(imagAPI,imagComp)
-                print fallos
 
                 mpPinterest.track(fallos,"Fallos master imagenes",{"imagen":fallos, "version":"master"})
-                contadorFallos=contadorFallos/float(contador)
+                contadorFallos=contadorFallos/float(len(imagAPI))
+                print contadorFallos
                 mpPinterest.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
  
 
@@ -1323,10 +1327,9 @@ if social_network in network_list:
                 print len(imagComp)
          
                 fallos=comp(imagAPI,imagComp)
-                print fallos
 
                 mpPinterest.track(fallos,"Fallos latency imagenes",{"imagen":fallos, "version":"latency"})
-                ontadorFallos=contadorFallos/float(contador)
+                contadorFallos=contadorFallos/float(len(imagAPI))
                 mpPinterest.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
  
 
@@ -1337,17 +1340,19 @@ if social_network in network_list:
 
                 for x in respuesta:
                     resp=str(x)
-                    imagComp.append(resp)
+                    #me devuelve todo bien, pero ademas anade al principio de la respuesta un string vacio (u''). Es problema de la api
+                    #para descartarlo hago el siguiente if. Si resp (si resp es true) entra por el if teniendo en cuenta que algo vacio es false
+                    # string vacio, 0, undefined, none: siempre son falsos, con comprobar si resp es true porque no viene vacio es suficiente
+                    if resp:
+                        imagComp.append(resp)
                 print len(imagComp)
             
                 fallos=comp(imagAPI,imagComp)
-                print fallos
 
                 mpPinterest.track(fallos,"Fallos accuracy imagenes",{"imagen":fallos, "version":"accuracy"})
-                ontadorFallos=contadorFallos/float(contador)
+                contadorFallos=contadorFallos/float(len(imagAPI))
+                print contadorFallos
                 mpPinterest.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
- 
-
                 
 
 
