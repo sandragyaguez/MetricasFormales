@@ -1193,7 +1193,7 @@ if social_network in network_list:
                 sleep(3)
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
-                sleep(5)
+                sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
                 sleep(3)
@@ -1268,13 +1268,14 @@ if social_network in network_list:
                     
         getData(pets)
         print len(imagAPI)
+        print imagAPI
        
         
         ##########################################################################################################################################
         #------------------------------------------DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
         ##########################################################################################################################################
 
-        sleep(10)
+        sleep(20)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("55736dc621aade0a3e80ea2f7f28f42b","5d34c88bc7f29c166e56484966b1c85b")
 
@@ -1294,8 +1295,7 @@ if social_network in network_list:
                 if not (val in list2):
                     fallos.append(val)
                     contadorFallos=contadorFallos+1        
-            return fallos   
-
+            return fallos
 
         if version in version_list:
             if version=="master":
@@ -1337,6 +1337,8 @@ if social_network in network_list:
                 #defino los parametros necesarios para la peticion
                 params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
+                print len(respuesta)
+                print respuesta
 
                 for x in respuesta:
                     resp=str(x)
@@ -1350,6 +1352,7 @@ if social_network in network_list:
                 fallos=comp(imagAPI,imagComp)
 
                 mpPinterest.track(fallos,"Fallos accuracy imagenes",{"imagen":fallos, "version":"accuracy"})
+                print contadorFallos
                 contadorFallos=contadorFallos/float(len(imagAPI))
                 print contadorFallos
                 mpPinterest.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})

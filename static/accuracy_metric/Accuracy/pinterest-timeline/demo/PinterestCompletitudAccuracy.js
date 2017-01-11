@@ -8,22 +8,24 @@ document.addEventListener('WebComponentsReady', function() {
   function geti(i,buttons){
   return function(){
        buttons[i].click()
+          console.log("va bien")
           window.setTimeout(function(){
             contador=0;      
             for(var j=0;j<element.pins_cache.length;j++){
-              url=element.pins_cache[j].image.original.url;
+              url=element.pins_cache[j].url;
+              console.log(url)
               contador++;
               mixpanel.track("accuracy",{'value':url});
             }
             console.log(contador) 
-          },500);
+          },1000);
   }
 }
   window.setTimeout(function() {
     var buttons =element.querySelectorAll(".itemBig");
     //recorro todos los botones del timeline de pinterest
     for (var i=0; i<buttons.length;i++){
-      window.setTimeout(geti(i,buttons),i*1000);
+      window.setTimeout(geti(i,buttons),i*2000);
   }
-},1000);
+},4000);
 })

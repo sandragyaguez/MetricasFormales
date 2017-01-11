@@ -448,10 +448,11 @@ Example:
       },
 
       _randomize: function(){
-        var i = this.pins.length-1;
+        var i = this.pins_cache.length-1;
         for(i; i>=0; i--){
           if(Math.random()>0.9){
-            this.pins[i].image.original.url = "";
+            this.pins_cache[i].image.original.url = "http://4.bp.blogspot.com/-hmRb2YpGRNk/UR0KU1v49yI/AAAAAAAAAcI/fmjlzmlXFs0/s1600/Error.png";
+            this.pins_cache[i].url = "Error";
           }
         }
       },
