@@ -18,7 +18,7 @@ document.addEventListener('WebComponentsReady', function() {
               mixpanel.track("accuracy",{'value':url});
             }
             console.log(contador) 
-          },1000);
+          },1500);
   }
 }
   window.setTimeout(function() {

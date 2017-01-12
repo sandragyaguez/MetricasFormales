@@ -32,11 +32,10 @@ import mixpanel_api, json
 from mixpanel import Mixpanel
 mpTwitter = Mixpanel("070bf8a01a6127ebf78325716490697a")
 mpFacebook=Mixpanel("f9177cf864c2778e099d5ec71113d0bf")
-mpGithub=Mixpanel("870ae6fd08343fcfb154ad6ed5227c47")
 mpPinterest=Mixpanel("98b144c253b549db5cdeb812a9323ca3")
 
 
-network_list = ["twitter", "facebook", "github","pinterest"]
+network_list = ["twitter", "facebook","googleplus", "pinterest"]
 version_list = ["master","latency", "accuracy"]
 url_base_remote= "http://metricas-formales.appspot.com/app/refresh_metric"
 url_base_local= "http://localhost:8080/refresh_metric"
@@ -414,27 +413,74 @@ if social_network in network_list:
                             print "final_time: " + str(final_time)
                             mpFacebook.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})
 
-                
+   
+
+
+#--------------------------------------------------
+#CASO3: GOOGLEPLUS
+#--------------------------------------------------
+    elif social_network == 'googleplus':
+
+        ##########################################################################################################################################
+        #---------------------------------------------------------DATOS FACEBOOK API--------------------------------------------------------------
+        ##########################################################################################################################################
+        
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/googleplus-timeline/demo/GoogleplusRefresco.html")
+                sleep(5)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_remote + "/Latency/facebook-wall/FacebookRefrescoLatency.html")
+                sleep(5)
+            elif(version=="accuracy"):
+                webbrowser.open_new(url_base_remote + "/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html")
+                sleep(5)
+
+        
+
+        # import pprint
+
+        # # Set the user's ID to 'me': requires the plus.me scope
+        # user_id = 'me'
+
+        # # Insert an Activity
+        # print('Insert activity')
+        # result = service.activities().insert(
+        #     userId = user_id,
+        #     body = {
+        #         'object': {
+        #             'originalContent' : 'Happy Monday! #caseofthemondays'
+        #         },
+        #         'access': {
+        #             'items' : [{
+        #                 'type' : 'domain'
+        #             }],
+        #             'domainRestricted': True
+        #         }
+        #     }).execute()
+        # print('result = %s' % pprint.pformat(result)) 
+
+
+            
 
 #--------------------------------------------------
 #CASO3: PINTEREST
 #--------------------------------------------------
 
     elif social_network == 'pinterest':
-    	print "ha entrado"
 
         ##########################################################################################################################################
         #-------------------------------------------------------DATOS PINTEREST API---------------------------------------------------------------
         ##########################################################################################################################################
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/pinterest-timeline/demo/PinterestCompletitud.html")
+                webbrowser.open_new(url_base_local + "/Master/pinterest-timeline/demo/PinterestRefresco.html")
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
+                webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestRefrescoLatency.html")
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
+                webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestRefrescoAccuracy.html")
                 sleep(3)
 
         access_token="AXh-Xld9fy7jeDuI23ovntIthRVjFI6N-kmb11xDmW-C0gBCfwAAAAA"
@@ -443,16 +489,16 @@ if social_network in network_list:
         note="Take a look, it is GitHub"
         link="https://www.pinterest.com/r/pin/687643436823691338/4779055074072594921/3cdbba8c79c29eba41db0a63e1b7ea42ff8a705745fc44e54f86ec42ecd50874"
         #"id": "687643436823691338"}
-        board="Tablero 1"
+        board="tablero-1"
         #url="https://api.pinterest.com/v1/boards/anapinskywalker/wanderlust/pins/?"
         #r = requests.post(url=post_my_board,data={"status":"https://www.google.es/search?q=imagen+perro&espv=2&biw=1855&bih=966&tbm=isch&imgil=BUZ0QjOy-024-M%253A%253BIFiRlwaSmIYu2M%253Bhttp%25253A%25252F%25252Fwww.todoperros.com%25252F&source=iu&pf=m&fir=BUZ0QjOy-024-M%253A%252CIFiRlwaSmIYu2M%252C_&usg=__1xfgSCfQ9SeDEmHfz-5d5zzLjvs%3D&ved=0ahUKEwi6rYvu6ubQAhUCvBQKHT9gDRYQyjcIMw&ei=Tn5KWLrOBIL4Ur_AtbAB#imgrc=BUZ0QjOy-024-M%3A"})
         #print r
 
 
         def post_pin(access_token, board, note, link, image_url):
-            response = urllib2.urlopen(
+            response = urllib.urlopen(
                 'https://api.pinterest.com/v1/pins/',
-                data=urllib2.urlencode(dict(
+                data=urllib.urlencode(dict(
                     access_token=access_token,
                     board=board,
                     note=note,

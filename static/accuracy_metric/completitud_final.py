@@ -1352,7 +1352,6 @@ if social_network in network_list:
                 fallos=comp(imagAPI,imagComp)
 
                 mpPinterest.track(fallos,"Fallos accuracy imagenes",{"imagen":fallos, "version":"accuracy"})
-                print contadorFallos
                 contadorFallos=contadorFallos/float(len(imagAPI))
                 print contadorFallos
                 mpPinterest.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
