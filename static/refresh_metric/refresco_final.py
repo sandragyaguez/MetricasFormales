@@ -268,17 +268,17 @@ if social_network in network_list:
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_remote + "/Master/facebook-wall/FacebookRefresco.html" + "?" + message)
+                webbrowser.open_new(url_base_local + "/Master/facebook-wall/FacebookRefresco.html" + "?" + message)
                 sleep(5)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_remote + "/Latency/facebook-wall/FacebookRefrescoLatency.html" + "?" + message)
+                webbrowser.open_new(url_base_local + "/Latency/facebook-wall/FacebookRefrescoLatency.html" + "?" + message)
                 sleep(5)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_remote + "/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html" + "?" + message)
+                webbrowser.open_new(url_base_local + "/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html" + "?" + message)
                 sleep(5)
 
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
-        access_token='EAACEdEose0cBAE5bEFEuNzQr4Iv7Dlc4NXdi9oUZAJZAv7Xniepo5TZAkf30I3LHgwDG7sJNszCoCHR8uIc9iTsNebX7LOlXknSUZCohAHfzvkJxDisy0VJZAQQ49Yy7DfZC9RbfvzxwEvvlKqMdyLEPyZCGduZAQ7e8JOG53fiZAZAQZDZD'
+        access_token='EAANMUmJPs2UBAMhsmC2RmpMyUZCaY8qcB7hnNbCvVhOvcTZB6cPmfyAHNiSP90UoZChLeoAWrHwgZCtaGOubUW3GEZBZBSP5qlqvPrMZBhzmXJtPCDaE5VcPIYA2cZCmZACY3PZAZApfMZCQEHMoyxXGs90vK05L81vDMOTICNuntJLhuwZDZD'
 
         listestado=[]
         listtpubl_ms=[]
@@ -464,7 +464,7 @@ if social_network in network_list:
             
 
 #--------------------------------------------------
-#CASO3: PINTEREST
+#CASO4: PINTEREST
 #--------------------------------------------------
 
     elif social_network == 'pinterest':
@@ -472,28 +472,29 @@ if social_network in network_list:
         ##########################################################################################################################################
         #-------------------------------------------------------DATOS PINTEREST API---------------------------------------------------------------
         ##########################################################################################################################################
+        
+        image_url="https://t1.ea.ltmcdn.com/es/images/2/2/0/img_alimentar_cachorros_recien_nacidos_20022_paso_2_600.jpg"
+
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/pinterest-timeline/demo/PinterestRefresco.html")
+                webbrowser.open_new(url_base_local + "/Master/pinterest-timeline/demo/PinterestRefresco.html" + "?" + image_url)
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestRefrescoLatency.html")
+                webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestRefrescoLatency.html" + "?" + image_url)
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestRefrescoAccuracy.html")
+                webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestRefrescoAccuracy.html" + "?" + image_url)
                 sleep(3)
 
         access_token="AXh-Xld9fy7jeDuI23ovntIthRVjFI6N-kmb11xDmW-C0gBCfwAAAAA"
         post_my_board= "https://api.pinterest.com/v1/me/pins/?access_token=" + access_token
-        image_url="https://www.pinterest.com/pin/687643436823691338/"
-        note="Take a look, it is GitHub"
-        link="https://www.pinterest.com/r/pin/687643436823691338/4779055074072594921/3cdbba8c79c29eba41db0a63e1b7ea42ff8a705745fc44e54f86ec42ecd50874"
-        #"id": "687643436823691338"}
-        board="tablero-1"
-        #url="https://api.pinterest.com/v1/boards/anapinskywalker/wanderlust/pins/?"
-        #r = requests.post(url=post_my_board,data={"status":"https://www.google.es/search?q=imagen+perro&espv=2&biw=1855&bih=966&tbm=isch&imgil=BUZ0QjOy-024-M%253A%253BIFiRlwaSmIYu2M%253Bhttp%25253A%25252F%25252Fwww.todoperros.com%25252F&source=iu&pf=m&fir=BUZ0QjOy-024-M%253A%252CIFiRlwaSmIYu2M%252C_&usg=__1xfgSCfQ9SeDEmHfz-5d5zzLjvs%3D&ved=0ahUKEwi6rYvu6ubQAhUCvBQKHT9gDRYQyjcIMw&ei=Tn5KWLrOBIL4Ur_AtbAB#imgrc=BUZ0QjOy-024-M%3A"})
-        #print r
+        image_url="https://t1.ea.ltmcdn.com/es/images/2/2/0/img_alimentar_cachorros_recien_nacidos_20022_paso_2_600.jpg"
+        note="Take a look"
+        link="https://www.google.es/search?q=perros&espv=2&biw=1855&bih=966&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjchq_cz8vRAhXCzxQKHQ4DCWMQ_AUIBigB#imgrc=BqLqaxHeCHP0ZM%3A"
+        board="829295787572730316"
 
+        listimags=[]
+        listtpubl_ms=[]
 
         def post_pin(access_token, board, note, link, image_url):
             response = urllib.urlopen(
@@ -503,9 +504,70 @@ if social_network in network_list:
                     board=board,
                     note=note,
                     link=link,
-                    image_url=image_url,
+                    image_url=image_url
                 )))
-            response_data = json.load(response)
-            return response_data
 
-        print post_pin(access_token, board, note, link, image_url)
+            response_data = json.load(response)
+            tpubl_ms=int(time.time())
+            print "tiempo post en ms: " + str(tpubl_ms)
+            listimags.append(image_url)
+            listtpubl_ms.append(tpubl_ms)
+
+        post_pin(access_token, board, note, link, image_url)
+
+
+        zipPython=zip(listimags,listtpubl_ms)
+        print zipPython
+        #diccionario con los mensajes publicados y su tiempo de publicacion
+        dictPython=dict(zipPython)
+        print dictPython
+
+
+        ##########################################################################################################################################
+        #----------------------------------------DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
+        ##########################################################################################################################################
+        #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
+        sleep(70)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
+        x=mixpanel_api.Mixpanel("c6a5d1682613e89df94c6eceb3859be6","17a38edfdff693b56b50f332ae8f8e9e")
+        lista=[]
+        listacomp=[]
+        listatime=[]
+
+        if version in version_list:
+            if version=="master":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+                print respuesta
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el post
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    textocomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(textocomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario post, time
+                dictComp=dict(zipComp)
+                print dictComp
+
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                            valuesP=dictPython.get(key,None)
+                            final_time=int(value)-int(valuesP)
+                            print "final_time: " + str(final_time)
+                            mpFacebook.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
+
+
+        
