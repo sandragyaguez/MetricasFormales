@@ -473,7 +473,7 @@ if social_network in network_list:
         #-------------------------------------------------------DATOS PINTEREST API---------------------------------------------------------------
         ##########################################################################################################################################
         
-        image_url="https://t1.ea.ltmcdn.com/es/images/2/2/0/img_alimentar_cachorros_recien_nacidos_20022_paso_2_600.jpg"
+        image_url="https://www.mundogato.net/wp-content/uploads/normas-de-higiene-en-los-gatos-1-485x300.jpg"
 
         if version in version_list:
             if(version=="master"):
@@ -488,7 +488,6 @@ if social_network in network_list:
 
         access_token="AXh-Xld9fy7jeDuI23ovntIthRVjFI6N-kmb11xDmW-C0gBCfwAAAAA"
         post_my_board= "https://api.pinterest.com/v1/me/pins/?access_token=" + access_token
-        image_url="https://t1.ea.ltmcdn.com/es/images/2/2/0/img_alimentar_cachorros_recien_nacidos_20022_paso_2_600.jpg"
         note="Take a look"
         link="https://www.google.es/search?q=perros&espv=2&biw=1855&bih=966&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjchq_cz8vRAhXCzxQKHQ4DCWMQ_AUIBigB#imgrc=BqLqaxHeCHP0ZM%3A"
         board="829295787572730316"
@@ -513,6 +512,7 @@ if social_network in network_list:
             listimags.append(image_url)
             listtpubl_ms.append(tpubl_ms)
 
+        sleep(2)
         post_pin(access_token, board, note, link, image_url)
 
 
@@ -570,4 +570,5 @@ if social_network in network_list:
                             mpFacebook.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
 
 
-        
+        #COMPROBAR SI LA PARTE DEL COMPONENTE ESTA BIEN
+        #EN EL JAVASCRIPT HE QUITADO LA COMPARACION DE LO QUE SE PUBLICA
