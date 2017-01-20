@@ -17,11 +17,9 @@ document.addEventListener('WebComponentsReady', function() {
  	 			//id del primer elemento que muestra el timeline
    			var last_element_id = element.pins_cache[0].id;
    			//espero a escuchar si hay algun cambio
-   			console.log("llega aqui")
    			element.addEventListener('pins_cache-changed', function(event){
   				//cojo tiempo en el momento que hay cambio
-        	var time=new Date().getTime();
-        	console.log(time)
+        	var time=(new Date().getTime())/1000;
         	//if (event.detail && event.detail.path.indexOf('length') > -1) {
           	var haymas=true;
           	//voy a recorrer los nuevos cambios y comprobar si el event es el que queria
@@ -42,8 +40,6 @@ document.addEventListener('WebComponentsReady', function() {
                   }
                 var dicc_string = JSON.stringify(diccionario);
                 mixpanel.track("master",{'value':dicc_string});
-                console.log("time de escucha de cambio en ms: " + time);
-
               	//}
             	}
           	}

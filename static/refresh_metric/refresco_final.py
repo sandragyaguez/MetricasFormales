@@ -473,7 +473,7 @@ if social_network in network_list:
         #-------------------------------------------------------DATOS PINTEREST API---------------------------------------------------------------
         ##########################################################################################################################################
         
-        image_url="https://www.mundogato.net/wp-content/uploads/normas-de-higiene-en-los-gatos-1-485x300.jpg"
+        image_url="http://www.mundoperro.net/wp-content/uploads/Perro-Carlino-485x300.jpg"
 
         if version in version_list:
             if(version=="master"):
@@ -517,7 +517,6 @@ if social_network in network_list:
 
 
         zipPython=zip(listimags,listtpubl_ms)
-        print zipPython
         #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
         print dictPython
@@ -539,7 +538,6 @@ if social_network in network_list:
                 #Cuando lo tengas, defines los parametros necesarios para la peticion
                 params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
-                print respuesta
 
                 for x in respuesta:
                     #pasar de unicode a dict
@@ -549,15 +547,14 @@ if social_network in network_list:
                 #ordeno la lista de diccionarios por el post
                 newlist = sorted(lista, key=lambda post: post['post'])
                 for y in newlist:
-                    textocomp=y.items()[0][1]
+                    urlcomp=y.items()[0][1]
                     timecomp=y.items()[1][1]
-                    listacomp.append(textocomp)
+                    listacomp.append(urlcomp)
                     listatime.append(timecomp)
 
                 zipComp=zip(listacomp,listatime)
                 #Diccionario post, time
                 dictComp=dict(zipComp)
-                print dictComp
 
                 #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
@@ -567,8 +564,71 @@ if social_network in network_list:
                             valuesP=dictPython.get(key,None)
                             final_time=int(value)-int(valuesP)
                             print "final_time: " + str(final_time)
-                            mpFacebook.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
+                            mpPinterest.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
 
 
-        #COMPROBAR SI LA PARTE DEL COMPONENTE ESTA BIEN
-        #EN EL JAVASCRIPT HE QUITADO LA COMPARACION DE LO QUE SE PUBLICA
+            elif version=="latency":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el post
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    urlcomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(urlcomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario post, time
+                dictComp=dict(zipComp)
+
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                            valuesP=dictPython.get(key,None)
+                            final_time=int(value)-int(valuesP)
+                            print "final_time: " + str(final_time)
+                            mpPinterest.track(final_time, "Final time latency",{"time final": final_time, "tweet": key, "version":version})
+
+
+            
+            elif version=="accuracy":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el post
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    urlcomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(urlcomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario post, time
+                dictComp=dict(zipComp)
+
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                            valuesP=dictPython.get(key,None)
+                            final_time=int(value)-int(valuesP)
+                            print "final_time: " + str(final_time)
+                            mpPinterest.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})
