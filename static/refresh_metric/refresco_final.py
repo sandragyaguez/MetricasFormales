@@ -33,9 +33,10 @@ from mixpanel import Mixpanel
 mpTwitter = Mixpanel("070bf8a01a6127ebf78325716490697a")
 mpFacebook=Mixpanel("f9177cf864c2778e099d5ec71113d0bf")
 mpPinterest=Mixpanel("98b144c253b549db5cdeb812a9323ca3")
+mpTraffic=Mixpanel("d47fab64a1be9d41d8b1e8850df74754")
 
 
-network_list = ["twitter", "facebook","googleplus", "pinterest"]
+network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents"]
 version_list = ["master","latency", "accuracy"]
 url_base_remote= "http://metricas-formales.appspot.com/app/refresh_metric"
 url_base_local= "http://localhost:8080/refresh_metric"
@@ -176,10 +177,10 @@ if social_network in network_list:
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
                         #resto el tiempo obtenido del componente menos el tiempo que me devuelve directamente la api al postear
-                        final_time=int(value)-int(valuesP)
+                        final_time=float(value)-float(valuesP)
                         print "final_time: " + str(final_time)
                         #mando a Mixpanel el tiempo final obtenido de la resta, el post al que pertenece esa diferencia de tiempo y la version que estamos tratando
-                        mpTwitter.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
+                        mpTwitter.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
 
             elif version=="latency":
                 #Cuando lo tengas, defines los parametros necesarios para la peticion
@@ -211,9 +212,9 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
-                        final_time=int(value)-int(valuesP)
+                        final_time=float(value)-float(valuesP)
                         print "final_time: " + str(final_time)
-                        mpTwitter.track(final_time, "Final time latency",{"time final": final_time, "tweet": key, "version":version})
+                        mpTwitter.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
 
             elif version=="accuracy":
                 #Cuando lo tengas, defines los parametros necesarios para la peticion
@@ -245,9 +246,9 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
-                        final_time=int(value)-int(valuesP)
+                        final_time=float(value)-float(valuesP)
                         print "final_time: " + str(final_time)
-                        mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":"master"})
+                        mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":"master"})
 
 
 
@@ -341,9 +342,9 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                             valuesP=dictPython.get(key,None)
-                            final_time=int(value)-int(valuesP)
+                            final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
-                            mpFacebook.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
+                            mpFacebook.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
 
 
             elif version=="latency":
@@ -375,9 +376,9 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                             valuesP=dictPython.get(key,None)
-                            final_time=int(value)-int(valuesP)
+                            final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
-                            mpFacebook.track(final_time, "Final time latency",{"time final": final_time, "tweet": key, "version":version})
+                            mpFacebook.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
 
 
             elif version=="accuracy":
@@ -409,9 +410,9 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                             valuesP=dictPython.get(key,None)
-                            final_time=int(value)-int(valuesP)
+                            final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
-                            mpFacebook.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})
+                            mpFacebook.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
 
    
 
@@ -430,38 +431,14 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Master/googleplus-timeline/demo/GoogleplusRefresco.html")
                 sleep(5)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_remote + "/Latency/facebook-wall/FacebookRefrescoLatency.html")
+                webbrowser.open_new(url_base_local + "/Latency/googleplus-timeline/demo/GoogleplusRefrescoLatency.html")
                 sleep(5)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_remote + "/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html")
+                webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline/demo/GoogleplusRefrescoAccuracy.html")
                 sleep(5)
 
-        
 
-        # import pprint
-
-        # # Set the user's ID to 'me': requires the plus.me scope
-        # user_id = 'me'
-
-        # # Insert an Activity
-        # print('Insert activity')
-        # result = service.activities().insert(
-        #     userId = user_id,
-        #     body = {
-        #         'object': {
-        #             'originalContent' : 'Happy Monday! #caseofthemondays'
-        #         },
-        #         'access': {
-        #             'items' : [{
-        #                 'type' : 'domain'
-        #             }],
-        #             'domainRestricted': True
-        #         }
-        #     }).execute()
-        # print('result = %s' % pprint.pformat(result)) 
-
-
-            
+             
 
 #--------------------------------------------------
 #CASO4: PINTEREST
@@ -562,9 +539,9 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                             valuesP=dictPython.get(key,None)
-                            final_time=int(value)-int(valuesP)
+                            final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
-                            mpPinterest.track(final_time, "Final time master",{"time final": final_time, "tweet": key, "version":version})
+                            mpPinterest.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
 
 
             elif version=="latency":
@@ -595,9 +572,9 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                             valuesP=dictPython.get(key,None)
-                            final_time=int(value)-int(valuesP)
+                            final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
-                            mpPinterest.track(final_time, "Final time latency",{"time final": final_time, "tweet": key, "version":version})
+                            mpPinterest.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
 
 
             
@@ -629,6 +606,162 @@ if social_network in network_list:
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
                             valuesP=dictPython.get(key,None)
-                            final_time=int(value)-int(valuesP)
+                            final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
-                            mpPinterest.track(final_time, "Final time accuracy",{"time final": final_time, "tweet": key, "version":version})
+                            mpPinterest.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
+
+
+
+
+#--------------------------------------------------
+#CASO4: TRAFFIC INCIDENTS
+#--------------------------------------------------
+
+    elif social_network == 'traffic-incidents':
+
+        ##########################################################################################################################################
+        #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
+        ##########################################################################################################################################
+        
+        def randomword(length):
+            return ''.join(random.choice(string.lowercase) for i in range(length))
+
+        description=randomword(10)
+
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/traffic-incidents/demo/TrafficRefresco.html" + "?" + description)
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/traffic-incidents/demo/TrafficRefrescoLatency.html" + "?" + description)
+                sleep(12)
+            elif(version=="accuracy"):
+                webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficRefrescoAccuracy.html" + "?" + description)
+                sleep(3)
+
+        listpost=[]
+        listtpubl_ms=[]
+        
+        datos = {"description": description}
+        url = "https://centauro.ls.fi.upm.es:4444/traffic"
+        response = requests.post(url, data=datos, verify=False)
+        tpubl_ms=int(time.time())
+        listpost.append(description)
+        listtpubl_ms.append(tpubl_ms)
+
+        zipPython=zip(listpost,listtpubl_ms)
+        #diccionario con los mensajes publicados y su tiempo de publicacion
+        dictPython=dict(zipPython)
+        print dictPython
+
+
+        ##########################################################################################################################################
+        #----------------------------------------DATOS TRAFFIC COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
+        ##########################################################################################################################################
+        #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
+        sleep(70)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
+        x=mixpanel_api.Mixpanel("f84c5fe9d8cacb4271819b9e0f06f5e5","4b7abff36fb44e36332e12ff744d36c5")
+        lista=[]
+        listacomp=[]
+        listatime=[]
+
+        if version in version_list:
+            if version=="master":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el post
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    postcomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(postcomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario post, time
+                dictComp=dict(zipComp)
+
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                            valuesP=dictPython.get(key,None)
+                            final_time=float(value)-float(valuesP)
+                            print "final_time: " + str(final_time)
+                            mpTraffic.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
+
+
+
+            elif version=="latency":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el post
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    postcomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(postcomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario post, time
+                dictComp=dict(zipComp)
+
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                            valuesP=dictPython.get(key,None)
+                            final_time=float(value)-float(valuesP)
+                            print "final_time: " + str(final_time)
+                            mpTraffic.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
+
+
+            elif version=="accuracy":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el post
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    postcomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(postcomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario post, time
+                dictComp=dict(zipComp)
+
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                            valuesP=dictPython.get(key,None)
+                            final_time=float(value)-float(valuesP)
+                            print "final_time: " + str(final_time)
+                            mpTraffic.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
