@@ -10,7 +10,6 @@
         //console.log("El texto que tengo que encontrar es: " + publish_text);
         //timeout para dar tiempo al componente a que se cargue
         window.setTimeout(function() {
-        console.log("entra")
         //id del primer elemento que muestra el timeline
         var last_element_id = element.traffic_info[0].incidentId;
         console.log(element);
@@ -18,6 +17,7 @@
         element.addEventListener('traffic_info-changed', function(event){
           //cojo tiempo en el momento que hay cambio
           var time=new Date().getTime()/1000;
+          console.log('Tiempo en el que se refresca: ', time);
           if (event.detail && event.detail.value.length > 0) {
           var haymas=true;
           //voy a recorrer los nuevos cambios y comprobar si el event es el que queria
@@ -27,7 +27,7 @@
               //cuando no haya mas, tengo que actualizar el id al primero de la pila
               //en last_element_id tengo el id del tweet con el que voy a comparar con el id obtenido de python para comprobar que lo que se refresca en el
               //componente es lo mismo que he twitteado yo
-              last_element_id=element.events[0].id;
+              last_element_id=element.traffic_info[0].incidentId;
             }
             else{
                 if(element.traffic_info[i].description===publish_text){
@@ -44,5 +44,5 @@
           }
           }         
         });
-      }, 7000);
+      }, 10000);
       });

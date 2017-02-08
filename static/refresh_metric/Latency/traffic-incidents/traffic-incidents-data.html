@@ -201,6 +201,7 @@ app_key_traffic="yout_bing_maps_key" auto_refresh refresh_time="60000">
     },
     _setRefreshTime: function (newValue) {
       if (this.auto_refresh && newValue && !this._interval) {
+        console.log('Se setea el refresco: ', new Date());
         this._interval = window.setInterval(this.requestTraffic.bind(this), newValue);
       } else if (this.auto_refresh && newValue) {
         window.clearInterval(this._interval);
@@ -268,11 +269,13 @@ app_key_traffic="yout_bing_maps_key" auto_refresh refresh_time="60000">
     * @method requestTraffic
     */
     requestTraffic: function () {
-      if (this.refreshCity) {
-        this.$.requestGeoencode.generateRequest();
-      } else {
-        this._getTraffic();
-      }
+      var that = this;
+        if (that.refreshCity) {
+          that.$.requestGeoencode.generateRequest();
+        } else {
+          console.log('Se piden datos: ', new Date());
+          that._getTraffic();
+        }
     },
     // Aux function
 

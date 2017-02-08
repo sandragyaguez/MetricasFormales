@@ -36,7 +36,7 @@ mpPinterest=Mixpanel("98b144c253b549db5cdeb812a9323ca3")
 mpTraffic=Mixpanel("d47fab64a1be9d41d8b1e8850df74754")
 
 
-network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents"]
+network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather"]
 version_list = ["master","latency", "accuracy"]
 url_base_remote= "http://metricas-formales.appspot.com/app/refresh_metric"
 url_base_local= "http://localhost:8080/refresh_metric"
@@ -660,6 +660,11 @@ if social_network in network_list:
         ##########################################################################################################################################
         #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
         sleep(70)
+        #limpio la cache antes de coger datos del componente
+        url = "https://centauro.ls.fi.upm.es:4444/fakes/traffic/clean"
+        response = requests.get(url, verify=False)
+
+
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
         x=mixpanel_api.Mixpanel("f84c5fe9d8cacb4271819b9e0f06f5e5","4b7abff36fb44e36332e12ff744d36c5")
         lista=[]
@@ -765,3 +770,54 @@ if social_network in network_list:
                             final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
                             mpTraffic.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
+
+
+
+#--------------------------------------------------
+#CASO5: OPEN WEATHER
+#--------------------------------------------------
+
+    elif social_network == 'open-weather':
+
+        ##########################################################################################################################################
+        #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
+        ##########################################################################################################################################
+        
+        def randomword(length):
+            return ''.join(random.choice(string.lowercase) for i in range(length))
+
+        description=randomword(10)
+
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/open-weather/demo/WeatherRefresco.html" + "?" + description)
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherRefrescoLatency.html" + "?" + description)
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + description)
+                sleep(3)
+
+
+        listpost=[]
+        listtpubl_ms=[]
+        
+        datos = '[{"temp": 20, "min": 15, "max": 25, "icon": "01d"}, {"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"}]'
+        #codificar datos porque la peticion hay que hacerla en ese formato
+        datos = 'data='+ urllib.quote(datos)
+
+        headers= {
+            "content-type":"application/x-www-form-urlencoded"
+        }
+        url = "https://centauro.ls.fi.upm.es:4444/weather"
+        response = requests.post(url, data=datos, verify=False, headers=headers)
+        print response
+        # tpubl_ms=int(time.time())
+        # listpost.append(description)
+        # listtpubl_ms.append(tpubl_ms)
+
+        # zipPython=zip(listpost,listtpubl_ms)
+        # #diccionario con los mensajes publicados y su tiempo de publicacion
+        # dictPython=dict(zipPython)
+        # print dictPython

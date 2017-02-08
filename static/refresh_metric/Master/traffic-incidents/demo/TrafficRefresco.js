@@ -26,7 +26,7 @@
               //cuando no haya mas, tengo que actualizar el id al primero de la pila
               //en last_element_id tengo el id del tweet con el que voy a comparar con el id obtenido de python para comprobar que lo que se refresca en el
               //componente es lo mismo que he twitteado yo
-              last_element_id=element.events[0].id;
+              last_element_id=element.traffic_info[0].incidentId;
             }
             else{
                 if(element.traffic_info[i].description===publish_text){
