@@ -784,7 +784,7 @@ if social_network in network_list:
         #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
         ##########################################################################################################################################
         
-        datos = '[{"temp": 20, "min": 15, "max": 25, "icon": "01d"}, {"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"}]'
+        datos = '[{"temp": 20, "min": 15, "max": 25, "icon": "01d"}, {"temp": 30, "min": 15, "max": 25, "icon": "01d"},{"temp": 10, "min": 15, "max": 25, "icon": "01d"},{"temp": 15, "min": 15, "max": 25, "icon": "01d"},{"temp": 8, "min": 2, "max": 25, "icon": "01d"},{"temp": 9, "min": 1, "max": 25, "icon": "01d"},{"temp": 22, "min": 15, "max": 25, "icon": "01d"},{"temp": 23, "min": 15, "max": 25, "icon": "01d"}]'
 
 
         if version in version_list:

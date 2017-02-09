@@ -7,6 +7,25 @@
         var publish_text = window.location.search
         //desplazo en uno para quitar la interrogacion y guardo desde ahi hasta el final del texto publicado
         publish_text = publish_text.slice(1, publish_text.length)
+       
+        //decodifico lo que viene en la URI ya que en el codigo python lo codifico por restriccion de la api
+        publish_text=decodeURI(publish_text)
+        publish_text=JSON.parse(publish_text)
+
+        listtemp=[];
+        listicon=[];
+        listmin=[];
+        listmax=[];
+        for (var j=0; j< publish_text.length;j++){
+          temp= publish_text[j].temp
+          listtemp.push(temp);
+          icon= publish_text[j].icon
+          listicon.push(icon);
+          min= publish_text[j].min
+          listmin.push(min);
+          max=publish_text[j].max
+          listmax.push(max);
+        }
         //console.log("El texto que tengo que encontrar es: " + publish_text);
         //timeout para dar tiempo al componente a que se cargue
         window.setTimeout(function() {
@@ -34,9 +53,7 @@
               //a.current_date.minTemp
               //a.current_date.maxTemp
               //a.current_date.icon
-
-//tengo que decodificar el texto que mando por query en la uri y decodificar el codigo de icon ya que del componente se coge como "nuboso"
-                if(element.data[i].description===publish_text){
+                if(element.data[i].currentTemp===publish_text){
                   var diccionario = {
                     'time': time,
                     'post':publish_text
