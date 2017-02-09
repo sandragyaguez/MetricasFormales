@@ -34,6 +34,7 @@ mpTwitter = Mixpanel("070bf8a01a6127ebf78325716490697a")
 mpFacebook=Mixpanel("f9177cf864c2778e099d5ec71113d0bf")
 mpPinterest=Mixpanel("98b144c253b549db5cdeb812a9323ca3")
 mpTraffic=Mixpanel("d47fab64a1be9d41d8b1e8850df74754")
+mpWeather=Mixpanel("1a7d93449a9b07f9d00e86e03a1a7d6a")
 
 
 network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather"]
@@ -634,7 +635,7 @@ if social_network in network_list:
                 sleep(3)
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/traffic-incidents/demo/TrafficRefrescoLatency.html" + "?" + description)
-                sleep(12)
+                sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficRefrescoAccuracy.html" + "?" + description)
                 sleep(3)
@@ -783,27 +784,24 @@ if social_network in network_list:
         #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
         ##########################################################################################################################################
         
-        def randomword(length):
-            return ''.join(random.choice(string.lowercase) for i in range(length))
+        datos = '[{"temp": 20, "min": 15, "max": 25, "icon": "01d"}, {"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"}]'
 
-        description=randomword(10)
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/open-weather/demo/WeatherRefresco.html" + "?" + description)
+                webbrowser.open_new(url_base_local + "/Master/open-weather/demo/WeatherRefresco.html" + "?" + datos)
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherRefrescoLatency.html" + "?" + description)
+                webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherRefrescoLatency.html" + "?" + datos)
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + description)
+                webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + datos)
                 sleep(3)
 
 
         listpost=[]
         listtpubl_ms=[]
         
-        datos = '[{"temp": 20, "min": 15, "max": 25, "icon": "01d"}, {"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"},{"temp": 20, "min": 15, "max": 25, "icon": "01d"}]'
         #codificar datos porque la peticion hay que hacerla en ese formato
         datos = 'data='+ urllib.quote(datos)
 
@@ -813,11 +811,62 @@ if social_network in network_list:
         url = "https://centauro.ls.fi.upm.es:4444/weather"
         response = requests.post(url, data=datos, verify=False, headers=headers)
         print response
-        # tpubl_ms=int(time.time())
-        # listpost.append(description)
-        # listtpubl_ms.append(tpubl_ms)
+        tpubl_ms=int(time.time())
+        listpost.append(datos)
+        listtpubl_ms.append(tpubl_ms)
 
-        # zipPython=zip(listpost,listtpubl_ms)
-        # #diccionario con los mensajes publicados y su tiempo de publicacion
-        # dictPython=dict(zipPython)
-        # print dictPython
+        zipPython=zip(listpost,listtpubl_ms)
+        #diccionario con los mensajes publicados y su tiempo de publicacion
+        dictPython=dict(zipPython)
+        print dictPython
+
+        ##########################################################################################################################################
+        #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
+        ##########################################################################################################################################
+        #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
+        sleep(70)
+        #limpio la cache antes de coger datos del componente
+        url = "https://centauro.ls.fi.upm.es:4444/fakes/weather/clean"
+        response = requests.get(url, verify=False)
+
+
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
+        x=mixpanel_api.Mixpanel("c8fcf17a2d3201de0c409c902d8f4a08","60375710344595c8d8a05b18a9574adb")
+        lista=[]
+        listacomp=[]
+        listatime=[]
+
+        if version in version_list:
+            if version=="master":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+                print respuesta
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el post
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    postcomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(postcomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario post, time
+                dictComp=dict(zipComp)
+
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                            valuesP=dictPython.get(key,None)
+                            final_time=float(value)-float(valuesP)
+                            print "final_time: " + str(final_time)
+                            mpTraffic.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
+

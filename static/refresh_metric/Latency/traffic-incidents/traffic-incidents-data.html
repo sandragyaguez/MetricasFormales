@@ -178,10 +178,8 @@ app_key_traffic="yout_bing_maps_key" auto_refresh refresh_time="60000">
     },
     // Life cycle functions
     attached: function(){
-      this.sleep(function(){
         this.$.requestGeoencode.generateRequest();
         this._disableChange = true;
-      }.bind(this))
     },
     detached: function () {
       window.clearInterval(this._interval);
@@ -249,20 +247,22 @@ app_key_traffic="yout_bing_maps_key" auto_refresh refresh_time="60000">
     _getTraffic: function () {
       this.fire('traffic-request_iniciated');
       this.set('traffic_info', []);
-      this.sleep(function(){
         this.$.requestData.generateRequest();
-      }.bind(this));
     },
     _trafficCallback: function (event, detail) {
-      var result = detail.response;
-      if (result && result.resourceSets && result.resourceSets[0].resources) {
-        this.set('traffic_info', result.resourceSets[0].resources);
-        this.fire('traffic_info-ready', { traffic_info: this.traffic_info });
-      } else {
-        console.error('Error Bind traffic: response is empty')
-        this.fire('traffic-request-error', { error: result });
-      }
-    },
+     var result = detail.response;
+     if (result && result.resourceSets && result.resourceSets[0].resources) {
+       var that = this;
+       this.sleep(function(){
+         that.set('traffic_info', result.resourceSets[0].resources);
+         that.fire('traffic_info-ready', { traffic_info: that.traffic_info });
+       })
+     } else {
+       console.error('Error Bind traffic: response is empty')
+       this.fire('traffic-request-error', { error: result });
+     }
+   },
+
     /**
     * Get data from Bing Traffic Api. If city was changed, a geocoding request
     * is generated
@@ -273,7 +273,6 @@ app_key_traffic="yout_bing_maps_key" auto_refresh refresh_time="60000">
         if (that.refreshCity) {
           that.$.requestGeoencode.generateRequest();
         } else {
-          console.log('Se piden datos: ', new Date());
           that._getTraffic();
         }
     },

@@ -35,7 +35,7 @@ mpGoogle=Mixpanel("f2655b08b62cc657d6865f8af003bdd9")
 mpPinterest=Mixpanel("6ceb3a37029277deb7f530ac7d65d7d4")
 
 #---------------------------------------------------------------------------------------------------------------------
-network_list = ["twitter", "facebook", "googleplus", "pinterest"]
+network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather"]
 version_list = ["master","latency", "accuracy"]
 url_base_remote= "http://metricas-formales.appspot.com/app/accuracy_metric"
 url_base_local= "http://localhost:8080/accuracy_metric"
@@ -1355,6 +1355,29 @@ if social_network in network_list:
                 contadorFallos=contadorFallos/float(len(imagAPI))
                 print contadorFallos
                 mpPinterest.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
+
+
+############################################
+############################################
+        #CASO5: TRAFFIC-INCIDENTS
+############################################
+############################################
+
+    elif social_network == 'traffic-incidents':
+
+        ##########################################################################################################################################
+        #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
+        ##########################################################################################################################################
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/traffic-incidents/demo/TrafficCompletitud.html")
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/traffic-incidents/demo/TrafficCompletitudLatency.html")
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficCompletitudAccuracy.html")
+                sleep(3)
                 
 
 
