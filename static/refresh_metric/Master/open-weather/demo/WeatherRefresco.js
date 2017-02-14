@@ -10,6 +10,7 @@
        
         //decodifico lo que viene en la URI ya que en el codigo python lo codifico por restriccion de la api
         publish_text=decodeURI(publish_text)
+        publish_text=publish_text.replace(/'/g,'"')
         publish_text=JSON.parse(publish_text)
 
         listtemp=[];
@@ -29,7 +30,7 @@
         //console.log("El texto que tengo que encontrar es: " + publish_text);
         //timeout para dar tiempo al componente a que se cargue
         window.setTimeout(function() {
-        //tiempo del primer elemento que muestra el timeline porque este componente no tiene ids
+        //tiempo del primer elemento que muestra el timeline porque este componente no tiene ids (current_date coge el actual y coge el objeto entero)
         var last_time = element.current_date.current_time;
         var last_date = element.current_date.current_date;
         console.log(element);
@@ -49,10 +50,13 @@
               last_date=element.data.current_date;
             }
             else{
-              //a.current_date.currentTemp
-              //a.current_date.minTemp
-              //a.current_date.maxTemp
-              //a.current_date.icon
+              //ya tengo en publish text el intervalo de post correspondientes. Ahora tengo que acceder a element.current_date.cada variable
+              //pero en el componente tengo que recorrer desde la hora en la que estoy hasta que se acaba el dia. Cojo el dt y compruebo que 
+              //hora es y tengo que coger tantos objetos como posiciones del intervalo tiempo haya desde donde estoy ahora hasta el final del dia
+              //element.current_date.currentTemp
+              //element.current_date.minTemp
+              //element.current_date.maxTemp
+              //element.current_date.icon
                 if(element.data[i].currentTemp===publish_text){
                   var diccionario = {
                     'time': time,

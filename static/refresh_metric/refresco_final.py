@@ -784,36 +784,50 @@ if social_network in network_list:
         #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
         ##########################################################################################################################################
         
-        datos = '[{"temp": 20, "min": 15, "max": 25, "icon": "01d"}, {"temp": 30, "min": 15, "max": 25, "icon": "01d"},{"temp": 10, "min": 15, "max": 25, "icon": "01d"},{"temp": 15, "min": 15, "max": 25, "icon": "01d"},{"temp": 8, "min": 2, "max": 25, "icon": "01d"},{"temp": 9, "min": 1, "max": 25, "icon": "01d"},{"temp": 22, "min": 15, "max": 25, "icon": "01d"},{"temp": 23, "min": 15, "max": 25, "icon": "01d"}]'
-
+        #cojo el tiempo para saber que hora es y conocer a partir de que hora tengo que publicar
+        #tengo un array con 8 tiempos a publicar porque corresponde a las horas 0 3 6 9 12 15 18 21
+        tiempo=time.strftime("%H")
+        print tiempo
+        datos1=[]
+        #cuando divido entres 3 conozco el intervalo en el que estoy y a partir de que elemento tengo que coger en el array par apublicar
+        #si por ejemplo tiempo=12. Divido 12/3=4 y se que tengo que publicar desde la posicion 4 de mi array datos
+        intervalo=int(tiempo)/int(3)
+        print intervalo
+        datos = [{"temp": 30, "min": 15, "max": 1, "icon": "01d"}, {"temp": 30, "min": 15, "max": 2, "icon": "01d"},{"temp": 10, "min": 15, "max": 3, "icon": "01d"},{"temp": 15, "min": 15, "max": 4, "icon": "01d"},{"temp": 30, "min": 2, "max": 5, "icon": "01d"},{"temp": 9, "min": 1, "max": 6, "icon": "01d"},{"temp": 22, "min": 15, "max": 7, "icon": "01d"},{"temp": 23, "min": 15, "max": 8, "icon": "01d"}]
+        
+        datos1=datos[intervalo:]
+        datos1= str(datos1)
+        print type(datos1)
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/open-weather/demo/WeatherRefresco.html" + "?" + datos)
+                webbrowser.open_new(url_base_local + "/Master/open-weather/demo/WeatherRefresco.html" + "?" + datos1)
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherRefrescoLatency.html" + "?" + datos)
+                webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherRefrescoLatency.html" + "?" + datos1)
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + datos)
+                webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + datos1)
                 sleep(3)
 
 
         listpost=[]
         listtpubl_ms=[]
         
-        #codificar datos porque la peticion hay que hacerla en ese formato
-        datos = 'data='+ urllib.quote(datos)
+        #codificar datos1 porque la peticion hay que hacerla en ese formato
+        datos1 = 'data='+ urllib.quote(datos1)
 
         headers= {
             "content-type":"application/x-www-form-urlencoded"
         }
         url = "https://centauro.ls.fi.upm.es:4444/weather"
-        response = requests.post(url, data=datos, verify=False, headers=headers)
+        response = requests.post(url, data=datos1, verify=False, headers=headers)
         print response
         tpubl_ms=int(time.time())
-        listpost.append(datos)
+        print tpubl_ms
+        listpost.append(datos1)
         listtpubl_ms.append(tpubl_ms)
+
 
         zipPython=zip(listpost,listtpubl_ms)
         #diccionario con los mensajes publicados y su tiempo de publicacion
