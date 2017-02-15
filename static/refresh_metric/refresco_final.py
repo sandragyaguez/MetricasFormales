@@ -797,7 +797,6 @@ if social_network in network_list:
         
         datos1=datos[intervalo:]
         datos1= str(datos1)
-        print type(datos1)
 
         if version in version_list:
             if(version=="master"):
@@ -815,13 +814,15 @@ if social_network in network_list:
         listtpubl_ms=[]
         
         #codificar datos1 porque la peticion hay que hacerla en ese formato
-        datos1 = 'data='+ urllib.quote(datos1)
+        datos = '[{"temp": 30, "min": 15, "max": 1, "icon": "01d"}, {"temp": 30, "min": 15, "max": 2, "icon": "01d"},{"temp": 10, "min": 15, "max": 3, "icon": "01d"},{"temp": 15, "min": 15, "max": 4, "icon": "01d"},{"temp": 30, "min": 2, "max": 5, "icon": "01d"},{"temp": 9, "min": 1, "max": 6, "icon": "01d"},{"temp": 22, "min": 15, "max": 7, "icon": "01d"},{"temp": 23, "min": 15, "max": 8, "icon": "01d"}]'
+        datos = 'data='+ urllib.quote(datos)
+
 
         headers= {
             "content-type":"application/x-www-form-urlencoded"
         }
         url = "https://centauro.ls.fi.upm.es:4444/weather"
-        response = requests.post(url, data=datos1, verify=False, headers=headers)
+        response = requests.post(url, data=datos, verify=False, headers=headers)
         print response
         tpubl_ms=int(time.time())
         print tpubl_ms

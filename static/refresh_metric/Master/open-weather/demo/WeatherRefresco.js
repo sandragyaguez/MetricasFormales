@@ -40,8 +40,11 @@
           var time=new Date().getTime()/1000;
           if (event.detail && event.detail.value.length > 0) {
           var haymas=true;
+          console.log("ha entrado aqui")
           //voy a recorrer los nuevos cambios y comprobar si el event es el que queria
           for (var i = 0; i<element.data.length && haymas;i++){
+  
+
             if(element.data[i].current_date === last_date && element.data[i].current_time === last_time){
               haymas=false;
               //cuando no haya mas, tengo que actualizar el id al primero de la pila
@@ -50,14 +53,19 @@
               last_date=element.data.current_date;
             }
             else{
-              //ya tengo en publish text el intervalo de post correspondientes. Ahora tengo que acceder a element.current_date.cada variable
-              //pero en el componente tengo que recorrer desde la hora en la que estoy hasta que se acaba el dia. Cojo el dt y compruebo que 
-              //hora es y tengo que coger tantos objetos como posiciones del intervalo tiempo haya desde donde estoy ahora hasta el final del dia
-              //element.current_date.currentTemp
-              //element.current_date.minTemp
-              //element.current_date.maxTemp
-              //element.current_date.icon
-                if(element.data[i].currentTemp===publish_text){
+              var dia = new Date();
+              var dd=dia.getDate();
+              console.log(dd)
+              if(element.data[i].dt.getDate()===dd){
+                for (var i=0; i<listtemp.length;i++){
+                  if(element.data[i].currentTemp===listtemp[i]){
+                    console.log("son iguales")
+                    //mandar el dato a mixpanel
+                  }
+
+                  }
+              
+
                   var diccionario = {
                     'time': time,
                     'post':publish_text

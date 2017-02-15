@@ -12,19 +12,19 @@
 # Ejecutamos scripts para medir y recolectar los datos
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version master"
-python refresco.py twitter master
+python refresco_final.py twitter master
 sleep 10
 killall chrome
 
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version latency"
-python refresco.py twitter latency
+python refresco_final.py twitter latency
 sleep 10
 pkill chrome
 
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version accuracy"
-python refresco.py twitter accuracy
+python refresco_final.py twitter accuracy
 sleep 10
 pkill chrome
 
@@ -35,43 +35,89 @@ pkill chrome
 
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version master"
-python refresco.py facebook master
+python refresco_final.py facebook master
 sleep 10
 pkill chrome
 
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version latency"
-python refresco.py facebook latency
+python refresco_final.py facebook latency
 sleep 10
 pkill chrome
 
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version accuracy"
-python refresco.py facebook accuracy
+python refresco_final.py facebook accuracy
 sleep 10
 pkill chrome
 
 
 #---------#
-#GITHUB
+#PINTEREST
 #---------#
 
 # Ejecutamos scripts para medir y recolectar los datos
 echo "##################################################################"
-echo "Realizando pruebas sobre el componente github-events: metrica refresco version master"
-python refresco.py github master
+echo "Realizando pruebas sobre el componente pinterest-timeline: metrica refresco version master"
+python refresco_final.py pinterest master
+sleep 10
+killall chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente pinterest-timeline: metrica refresco version latency"
+python refresco_final.py pinterest latency
 sleep 10
 pkill chrome
 
 echo "##################################################################"
-echo "Realizando pruebas sobre el componente github-events: metrica refresco version latency"
-python refresco.py github latency
+echo "Realizando pruebas sobre el componente pinterest-timeline: metrica refresco version accuracy"
+python refresco_final.py pinterest accuracy
+sleep 10
+pkill chrome
+
+#---------#
+#TRAFFIC
+#---------#
+
+# Ejecutamos scripts para medir y recolectar los datos
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente traffic-incidents: metrica refresco version master"
+python refresco_final.py traffic-incidents master
+sleep 10
+killall chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente traffic-incidents: metrica refresco version latency"
+python refresco_final.py traffic-incidents latency
 sleep 10
 pkill chrome
 
 echo "##################################################################"
-echo "Realizando pruebas sobre el componente github-events: metrica refresco version accuracy"
-python refresco.py github accuracy
+echo "Realizando pruebas sobre el componente traffic-incidents: metrica refresco version accuracy"
+python refresco_final.py traffic-incidents accuracy
+sleep 10
+pkill chrome
+
+#---------#
+#WEATHER
+#---------#
+
+# Ejecutamos scripts para medir y recolectar los datos
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente open-weather: metrica refresco version master"
+#python refresco_final.py open-weather master
+sleep 10
+killall chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente open-weather: metrica refresco version latency"
+#python refresco_final.py open-weather latency
+sleep 10
+pkill chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente open-weather: metrica refresco version accuracy"
+#python refresco_final.py open-weather accuracy
 sleep 10
 pkill chrome
 
