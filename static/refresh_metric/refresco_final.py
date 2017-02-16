@@ -793,9 +793,9 @@ if social_network in network_list:
         #si por ejemplo tiempo=12. Divido 12/3=4 y se que tengo que publicar desde la posicion 4 de mi array datos
         intervalo=int(tiempo)/int(3)
         print intervalo
-        datos = [{"temp": 30, "min": 15, "max": 1, "icon": "01d"}, {"temp": 30, "min": 15, "max": 2, "icon": "01d"},{"temp": 10, "min": 15, "max": 3, "icon": "01d"},{"temp": 15, "min": 15, "max": 4, "icon": "01d"},{"temp": 30, "min": 2, "max": 5, "icon": "01d"},{"temp": 9, "min": 1, "max": 6, "icon": "01d"},{"temp": 22, "min": 15, "max": 7, "icon": "01d"},{"temp": 23, "min": 15, "max": 8, "icon": "01d"}]
+        datos = [{"temp": 1, "min": 1, "max": 20, "icon": "01d"}, {"temp": 2, "min": 1, "max": 20, "icon": "01d"},{"temp": 3, "min": 1, "max": 20, "icon": "01d"},{"temp": 4, "min": 1, "max": 20, "icon": "01d"},{"temp": 5, "min": 1, "max": 20, "icon": "01d"},{"temp": 6, "min": 1, "max": 20, "icon": "01d"},{"temp": 7, "min": 1, "max": 20, "icon": "01d"},{"temp": 8, "min": 1, "max": 20, "icon": "01d"}]
         
-        datos1=datos[intervalo:]
+        datos1=datos[intervalo+1:]
         datos1= str(datos1)
 
         if version in version_list:
@@ -814,7 +814,7 @@ if social_network in network_list:
         listtpubl_ms=[]
         
         #codificar datos1 porque la peticion hay que hacerla en ese formato
-        datos = '[{"temp": 30, "min": 15, "max": 1, "icon": "01d"}, {"temp": 30, "min": 15, "max": 2, "icon": "01d"},{"temp": 10, "min": 15, "max": 3, "icon": "01d"},{"temp": 15, "min": 15, "max": 4, "icon": "01d"},{"temp": 30, "min": 2, "max": 5, "icon": "01d"},{"temp": 9, "min": 1, "max": 6, "icon": "01d"},{"temp": 22, "min": 15, "max": 7, "icon": "01d"},{"temp": 23, "min": 15, "max": 8, "icon": "01d"}]'
+        datos = str(datos)
         datos = 'data='+ urllib.quote(datos)
 
 

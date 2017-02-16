@@ -10,41 +10,41 @@
        
         //decodifico lo que viene en la URI ya que en el codigo python lo codifico por restriccion de la api
         publish_text=decodeURI(publish_text)
+        //quito las comillas dobles que me vienen de la api, con una expresion regular
         publish_text=publish_text.replace(/'/g,'"')
+        //aqui tengo x objetos que contienen la temperatura, la maxima, la minima y el icono
         publish_text=JSON.parse(publish_text)
 
-        listtemp=[];
-        listicon=[];
-        listmin=[];
-        listmax=[];
-        for (var j=0; j< publish_text.length;j++){
-          temp= publish_text[j].temp
-          listtemp.push(temp);
-          icon= publish_text[j].icon
-          listicon.push(icon);
-          min= publish_text[j].min
-          listmin.push(min);
-          max=publish_text[j].max
-          listmax.push(max);
-        }
-        //console.log("El texto que tengo que encontrar es: " + publish_text);
+        // listtemp=[];
+        // listicon=[];
+        // listmin=[];
+        // listmax=[];
+        // for (var j=0; j< publish_text.length;j++){
+        //   temp= publish_text[j].temp
+        //   listtemp.push(temp);
+        //   icon= publish_text[j].icon
+        //   listicon.push(icon);
+        //   min= publish_text[j].min
+        //   listmin.push(min);
+        //   max=publish_text[j].max
+        //   listmax.push(max);
+        // }
+
         //timeout para dar tiempo al componente a que se cargue
         window.setTimeout(function() {
         //tiempo del primer elemento que muestra el timeline porque este componente no tiene ids (current_date coge el actual y coge el objeto entero)
         var last_time = element.current_date.current_time;
         var last_date = element.current_date.current_date;
         console.log(element);
+        var length=element.data.length
         //espero a escuchar si hay algun cambio
         element.addEventListener('data-changed', function(event){
           //cojo tiempo en el momento que hay cambio
           var time=new Date().getTime()/1000;
-          if (event.detail && event.detail.value.length > 0) {
+          if (event.detail && event.detail.value == length) {
           var haymas=true;
-          console.log("ha entrado aqui")
           //voy a recorrer los nuevos cambios y comprobar si el event es el que queria
           for (var i = 0; i<element.data.length && haymas;i++){
-  
-
             if(element.data[i].current_date === last_date && element.data[i].current_time === last_time){
               haymas=false;
               //cuando no haya mas, tengo que actualizar el id al primero de la pila
@@ -55,29 +55,33 @@
             else{
               var dia = new Date();
               var dd=dia.getDate();
-              console.log(dd)
               if(element.data[i].dt.getDate()===dd){
-                for (var i=0; i<listtemp.length;i++){
-                  if(element.data[i].currentTemp===listtemp[i]){
+                for (var i=0; i<publish_text.length;i++){
+                  console.log("componente:")
+                  console.log(element.data[i].currentTemp)
+                  console.log("api:")
+                  console.log(publish_text[i].temp)
+
+                  //COMPROBAR QUE TODOS SON IGUALES Y VER COMO MANDAR A MIXPANEL. ACABADO ESO, SOLO QUEDA HACER LA VERSION DE LATENCY Y DE 
+                  //ACCURACY. Y ASI YA ESTARIA ACABADA LA METRICA
+                  if(element.data[i].currentTemp===publish_text[i].temp && element.data[i].icon===publish_text[i].icon && 
+                    element.data[i].maxTemp===publish_text[i].max && element.data[i].minTemp===publish_text[i].min){
                     console.log("son iguales")
-                    //mandar el dato a mixpanel
-                  }
-
-                  }
-              
-
-                  var diccionario = {
+                    var diccionario = {
                     'time': time,
-                    'post':publish_text
+                    'temp':publish_text
                   }
+
                   var dicc_string = JSON.stringify(diccionario);
                   mixpanel.track("master",{'value':dicc_string});
                   console.log("time de escucha de cambio en ms: " + time);
+                  }
 
+                  }
                 }
               }
           }
-          }         
+          } 
         });
       }, 7000);
       });
