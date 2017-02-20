@@ -15,21 +15,6 @@
         //aqui tengo x objetos que contienen la temperatura, la maxima, la minima y el icono
         publish_text=JSON.parse(publish_text)
 
-        // listtemp=[];
-        // listicon=[];
-        // listmin=[];
-        // listmax=[];
-        // for (var j=0; j< publish_text.length;j++){
-        //   temp= publish_text[j].temp
-        //   listtemp.push(temp);
-        //   icon= publish_text[j].icon
-        //   listicon.push(icon);
-        //   min= publish_text[j].min
-        //   listmin.push(min);
-        //   max=publish_text[j].max
-        //   listmax.push(max);
-        // }
-
         //timeout para dar tiempo al componente a que se cargue
         window.setTimeout(function() {
         //tiempo del primer elemento que muestra el timeline porque este componente no tiene ids (current_date coge el actual y coge el objeto entero)
@@ -57,27 +42,18 @@
               var dd=dia.getDate();
               if(element.data[i].dt.getDate()===dd){
                 for (var i=0; i<publish_text.length;i++){
-                  console.log("componente:")
-                  console.log(element.data[i].currentTemp)
-                  console.log("api:")
-                  console.log(publish_text[i].temp)
-
-                  //COMPROBAR QUE TODOS SON IGUALES Y VER COMO MANDAR A MIXPANEL. ACABADO ESO, SOLO QUEDA HACER LA VERSION DE LATENCY Y DE 
-                  //ACCURACY. Y ASI YA ESTARIA ACABADA LA METRICA
-                  if(element.data[i].currentTemp===publish_text[i].temp && element.data[i].icon===publish_text[i].icon && 
-                    element.data[i].maxTemp===publish_text[i].max && element.data[i].minTemp===publish_text[i].min){
-                    console.log("son iguales")
+                    if(element.data[i].currentTemp===publish_text[i].temp && element.data[i].icon===publish_text[i].icon && element.data[i].maxTemp===publish_text[i].max && element.data[i].minTemp===publish_text[i].min){
                     var diccionario = {
                     'time': time,
-                    'temp':publish_text
+                    'post':publish_text
                   }
-
+                }
+              }
                   var dicc_string = JSON.stringify(diccionario);
                   mixpanel.track("master",{'value':dicc_string});
                   console.log("time de escucha de cambio en ms: " + time);
-                  }
+                  
 
-                  }
                 }
               }
           }

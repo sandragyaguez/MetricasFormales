@@ -793,9 +793,10 @@ if social_network in network_list:
         #si por ejemplo tiempo=12. Divido 12/3=4 y se que tengo que publicar desde la posicion 4 de mi array datos
         intervalo=int(tiempo)/int(3)
         print intervalo
-        datos = [{"temp": 1, "min": 1, "max": 20, "icon": "01d"}, {"temp": 2, "min": 1, "max": 20, "icon": "01d"},{"temp": 3, "min": 1, "max": 20, "icon": "01d"},{"temp": 4, "min": 1, "max": 20, "icon": "01d"},{"temp": 5, "min": 1, "max": 20, "icon": "01d"},{"temp": 6, "min": 1, "max": 20, "icon": "01d"},{"temp": 7, "min": 1, "max": 20, "icon": "01d"},{"temp": 8, "min": 1, "max": 20, "icon": "01d"}]
+        datos = [{"temp": 1, "min": 1, "max": 20, "icon": "wi-day-sunny"}, {"temp": 2, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 3, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 4, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 5, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 6, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 7, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 8, "min": 1, "max": 20, "icon": "wi-day-sunny"}]
         
-        datos1=datos[intervalo+1:]
+        #creo que lo correcto seria datos1=datos[intervalo+1:] pero hay problemas con la franja horaria. REVISAR
+        datos1=datos[intervalo:]
         datos1= str(datos1)
 
         if version in version_list:
@@ -813,7 +814,7 @@ if social_network in network_list:
         listpost=[]
         listtpubl_ms=[]
         
-        #codificar datos1 porque la peticion hay que hacerla en ese formato
+        #codificar datos porque la peticion hay que hacerla en ese formato
         datos = str(datos)
         datos = 'data='+ urllib.quote(datos)
 
@@ -856,7 +857,6 @@ if social_network in network_list:
                 #Cuando lo tengas, defines los parametros necesarios para la peticion
                 params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
-                print respuesta
 
                 for x in respuesta:
                     #pasar de unicode a dict
@@ -871,7 +871,13 @@ if social_network in network_list:
                     listacomp.append(postcomp)
                     listatime.append(timecomp)
 
+                print listacomp
+                print "********************************************"
+                print listatime
                 zipComp=zip(listacomp,listatime)
+                print "********************************************"
+                print "********************************************"
+                print zipComp
                 #Diccionario post, time
                 dictComp=dict(zipComp)
 
