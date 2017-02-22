@@ -3,6 +3,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*
 
+import warnings
+warnings.filterwarnings("ignore")
 import httplib
 import urllib2, urllib
 from random import getrandbits
@@ -26,6 +28,7 @@ import facebook
 import urlparse
 import random
 import string
+import operator
 import ast
 import mixpanel
 import mixpanel_api, json
@@ -796,8 +799,17 @@ if social_network in network_list:
         datos = [{"temp": 1, "min": 1, "max": 20, "icon": "wi-day-sunny"}, {"temp": 2, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 3, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 4, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 5, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 6, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 7, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 8, "min": 1, "max": 20, "icon": "wi-day-sunny"}]
         
         #creo que lo correcto seria datos1=datos[intervalo+1:] pero hay problemas con la franja horaria. REVISAR
-        datos1=datos[intervalo:]
+        datos1=datos[intervalo+1:]
+        
+        #ORDENAR LOS DICCIONARIOS POR CLAVE, DE TAL FORMA QUE SALGA ICON,MAX,MIN,TEMP
+        #PROBLEMA DE AHORA: DICTPYTHON Y DICTCOMP ES EL MISMO PERO DICCIONARIOS EN DISTINTO ORDEN POR LO QUE NUNCA SON IGUALES
+        for x in datos1:
+            datos1 = sorted(x.items(), key=operator.itemgetter(0))
+            datos1.append(datos1)
+        print datos1
         datos1= str(datos1)
+        
+
 
         if version in version_list:
             if(version=="master"):
@@ -816,8 +828,7 @@ if social_network in network_list:
         
         #codificar datos porque la peticion hay que hacerla en ese formato
         datos = str(datos)
-        datos = 'data='+ urllib.quote(datos)
-
+        datos = "data= " + urllib.quote(datos)
 
         headers= {
             "content-type":"application/x-www-form-urlencoded"
@@ -825,8 +836,10 @@ if social_network in network_list:
         url = "https://centauro.ls.fi.upm.es:4444/weather"
         response = requests.post(url, data=datos, verify=False, headers=headers)
         print response
+        
         tpubl_ms=int(time.time())
         print tpubl_ms
+        datos1 = "data= " + urllib.quote(datos1)
         listpost.append(datos1)
         listtpubl_ms.append(tpubl_ms)
 
@@ -834,7 +847,7 @@ if social_network in network_list:
         zipPython=zip(listpost,listtpubl_ms)
         #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
-        print dictPython
+        print "////////////////////////////////////////"
 
         ##########################################################################################################################################
         #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
@@ -867,27 +880,26 @@ if social_network in network_list:
                 newlist = sorted(lista, key=lambda post: post['post'])
                 for y in newlist:
                     postcomp=y.items()[0][1]
+                    print postcomp
+                    postcomp = str(postcomp)
+                    postcomp = "data= " + urllib.quote(postcomp)
                     timecomp=y.items()[1][1]
                     listacomp.append(postcomp)
                     listatime.append(timecomp)
 
-                print listacomp
-                print "********************************************"
-                print listatime
                 zipComp=zip(listacomp,listatime)
-                print "********************************************"
-                print "********************************************"
-                print zipComp
                 #Diccionario post, time
                 dictComp=dict(zipComp)
 
                 #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
+                    print "aqui si?"
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPython.has_key(key)):
+                        print "aqui no entra"
                         #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)
-                            final_time=float(value)-float(valuesP)
-                            print "final_time: " + str(final_time)
-                            mpTraffic.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
+                        valuesP=dictPython.get(key,None)
+                        final_time=float(value)-float(valuesP)
+                        print "final_time: " + str(final_time)
+                        mpWeather.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
 
