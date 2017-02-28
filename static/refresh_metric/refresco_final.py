@@ -792,6 +792,8 @@ if social_network in network_list:
         tiempo=time.strftime("%H")
         print tiempo
         datos1=[]
+        listadatos=[]
+        lisdiccdatos=[]
         #cuando divido entres 3 conozco el intervalo en el que estoy y a partir de que elemento tengo que coger en el array par apublicar
         #si por ejemplo tiempo=12. Divido 12/3=4 y se que tengo que publicar desde la posicion 4 de mi array datos
         intervalo=int(tiempo)/int(3)
@@ -799,17 +801,10 @@ if social_network in network_list:
         datos = [{"temp": 1, "min": 1, "max": 20, "icon": "wi-day-sunny"}, {"temp": 2, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 3, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 4, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 5, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 6, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 7, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 8, "min": 1, "max": 20, "icon": "wi-day-sunny"}]
         
         #creo que lo correcto seria datos1=datos[intervalo+1:] pero hay problemas con la franja horaria. REVISAR
-        datos1=datos[intervalo+1:]
-        
-        #ORDENAR LOS DICCIONARIOS POR CLAVE, DE TAL FORMA QUE SALGA ICON,MAX,MIN,TEMP
-        #PROBLEMA DE AHORA: DICTPYTHON Y DICTCOMP ES EL MISMO PERO DICCIONARIOS EN DISTINTO ORDEN POR LO QUE NUNCA SON IGUALES
-        for x in datos1:
-            datos1 = sorted(x.items(), key=operator.itemgetter(0))
-            datos1.append(datos1)
-        print datos1
-        datos1= str(datos1)
-        
+        datos1=datos[intervalo+1:] 
 
+        datos1=str(datos1)
+        datos1 = "data= " + urllib.quote(datos1)
 
         if version in version_list:
             if(version=="master"):
@@ -826,6 +821,7 @@ if social_network in network_list:
         listpost=[]
         listtpubl_ms=[]
         
+        #en la llamada tengo que mandar todos los datos, los este publicando en ese momento o no
         #codificar datos porque la peticion hay que hacerla en ese formato
         datos = str(datos)
         datos = "data= " + urllib.quote(datos)
@@ -839,10 +835,24 @@ if social_network in network_list:
         
         tpubl_ms=int(time.time())
         print tpubl_ms
-        datos1 = "data= " + urllib.quote(datos1)
-        listpost.append(datos1)
-        listtpubl_ms.append(tpubl_ms)
 
+        #ORDENAR LOS DICCIONARIOS POR CLAVE, DE TAL FORMA QUE SALGA ICON,MAX,MIN,TEMP
+        #PROBLEMA DE AHORA: DICTPYTHON Y DICTCOMP ES EL MISMO PERO DICCIONARIOS EN DISTINTO ORDEN POR LO QUE NUNCA SON IGUALES
+        #MISMO PROBLEMA. MIRAR EN QUE FALLA
+        for x in datos1:
+            datos1 = sorted(x.items(), key=operator.itemgetter(0))
+            listadatos.append(datos1)
+
+        for y in listadatos:
+            datos1=str(y)
+            datos1 = "data= " + urllib.quote(datos1)
+            print datos1
+            listpost.append(datos1)
+        
+        print listpost
+
+
+        listtpubl_ms.append(tpubl_ms)
 
         zipPython=zip(listpost,listtpubl_ms)
         #diccionario con los mensajes publicados y su tiempo de publicacion
