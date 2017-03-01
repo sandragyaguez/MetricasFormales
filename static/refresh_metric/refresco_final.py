@@ -791,9 +791,8 @@ if social_network in network_list:
         #tengo un array con 8 tiempos a publicar porque corresponde a las horas 0 3 6 9 12 15 18 21
         tiempo=time.strftime("%H")
         print tiempo
-        datos1=[]
-        listadatos=[]
-        lisdiccdatos=[]
+
+        listasort=[]
         #cuando divido entres 3 conozco el intervalo en el que estoy y a partir de que elemento tengo que coger en el array par apublicar
         #si por ejemplo tiempo=12. Divido 12/3=4 y se que tengo que publicar desde la posicion 4 de mi array datos
         intervalo=int(tiempo)/int(3)
@@ -801,10 +800,15 @@ if social_network in network_list:
         datos = [{"temp": 1, "min": 1, "max": 20, "icon": "wi-day-sunny"}, {"temp": 2, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 3, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 4, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 5, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 6, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 7, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 8, "min": 1, "max": 20, "icon": "wi-day-sunny"}]
         
         #creo que lo correcto seria datos1=datos[intervalo+1:] pero hay problemas con la franja horaria. REVISAR
-        datos1=datos[intervalo+1:] 
+        datos1=datos[intervalo+1:]
+
+        for x in datos1:
+            datossort = sorted(x.items(), key=operator.itemgetter(0))
+            listasort.append(datossort)
 
         datos1=str(datos1)
         datos1 = "data= " + urllib.quote(datos1)
+
 
         if version in version_list:
             if(version=="master"):
@@ -816,7 +820,6 @@ if social_network in network_list:
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + datos1)
                 sleep(3)
-
 
         listpost=[]
         listtpubl_ms=[]
@@ -835,26 +838,15 @@ if social_network in network_list:
         
         tpubl_ms=int(time.time())
         print tpubl_ms
-
-        #ORDENAR LOS DICCIONARIOS POR CLAVE, DE TAL FORMA QUE SALGA ICON,MAX,MIN,TEMP
-        #PROBLEMA DE AHORA: DICTPYTHON Y DICTCOMP ES EL MISMO PERO DICCIONARIOS EN DISTINTO ORDEN POR LO QUE NUNCA SON IGUALES
-        #MISMO PROBLEMA. MIRAR EN QUE FALLA
-        for x in datos1:
-            datos1 = sorted(x.items(), key=operator.itemgetter(0))
-            listadatos.append(datos1)
-
-        for y in listadatos:
-            datos1=str(y)
-            datos1 = "data= " + urllib.quote(datos1)
-            print datos1
-            listpost.append(datos1)
         
-        print listpost
-
-
+        datasort=str(listasort)
+        datasort = "data= " + urllib.quote(datasort)
+        listpost.append(datasort)
         listtpubl_ms.append(tpubl_ms)
 
+
         zipPython=zip(listpost,listtpubl_ms)
+        print zipPython
         #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
         print "////////////////////////////////////////"
@@ -897,6 +889,9 @@ if social_network in network_list:
                     listacomp.append(postcomp)
                     listatime.append(timecomp)
 
+
+                #ORDENAR LO QUE VIENE DEL COMPONENTE Y COMPARAR CON EL DICCIONARIO DE PYTHON
+                
                 zipComp=zip(listacomp,listatime)
                 #Diccionario post, time
                 dictComp=dict(zipComp)
