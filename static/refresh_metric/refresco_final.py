@@ -790,24 +790,27 @@ if social_network in network_list:
         #cojo el tiempo para saber que hora es y conocer a partir de que hora tengo que publicar
         #tengo un array con 8 tiempos a publicar porque corresponde a las horas 0 3 6 9 12 15 18 21
         tiempo=time.strftime("%H")
+        #resto uno al tiempo porque cuando le pregunto al componente las horas me las da como GTM+1 y python lo tiene en GTM+0
+        #entonces el componente tiene las horas 1 4 7 10 13 19 22 en GTM+1 
+        tiempo=int(tiempo)-1
         print tiempo
 
         listasort=[]
         #cuando divido entres 3 conozco el intervalo en el que estoy y a partir de que elemento tengo que coger en el array par apublicar
         #si por ejemplo tiempo=12. Divido 12/3=4 y se que tengo que publicar desde la posicion 4 de mi array datos
-        intervalo=int(tiempo)/int(3)
+        intervalo=tiempo/int(3)
         print intervalo
         datos = [{"temp": 1, "min": 1, "max": 20, "icon": "wi-day-sunny"}, {"temp": 2, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 3, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 4, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 5, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 6, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 7, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 8, "min": 1, "max": 20, "icon": "wi-day-sunny"}]
         
-        #creo que lo correcto seria datos1=datos[intervalo+1:] pero hay problemas con la franja horaria. REVISAR
         datos1=datos[intervalo+1:]
 
+        #ordeno lo que me viene de la api por orden alfabetico. Icon, max, min y temp
         for x in datos1:
             datossort = sorted(x.items(), key=operator.itemgetter(0))
             listasort.append(datossort)
 
         datos1=str(datos1)
-        datos1 = "data= " + urllib.quote(datos1)
+        datos1 = urllib.quote(datos1)
 
 
         if version in version_list:
@@ -846,10 +849,10 @@ if social_network in network_list:
 
 
         zipPython=zip(listpost,listtpubl_ms)
-        print zipPython
         #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
-        print "////////////////////////////////////////"
+        print dictPython
+        print "*********************************************"
 
         ##########################################################################################################################################
         #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
@@ -866,6 +869,8 @@ if social_network in network_list:
         lista=[]
         listacomp=[]
         listatime=[]
+        listacomp1=[]
+        listacomp2=[]
 
         if version in version_list:
             if version=="master":
@@ -882,26 +887,30 @@ if social_network in network_list:
                 newlist = sorted(lista, key=lambda post: post['post'])
                 for y in newlist:
                     postcomp=y.items()[0][1]
-                    print postcomp
-                    postcomp = str(postcomp)
-                    postcomp = "data= " + urllib.quote(postcomp)
                     timecomp=y.items()[1][1]
-                    listacomp.append(postcomp)
+                    listacomp1.append(postcomp)
                     listatime.append(timecomp)
 
+                #ordeno lo que me viene del componente, de la misma forma que los datos de la api: Icon, max, min y temp
+                for x in listacomp1:
+                    for y in x:
+                        compsort = sorted(y.items(), key=operator.itemgetter(0))
+                        listacomp2.append(compsort)
 
-                #ORDENAR LO QUE VIENE DEL COMPONENTE Y COMPARAR CON EL DICCIONARIO DE PYTHON
-                
+                compsort=str(listacomp2)
+                compsort = "data= " + urllib.quote(compsort)
+                listacomp.append(datasort)
+
+
                 zipComp=zip(listacomp,listatime)
                 #Diccionario post, time
                 dictComp=dict(zipComp)
+                print dictComp
 
                 #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
-                    print "aqui si?"
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPython.has_key(key)):
-                        print "aqui no entra"
                         #si es asi, cojo los values de python y del componente y los comparo
                         valuesP=dictPython.get(key,None)
                         final_time=float(value)-float(valuesP)

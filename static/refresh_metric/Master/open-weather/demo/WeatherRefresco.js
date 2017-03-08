@@ -7,9 +7,8 @@
         var publish_text = window.location.search
         //desplazo en uno para quitar la interrogacion y guardo desde ahi hasta el final del texto publicado
         publish_text = publish_text.slice(1, publish_text.length)
-       
         //decodifico lo que viene en la URI ya que en el codigo python lo codifico por restriccion de la api
-        publish_text=decodeURI(publish_text)
+        publish_text=decodeURIComponent(publish_text)
         //quito las comillas dobles que me vienen de la api, con una expresion regular
         publish_text=publish_text.replace(/'/g,'"')
         //aqui tengo x objetos que contienen la temperatura, la maxima, la minima y el icono
@@ -47,11 +46,12 @@
                     'time': time,
                     'post':publish_text
                   }
+                
                 }
               }
-                  var dicc_string = JSON.stringify(diccionario);
-                  mixpanel.track("master",{'value':dicc_string});
-                  console.log("time de escucha de cambio en ms: " + time);
+                var dicc_string = JSON.stringify(diccionario);
+                mixpanel.track("master",{'value':dicc_string}); 
+                console.log("time de escucha de cambio en ms: " + time);
                   
 
                 }
