@@ -27,16 +27,21 @@ echo $PID
 # echo "Realizando pruebas sobre el componente github-events..."
 # python measureLatency.py github
 
-sleep 10
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente facebook-wall..."
-python measureLatency.py facebook $FACEBOOK_TOKEN
+# sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente facebook-wall..."
+# python measureLatency.py facebook $FACEBOOK_TOKEN
 
-#lo tengo en latency_metric_ana por falta de espacion al desplegar en app engine
+# #lo tengo en latency_metric_ana por falta de espacion al desplegar en app engine
+# sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente googleplus-timeline..."
+# python measureLatency.py googleplus $GOOGLE_TOKEN
+
 sleep 10
 echo "##################################################################"
-echo "Realizando pruebas sobre el componente googleplus-timeline..."
-python measureLatency.py googleplus $GOOGLE_TOKEN
+echo "Realizando pruebas sobre el componente pinterest-timeline..."
+python measureLatency.py pinterest
 
 
 sleep 10
@@ -44,8 +49,9 @@ echo "##################################################################"
 echo "Recolectando y calculando métrica de latencia sobre los componentes probados..."
 #python collectLatencyRecords.py instagram-timeline
 #python collectLatencyRecords.py github-events
-python collectLatencyRecords.py facebook-wall
-python collectLatencyRecords.py googleplus-timeline
+# python collectLatencyRecords.py facebook-wall
+# python collectLatencyRecords.py googleplus-timeline
+python collectLatencyRecords.py pinterest-timeline
 echo "Métricas calculadas"
 
 # Matamos el proceso correspondiente al servidor local de componentes de python
