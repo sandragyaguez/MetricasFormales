@@ -58,7 +58,7 @@
                 }
               }
                 var dicc_string = JSON.stringify(diccionario);
-                mixpanel.track("master",{'value':dicc_string}); 
+                mixpanel.track("accuracy",{'value':dicc_string}); 
                 console.log("time de escucha de cambio en ms: " + time);
                   
 

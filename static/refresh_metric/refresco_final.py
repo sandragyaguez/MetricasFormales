@@ -29,6 +29,7 @@ import urlparse
 import random
 import string
 import operator
+import hashlib
 import ast
 import mixpanel
 import mixpanel_api, json
@@ -795,33 +796,30 @@ if social_network in network_list:
         tiempo=int(tiempo)-1
         print tiempo
 
-        listasort=[]
         #cuando divido entres 3 conozco el intervalo en el que estoy y a partir de que elemento tengo que coger en el array par apublicar
         #si por ejemplo tiempo=12. Divido 12/3=4 y se que tengo que publicar desde la posicion 4 de mi array datos
+        
+
         intervalo=tiempo/int(3)
         print intervalo
-        datos = [{"temp": 1, "min": 1, "max": 20, "icon": "wi-day-sunny"}, {"temp": 2, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 3, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 4, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 5, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 6, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 7, "min": 1, "max": 20, "icon": "wi-day-sunny"},{"temp": 8, "min": 1, "max": 20, "icon": "wi-day-sunny"}]
+        #pongo datos random para que cada post sea unico
+        datos = [{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"}, {"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"}]
         
         datos1=datos[intervalo+1:]
-
-        #ordeno lo que me viene de la api por orden alfabetico. Icon, max, min y temp
-        for x in datos1:
-            datossort = sorted(x.items(), key=operator.itemgetter(0))
-            listasort.append(datossort)
-
+    
         datos1=str(datos1)
-        datos1 = urllib.quote(datos1)
+        datos2 = urllib.quote(datos1)
 
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/open-weather/demo/WeatherRefresco.html" + "?" + datos1)
+                webbrowser.open_new(url_base_local + "/Master/open-weather/demo/WeatherRefresco.html" + "?" + datos2)
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherRefrescoLatency.html" + "?" + datos1)
+                webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherRefrescoLatency.html" + "?" + datos2)
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + datos1)
+                webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + datos2)
                 sleep(3)
 
         listpost=[]
@@ -839,14 +837,15 @@ if social_network in network_list:
         response = requests.post(url, data=datos, verify=False, headers=headers)
         print response
         
+
         tpubl_ms=int(time.time())
         print tpubl_ms
         
-        datasort=str(listasort)
-        datasort = "data= " + urllib.quote(datasort)
-        listpost.append(datasort)
+        #hasheo los datos para evitar problema de limitacion de mixpanel
+        hash_object = hashlib.sha1(datos1)
+        text = hash_object.hexdigest()
+        listpost.append(text)
         listtpubl_ms.append(tpubl_ms)
-
 
         zipPython=zip(listpost,listtpubl_ms)
         #diccionario con los mensajes publicados y su tiempo de publicacion
@@ -888,19 +887,8 @@ if social_network in network_list:
                 for y in newlist:
                     postcomp=y.items()[0][1]
                     timecomp=y.items()[1][1]
-                    listacomp1.append(postcomp)
+                    listacomp.append(postcomp)
                     listatime.append(timecomp)
-
-                #ordeno lo que me viene del componente, de la misma forma que los datos de la api: Icon, max, min y temp
-                for x in listacomp1:
-                    for y in x:
-                        compsort = sorted(y.items(), key=operator.itemgetter(0))
-                        listacomp2.append(compsort)
-
-                compsort=str(listacomp2)
-                compsort = "data= " + urllib.quote(compsort)
-                listacomp.append(datasort)
-
 
                 zipComp=zip(listacomp,listatime)
                 #Diccionario post, time
@@ -916,4 +904,74 @@ if social_network in network_list:
                         final_time=float(value)-float(valuesP)
                         print "final_time: " + str(final_time)
                         mpWeather.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
+
+            elif version=="latency":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el post
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    postcomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(postcomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario post, time
+                dictComp=dict(zipComp)
+                print dictComp
+
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        valuesP=dictPython.get(key,None)
+                        final_time=float(value)-float(valuesP)
+                        print "final_time: " + str(final_time)
+                        mpWeather.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
+
+            elif version=="accuracy":
+                #Cuando lo tengas, defines los parametros necesarios para la peticion
+                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por el post
+                newlist = sorted(lista, key=lambda post: post['post'])
+                for y in newlist:
+                    postcomp=y.items()[0][1]
+                    timecomp=y.items()[1][1]
+                    listacomp.append(postcomp)
+                    listatime.append(timecomp)
+
+                zipComp=zip(listacomp,listatime)
+                #Diccionario post, time
+                dictComp=dict(zipComp)
+                print dictComp
+
+                #la key es el texto de la publicacion y el value son los times de refresco en el componente
+                for key,value in dictComp.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPython.has_key(key)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        valuesP=dictPython.get(key,None)
+                        final_time=float(value)-float(valuesP)
+                        print "final_time: " + str(final_time)
+                        mpWeather.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
+
+
+
+
 
