@@ -9,7 +9,7 @@
 # - 	Hay que cambiar el token que está en FacebookWallLatency.html (carpeta Stable) y la variable FACEBOOK_TOKEN
 # En GoogleplusLatency.html (Carpetas Accuracy, Latency, Stable) cambiar el valor de la variable access_token y la variable GOOGLE_TOKEN
 FACEBOOK_TOKEN="EAACEdEose0cBAD1OiaE2nKOKXMD3zW7CfhZBD2npN2Hi6ZBb26IcDJ1EqQaUKsWiZC7E894BSZBlJEKGvw0iZBGDiDmZAeLMnDTwNXAOJsZAY5uYq0qrf5agYJpNHONPlPhYhEsJsgXo4uDZBzKo5y8xZCbU3jQI2jiijpbB2DTmzzwZDZD"
-GOOGLE_TOKEN="ya29.CjmvA8NQfO9YjPqSyrK27bbkwiD2y_Jq22Ypjr8PfExjQhN9_wRygRWmwatzXUFi719uJsl7jeeWZWo"
+GOOGLE_TOKEN="ya29.GmEKBBxqonMUcB9V3P6L1SD6SNYcAvtvhgZNzoUHPmrYoNXEzSPSVV-Efyh3H7e6dOGRgMXI2UU7mmYjC8NiFfNY1PdcSNI5PCWuqL0sFDOUB_bXIuj0MwAYO00B3deKPZfk"
 
 # Comentar esta línea si los componentes están deplegados en remoto
 python -m SimpleHTTPServer >> /dev/null &
@@ -32,16 +32,16 @@ echo $PID
 # echo "Realizando pruebas sobre el componente facebook-wall..."
 # python measureLatency.py facebook $FACEBOOK_TOKEN
 
-# #lo tengo en latency_metric_ana por falta de espacion al desplegar en app engine
-# sleep 10
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente googleplus-timeline..."
-# python measureLatency.py googleplus $GOOGLE_TOKEN
-
+#lo tengo en latency_metric_ana por falta de espacion al desplegar en app engine
 sleep 10
 echo "##################################################################"
-echo "Realizando pruebas sobre el componente pinterest-timeline..."
-python measureLatency.py pinterest
+echo "Realizando pruebas sobre el componente googleplus-timeline..."
+python measureLatency.py googleplus $GOOGLE_TOKEN
+
+# sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente pinterest-timeline..."
+# python measureLatency.py pinterest
 
 
 sleep 10

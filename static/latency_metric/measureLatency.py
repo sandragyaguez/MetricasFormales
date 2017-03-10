@@ -18,7 +18,7 @@ query_client = MixpanelQueryClient('582d4b303bf22dd746b5bb1b9acbff63', '8b2d3511
 def replicate_googleplus_requests(access_token, experiment_id, experiment_list):
 	google_requests = {}
 	# Endpoint where it is deployed the different versions of twitter-timeline (with the script tracker that sends events to Mixpanel!)
-	remote_base_url = "TWITTER_ENDPOINT"
+	# remote_base_url = "TWITTER_ENDPOINT"
 	for key, experiment in experiment_list.iteritems():
 		google_url = experiment['request']
 		print ">>> Endpoint: " + google_url
