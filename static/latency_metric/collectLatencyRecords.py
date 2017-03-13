@@ -18,12 +18,13 @@ mp = Mixpanel("53da31965c3d047fa72de756aae43db1")
 START_DATE = time.strftime("%Y-%m-%d")
 END_DATE = START_DATE
 # La fecha desde la que has empezado a enviar datos a Mixpanel (se usa para ver si hay algún resultado final que pueda estar duplicado)
-START_STUDY_DATE = "2017-03-09"
+START_STUDY_DATE = "2017-03-13"
 
 # Send metric results to MixPanel
 def sendResults(component_name, experiment_id, experiment_timestamp, request, tag, result, event_key):
 	global mp
 	print ">>> Tag de la comparación: ", tag
+	print ">>> Timestamp: ", experiment_timestamp
 	print ">>> Diferencia de latencia: ", result
 	print ">>> Envio resultados a Mixpanel..."
 	mp.track("1111", 'latencyResult', {
