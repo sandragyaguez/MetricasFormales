@@ -17,7 +17,7 @@ mp = Mixpanel("53da31965c3d047fa72de756aae43db1")
 # We set the date to today
 #START_DATE = time.strftime("%Y-%m-%d")
 START_DATE = "2017-03-09"
-END_DATE = "2017-03-09"
+END_DATE = "2017-03-14"
 # La fecha desde la que has empezado a enviar datos a Mixpanel (se usa para ver si hay algún resultado final que pueda estar duplicado)
 START_STUDY_DATE = "2017-03-09"
 
