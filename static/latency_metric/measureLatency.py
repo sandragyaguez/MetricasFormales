@@ -159,7 +159,7 @@ def main():
 			print "Request time ", requestTime
 
 			mp.track("1111", 'latencyMetric', {
-			    'component': 'facebooks-wall',
+			    'component': 'facebook-wall',
 			    'version': 'host',
 			    'requestDuration': requestTime,
 			    'experiment_id': experiment_id,
