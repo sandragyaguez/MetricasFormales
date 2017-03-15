@@ -8,8 +8,8 @@
 # Antes de hacer una prueba nueva hay que hacer los siguientes pasos:
 # - 	Hay que cambiar el token que está en FacebookWallLatency.html (carpeta Stable) y la variable FACEBOOK_TOKEN
 # En GoogleplusLatency.html (Carpetas Accuracy, Latency, Stable) cambiar el valor de la variable access_token y la variable GOOGLE_TOKEN
-FACEBOOK_TOKEN="EAACEdEose0cBAD1OiaE2nKOKXMD3zW7CfhZBD2npN2Hi6ZBb26IcDJ1EqQaUKsWiZC7E894BSZBlJEKGvw0iZBGDiDmZAeLMnDTwNXAOJsZAY5uYq0qrf5agYJpNHONPlPhYhEsJsgXo4uDZBzKo5y8xZCbU3jQI2jiijpbB2DTmzzwZDZD"
-GOOGLE_TOKEN="ya29.CjmvA8NQfO9YjPqSyrK27bbkwiD2y_Jq22Ypjr8PfExjQhN9_wRygRWmwatzXUFi719uJsl7jeeWZWo"
+FACEBOOK_TOKEN="EAACEdEose0cBAGZBJ5OuCXEWkpEK75uU9PAVZCAI89kZAlvlMIzGZC0x4pgUimKzHXNA3yCnQRsgGZCFlF0y5kiMxsu67gYziASyvH3n8lsIjrt1SDaDGUjPjCnApg31AZAbtzwOqtva8j5YROPaWKksm8NbZB8EbMxgNjDjyebyXcs7uxkAfaWducrTlf09gwZD"
+GOOGLE_TOKEN="ya29.GmEPBGSH2wRJU5yoIwBtqPesewj1FriS5zGZ4HWo0ndcLR9pEk3eYHVzUxqQUu2tO7z4EBiGLJ7V0e8kR7ccesMAf1Bup2eM4Y6dLUDFtAMOXcYrFFFaTsJrvkI-MPIreIy3"
 
 # Comentar esta línea si los componentes están deplegados en remoto
 python -m SimpleHTTPServer >> /dev/null &
@@ -33,19 +33,25 @@ echo "Realizando pruebas sobre el componente facebook-wall..."
 python measureLatency.py facebook $FACEBOOK_TOKEN
 
 #lo tengo en latency_metric_ana por falta de espacion al desplegar en app engine
-sleep 10
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente googleplus-timeline..."
-python measureLatency.py googleplus $GOOGLE_TOKEN
+# sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente googleplus-timeline..."
+# python measureLatency.py googleplus $GOOGLE_TOKEN
+
+# sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente pinterest-timeline..."
+# python measureLatency.py pinterest
 
 
 sleep 10
 echo "##################################################################"
 echo "Recolectando y calculando métrica de latencia sobre los componentes probados..."
-#python collectLatencyRecords.py instagram-timeline
-#python collectLatencyRecords.py github-events
+# python collectLatencyRecords.py instagram-timeline
+# python collectLatencyRecords.py github-events
 python collectLatencyRecords.py facebook-wall
-python collectLatencyRecords.py googleplus-timeline
+# python collectLatencyRecords.py googleplus-timeline
+# python collectLatencyRecords.py pinterest-timeline
 echo "Métricas calculadas"
 
 # Matamos el proceso correspondiente al servidor local de componentes de python

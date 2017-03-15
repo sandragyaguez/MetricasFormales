@@ -15,13 +15,14 @@ from mixpanel import Mixpanel
 mp = Mixpanel("53da31965c3d047fa72de756aae43db1")
 
 # We set the date to today
+#START_DATE = time.strftime("%Y-%m-%d")
 START_DATE = time.strftime("%Y-%m-%d")
 END_DATE = START_DATE
 # La fecha desde la que has empezado a enviar datos a Mixpanel (se usa para ver si hay algún resultado final que pueda estar duplicado)
-START_STUDY_DATE = "2016-04-12"
+START_STUDY_DATE = "2017-03-15"
 
 # Send metric results to MixPanel
-def sendResults(component_name, experiment_id, experiment_timestamp,tag ,result, event_key):
+def sendResults(component_name, experiment_id, experiment_timestamp, request, tag ,result, event_key):
 	global mp
 	print ">>> Tag de la comparación: ", tag
 	print ">>> Diferencia de latencia: ", result
@@ -32,6 +33,8 @@ def sendResults(component_name, experiment_id, experiment_timestamp,tag ,result,
 			    'experiment_timestamp': experiment_timestamp,
 			    'tag': tag,
 			    'latency': result,
+                # We send the api request corresponding to the measurement
+				'request': request,
 			    #Unique id of metric calculation
 			    'result_id': event_key
 			})
@@ -40,16 +43,16 @@ def sendResults(component_name, experiment_id, experiment_timestamp,tag ,result,
 # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/145634995501895/
 def main():
 	# Instantiates the Query Client
-	query_client = MixpanelQueryClient('862a8448704d584ce149704707a0e4e7', '59bf255504e02918c9dc83eb7640144c')
-	
-	componentNames = ["instagram-timeline", "facebook-wall", "github-events", "googleplus-timeline", "twitter-timeline"]
+	query_client = MixpanelQueryClient('582d4b303bf22dd746b5bb1b9acbff63', '8b2d351133ac2a5d4df0700afc595fb6')
+
+	componentNames = ["instagram-timeline", "facebook-wall", "github-events", "googleplus-timeline", "twitter-timeline", "pinterest-timeline"]
 
 	if len(sys.argv) == 2 and sys.argv[1] in componentNames:
 		component = sys.argv[1]
 		print " ### COMPONENTE ", component, "  ###"
 		if component == 'googleplus-timeline':
 			# Obtain data from mixpanel
-			# First, we obtain data generated from host versions. 
+			# First, we obtain data generated from host versions.
 			# The method will return a dict, where the field experiment_id will be the key
 			# Then we'll obtain the events generated from the components
 			query = 'properties["component"]==\"' + component + '\" and properties["version"]=="host"'
@@ -76,47 +79,54 @@ def main():
 					if not result_id in latency_records:
 						# We calculate the differences and send it back to Mixpanel
 						latency = eventClient["requestDuration"] - eventHost["requestDuration"]
-						sendResults(component, eventHost["experiment_id"], eventClient['experiment_timestamp'], tag, latency, result_id)
+						sendResults(component, eventHost["experiment_id"], eventClient['experiment_timestamp'], eventClient["request"], tag, latency, result_id)
 					else:
 						print ">>> El experimento " + eventClient["experiment_id"] + " con peticion " + eventClient["request"] + " con la comparacion " + tag + " ya se ha calculado previamente, por lo que no volvemos a enviar los calculos"
 
 		else:
+			print ">>> Calculando métricas de latencia de experimentos realizados desde " + START_DATE + " hasta " + END_DATE
 			# Obtain data from mixpanel
-			# First, we obtain data generated from host versions. 
+			# First, we obtain data generated from host versions.
 			# The method will return a dict, where the field experiment_id will be the key
 			# Then we'll obtain the events generated from the components
 			query = 'properties["component"]==\"' + component + '\" and properties["version"]=="host"'
-			experiments_dict = query_client.get_export(START_DATE,END_DATE, 'latencyMetric', where=query, result_key='experiment_id')
-			
+			experiments_dict = query_client.get_export(START_DATE,END_DATE, 'latencyMetric', where=query, result_key='experiment')
+			print experiments_dict
 			# We obtain the calculated metrics on the same range of time data to check if there is any latency records
-			#(and to check later for duplicates) 
+			#(and to check later for duplicates)
 			query = 'properties["component"]==\"' + component + '\"'
 			latency_records = query_client.get_export(START_STUDY_DATE,END_DATE, 'latencyResult', where=query, result_key='result_id')
-			
+
 			for experiment_id, experimentHost in experiments_dict.iteritems():
 				# Checks if the actual experiment has been calculated (to not send duplicate results)
 				print '------------------------------------------------------------------------------------------'
-				print ">>> Id del experimento: ", experimentHost['experiment_id']
-				# print experimentHost
-				# We obtain the event generated for every component experiment (one by component version) 
-				query = 'properties["experiment_id"]==\"' + experimentHost['experiment_id'] + '\" and properties["version"]!="host"'
+				print ">>> Id del experimento: ", experimentHost['experiment']
+
+				# We obtain the event generated for every component experiment (one by component version)
+				query = 'properties["experiment_id"]==\"' + experimentHost['experiment'] + '\" and properties["version"]!="host"'
 				component_versions_experiments = query_client.get_export(START_DATE, END_DATE, 'latencyMetric', where=query, result_key='version')
-				# We iterate over the events related to versions stable, accuracy_defects, latency_defects 
+				# We iterate over the events related to versions stable, accuracy_defects, latency_defects
 				for key, experimentClient in component_versions_experiments.iteritems():
 					print "---------------------------------------"
 					tag = experimentClient["version"] + " vs host"
 					# We check for duplicate in latency results
 					result_id = experimentClient["experiment_id"] + tag
-					if not result_id in latency_records:
+					if latency_records == None:
 						# We calculate the differences and send it back to Mixpanel
 						latency = experimentClient["requestDuration"] - experimentHost["requestDuration"]
-						sendResults(component, experimentHost["experiment_id"], experimentClient['experiment_timestamp'],tag,latency,result_id)
+						sendResults(component, experimentHost["experiment"], experimentClient['experiment_timestamp'],experimentClient['request'],tag,latency,result_id)
 					else:
-						print ">>> El experimento " + experimentClient["experiment_id"] + " con la comparacion " + tag + " ya se ha calculado previamente, por lo que no volvemos a enviar los calculos"
+						# Check for duplicates
+						if not result_id in latency_records:
+							# We calculate the differences and send it back to Mixpanel
+							latency = experimentClient["requestDuration"] - experimentHost["requestDuration"]
+							sendResults(component, experimentHost["experiment"], experimentClient['experiment_timestamp'],experimentClient['request'],tag,latency,result_id)
+						else:
+							print ">>> El experimento " + experimentClient["experiment_id"] + " con la comparacion " + tag + " ya se ha calculado previamente, por lo que no volvemos a enviar los calculos"
 	else:
 		print "Wrong parameter"
 		# {}: Obligatorio, []: opcional
-		print "Usage: collectLatencyRecords.py {facebook-wall|instagram-timeline|github-events|googleplus-timeline|twitter-timeline}"
+		print "Usage: collectLatencyRecords.py {facebook-wall|instagram-timeline|github-events|googleplus-timeline|twitter-timeline | pinterest-timeline}"
 
 
 if __name__ == "__main__":
