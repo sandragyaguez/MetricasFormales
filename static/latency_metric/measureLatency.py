@@ -102,7 +102,7 @@ def main():
 			    'component': 'instagram-timeline',
 			    'version': 'host',
 			    'requestDuration': requestTime,
-			    'experiment_id': experiment_id,
+			    'experiment': experiment_id,
 			    'request': full_url
 			})
 
@@ -132,7 +132,7 @@ def main():
 			    'component': 'github-events',
 			    'version': 'host',
 			    'requestDuration': requestTime,
-			    'experiment_id': experiment_id,
+			    'experiment': experiment_id,
 			    'request': github_url
 			})
 			# Lanzamos una pestaña por cada versión del componente
@@ -162,7 +162,7 @@ def main():
 			    'component': 'facebook-wall',
 			    'version': 'host',
 			    'requestDuration': requestTime,
-			    'experiment_id': experiment_id,
+			    'experiment': experiment_id,
 			    'request': facebook_url
 			})
 			# Lanzamos una pestaña por cada versión del componente (El componente de Facebook tiene solo una version implementada)
