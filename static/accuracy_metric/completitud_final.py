@@ -1378,8 +1378,44 @@ if social_network in network_list:
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficCompletitudAccuracy.html")
                 sleep(3)
-                
+               
+        request_uri= "https://centauro.ls.fi.upm.es:4444/traffic?map=39.56276609909911,-4.650120900900901,41.36456790090091,-2.848319099099099&key=AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"
+        
+        
+        headers= {"content-type":"application/x-www-form-urlencoded"}
+        #verify=False para que no me de errores de SSL
+        s= requests.get(request_uri, verify=False, headers=headers)
+        print s
+        timeline=s.json()
+        lista_descrip=[]
+        lista_date=[]
+        lista_type=[]
 
+        #los tres for que hago a continuacion es para conseguir llegar al dato 'description'. La api devuelve los datos en diccionarios dentro de listas dentro de diccionarios
+        for k,v in timeline.iteritems():
+            if(timeline.has_key('resourceSets')):
+                values1=timeline.get('resourceSets',None)
+
+        for m in values1:
+            if(m.has_key('resources')):
+                values2=m.get('resources',None)
+                
+        for n in values2:
+            print n.keys()
+            #descipcion de la incidencia
+            if(n.has_key('description')):
+                values3=n.get('description')
+            lista_descrip.append(values3)
+            #fecha de la publicacion de la incidencia
+            if(n.has_key('lastModified')):
+                values4=n.get('lastModified')
+            lista_date.append(values4)
+            #el type es el grado de gravedad de la incidencia. El usuario lo ve porque dependiendo del numero el icono cambia
+            if(n.has_key('type')):
+                values5=n.get('type')
+            lista_type.append(values5)
+
+        print lista_type
 
 
     else:

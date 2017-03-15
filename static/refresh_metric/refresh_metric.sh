@@ -105,19 +105,19 @@ pkill chrome
 # Ejecutamos scripts para medir y recolectar los datos
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente open-weather: metrica refresco version master"
-#python refresco_final.py open-weather master
+python refresco_final.py open-weather master
 sleep 10
 killall chrome
 
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente open-weather: metrica refresco version latency"
-#python refresco_final.py open-weather latency
+python refresco_final.py open-weather latency
 sleep 10
 pkill chrome
 
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente open-weather: metrica refresco version accuracy"
-#python refresco_final.py open-weather accuracy
+python refresco_final.py open-weather accuracy
 sleep 10
 pkill chrome
 
