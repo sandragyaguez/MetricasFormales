@@ -69,7 +69,7 @@ def replicate_googleplus_requests(access_token, experiment_id, experiment_list):
 
 # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/145634995501895/
 def main():
-	network_list = ["instagram", "facebook", "github", "googleplus", "twitter", "pinterest"]
+	network_list = ["instagram", "facebook", "github", "googleplus", "twitter", "pinterest", "traffic", "finance", "weather"]
 	server_base_url = "http://localhost:8000"
 	if len(sys.argv) >= 2:
 		social_network = sys.argv[1]
