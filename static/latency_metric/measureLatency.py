@@ -338,6 +338,9 @@ def main():
 			webbrowser.open_new(server_base_url + "/Accuracy/PinterestTimelineLatency.html?experiment=" + experiment_id)
 			time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Latency/PinterestTimelineLatency.html?experiment=" + experiment_id)
+
+		elif social_network == 'finance':
+			symbol = "Alphabet Inc."
 	
 	else:
 		print "Wrong social network or missing param"
