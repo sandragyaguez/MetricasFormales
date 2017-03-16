@@ -8,7 +8,6 @@ document.addEventListener('WebComponentsReady', function() {
   function geti(i,buttons){
   return function(){
        buttons[i].click()
-          console.log("va bien")
           window.setTimeout(function(){
             contador=0;      
             for(var j=0;j<element.pins_cache.length;j++){

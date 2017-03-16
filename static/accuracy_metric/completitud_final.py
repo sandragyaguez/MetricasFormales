@@ -28,11 +28,13 @@ from random import randrange
 from mixpanel import Mixpanel
 import mixpanel_api
 
-#objetos Mixpanel para las distintas redes sociales
+#objetos Mixpanel para las distintas redes sociales (token del project)
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
 mpFacebook=Mixpanel("04ae91408ffe85bf83628993704feb15")
 mpGoogle=Mixpanel("f2655b08b62cc657d6865f8af003bdd9")
 mpPinterest=Mixpanel("6ceb3a37029277deb7f530ac7d65d7d4")
+mpTraffic=Mixpanel("85519859ef8995bfe213dfe822e72ab3")
+
 
 #---------------------------------------------------------------------------------------------------------------------
 network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather"]
@@ -1381,7 +1383,6 @@ if social_network in network_list:
                
         request_uri= "https://centauro.ls.fi.upm.es:4444/traffic?map=39.56276609909911,-4.650120900900901,41.36456790090091,-2.848319099099099&key=AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"
         
-        
         headers= {"content-type":"application/x-www-form-urlencoded"}
         #verify=False para que no me de errores de SSL
         s= requests.get(request_uri, verify=False, headers=headers)
@@ -1390,6 +1391,8 @@ if social_network in network_list:
         lista_descrip=[]
         lista_date=[]
         lista_type=[]
+        listacont=[]
+        contador=0
 
         #los tres for que hago a continuacion es para conseguir llegar al dato 'description'. La api devuelve los datos en diccionarios dentro de listas dentro de diccionarios
         for k,v in timeline.iteritems():
@@ -1401,10 +1404,11 @@ if social_network in network_list:
                 values2=m.get('resources',None)
                 
         for n in values2:
-            print n.keys()
             #descipcion de la incidencia
             if(n.has_key('description')):
                 values3=n.get('description')
+                hash_object = hashlib.sha1(values3)
+                values3 = hash_object.hexdigest()
             lista_descrip.append(values3)
             #fecha de la publicacion de la incidencia
             if(n.has_key('lastModified')):
@@ -1415,7 +1419,320 @@ if social_network in network_list:
                 values5=n.get('type')
             lista_type.append(values5)
 
-        print lista_type
+            #la lista de contador la hago para poder identificar cada descripcion con su type de imagen y su date
+            listacont.append(contador)
+            contador=contador+1
+
+
+
+
+        zipPythonDesc=zip(listacont,lista_descrip)
+        #diccionario contador y usuarios
+        dictPythonText=dict(zipPythonDesc)
+        zipPythonDate=zip(listacont,lista_date)
+        #diccionario contador y textos
+        dictPythonDate=dict(zipPythonDate)
+        zipPythonType=zip(listacont,lista_type)
+        #diccionario contador e imagenes
+        dictPythonType=dict(zipPythonType)
+
+        ##########################################################################################################################################
+        #----------------------------------------DATOS TRAFFIC COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
+        ##########################################################################################################################################
+        sleep(10)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("f9048e936929679df4e14859ebd1dd98","0795378c7f94b5b1f4170deb0221ec59")
+        contadorFallos=0
+        lista=[]
+        images=[]
+        listapos=[]
+        listadate=[]
+        listatext=[]
+        listatype=[]
+        liskey=[]
+        lisvalue=[]
+
+        if version in version_list:
+            if version=="master":
+            #defino los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por la posicion (va de 0 a x)
+                newlist = sorted(lista, key=lambda posicion: posicion['i'])
+
+                for y in newlist:
+                    textcomp=y.items()[0][1]
+                    poscomp=y.items()[1][1]
+                    datecomp=y.items()[2][1]
+                    typecomp=y.items()[3][1]
+                    listatext.append(textcomp)
+                    listapos.append(poscomp)
+                    listadate.append(datecomp)
+                    listatype.append(typecomp)
+                    
+                zipCompDate=zip(listapos,listadate)
+                zipCompType=zip(listapos,listatype)
+                zipCompText=zip(listapos,listatext)
+                #Diccionario posicion, date
+                dictCompDate=dict(zipCompDate)
+                #Diccionario posicion, type
+                dictCompType=dict(zipCompType)
+                #Diccionario posicion, descripcion
+                dictCompText=dict(zipCompText)
+
+                #Recorro el diccionario del componente, k es la posicion y v el date
+                for k,v in dictCompDate.iteritems():
+                #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonDate.has_key(k)):
+                    #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonDate=dictPythonDate.get(k,None)
+                        if cmp(vPythonDate,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el date que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosDate=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+                    else:
+                        print "el date que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+
+                #Recorro el diccionario del componente, k es la posicion y v es la imagen
+                for k,v in dictCompType.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonType.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonType=dictPythonType.get(k,None)
+                        if cmp(vPythonType,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el type de la imagen que falla es : " + str(v)
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosType=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+                    else:
+                        print "el type de la imagen que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+                #Recorro el diccionario del componente, k es la posicion y v es el texto
+                for k,v in dictCompText.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonText.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonText=dictPythonText.get(k,None)
+                        if cmp(vPythonText,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el texto que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosText=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+
+                contadorFallos=contadorFallos/float(contador)
+                print contadorFallos
+                mpTraffic.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
+
+
+            elif version=="latency":
+            #defino los parametros necesarios para la peticion
+                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por la posicion (va de 0 a x)
+                newlist = sorted(lista, key=lambda posicion: posicion['i'])
+
+                for y in newlist:
+                    textcomp=y.items()[0][1]
+                    poscomp=y.items()[1][1]
+                    datecomp=y.items()[2][1]
+                    typecomp=y.items()[3][1]
+                    listatext.append(textcomp)
+                    listapos.append(poscomp)
+                    listadate.append(datecomp)
+                    listatype.append(typecomp)
+                    
+                zipCompDate=zip(listapos,listadate)
+                zipCompType=zip(listapos,listatype)
+                zipCompText=zip(listapos,listatext)
+                #Diccionario posicion, date
+                dictCompDate=dict(zipCompDate)
+                #Diccionario posicion, type
+                dictCompType=dict(zipCompType)
+                #Diccionario posicion, descripcion
+                dictCompText=dict(zipCompText)
+
+                #Recorro el diccionario del componente, k es la posicion y v el date
+                for k,v in dictCompDate.iteritems():
+                #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonDate.has_key(k)):
+                    #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonDate=dictPythonDate.get(k,None)
+                        if cmp(vPythonDate,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el date que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosDate=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+                    else:
+                        print "el date que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+
+                #Recorro el diccionario del componente, k es la posicion y v es la imagen
+                for k,v in dictCompType.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonType.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonType=dictPythonType.get(k,None)
+                        if cmp(vPythonType,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el type de la imagen que falla es : " + str(v)
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosType=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+                    else:
+                        print "el type de la imagen que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+                #Recorro el diccionario del componente, k es la posicion y v es el texto
+                for k,v in dictCompText.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonText.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonText=dictPythonText.get(k,None)
+                        if cmp(vPythonText,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el texto que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosText=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+
+                contadorFallos=contadorFallos/float(contador)
+                print contadorFallos
+                mpTraffic.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
+
+            elif version=="accuracy":
+            #defino los parametros necesarios para la peticion
+                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
+
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+
+                #ordeno la lista de diccionarios por la posicion (va de 0 a x)
+                newlist = sorted(lista, key=lambda posicion: posicion['i'])
+
+                for y in newlist:
+                    textcomp=y.items()[0][1]
+                    poscomp=y.items()[1][1]
+                    datecomp=y.items()[2][1]
+                    typecomp=y.items()[3][1]
+                    listatext.append(textcomp)
+                    listapos.append(poscomp)
+                    listadate.append(datecomp)
+                    listatype.append(typecomp)
+                    
+                zipCompDate=zip(listapos,listadate)
+                zipCompType=zip(listapos,listatype)
+                zipCompText=zip(listapos,listatext)
+                #Diccionario posicion, date
+                dictCompDate=dict(zipCompDate)
+                #Diccionario posicion, type
+                dictCompType=dict(zipCompType)
+                #Diccionario posicion, descripcion
+                dictCompText=dict(zipCompText)
+
+                #Recorro el diccionario del componente, k es la posicion y v el date
+                for k,v in dictCompDate.iteritems():
+                #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonDate.has_key(k)):
+                    #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonDate=dictPythonDate.get(k,None)
+                        if cmp(vPythonDate,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el date que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosDate=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+                    else:
+                        print "el date que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+
+                #Recorro el diccionario del componente, k es la posicion y v es la imagen
+                for k,v in dictCompType.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonType.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonType=dictPythonType.get(k,None)
+                        if cmp(vPythonType,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el type de la imagen que falla es : " + str(v)
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosType=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+                    else:
+                        print "el type de la imagen que no esta es: " + v
+                        print "corresponde a la posicion: " + str(k)
+
+                #Recorro el diccionario del componente, k es la posicion y v es el texto
+                for k,v in dictCompText.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    if(dictPythonText.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                        vPythonText=dictPythonText.get(k,None)
+                        if cmp(vPythonText,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "el texto que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosText=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+
+                contadorFallos=contadorFallos/float(contador)
+                print contadorFallos
+                mpTraffic.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
+
+
+
+
 
 
     else:
