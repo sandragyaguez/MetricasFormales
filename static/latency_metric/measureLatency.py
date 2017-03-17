@@ -341,6 +341,36 @@ def main():
 
 		elif social_network == 'finance':
 			symbol = "Alphabet Inc."
+			finance_url = "https://centauro.ls.fi.upm.es:4444/stock"
+			finance_data = {"q": "select * from yahoo.finance.quote where symbol in (\'Alphabet Inc.\')"} 
+			finance_values = urllib.urlencode(finance_data)
+			finance_url_complete = finance_url + '?' + finance_values
+
+			req = urrlib2.Request(finance_url_complete)
+			startTime = time.time()
+			data = urllib2.urlopen(req)
+			endTime = time.time()
+			response = data.read()
+
+			time_req = (endTime - startTime) * 1000
+
+			mp.track("1111", 'latencyMetric', {
+				'component': 'finance-search',
+				'version': 'host',
+				'requestDuration': time_req,
+				'experiment': experiment_id,
+				'request': "All requests"
+			})
+
+			# We open a window for each component version
+			webbrowser.open_new(server_base_url + "/Stable/FinanceSearchLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Accuracy/FinanceSearchLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Latency/FinanceSearchLatency.html?experiment=" + experiment_id)
+
+
+
 	
 	else:
 		print "Wrong social network or missing param"
