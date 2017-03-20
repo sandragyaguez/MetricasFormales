@@ -66,7 +66,7 @@
       //We send the desired time events after a fixed period of time
       window.setTimeout(function() {
         var componentName = document.getElementById("componentTested").tagName;
-        var endpoint = "https://api.pinterest.com/v1/"
+        var endpoint = "https://centauro.ls.fi.upm.es:4444/stock"
         trackEvents(componentName, "latency", endpoint);
       },5000);
     </script>

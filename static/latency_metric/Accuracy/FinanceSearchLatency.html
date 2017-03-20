@@ -8,17 +8,16 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <title>Pinterest-timeline Latency Tracker</title>
-    <script src="pinterest-timeline-accuracy/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="pinterest-timeline-accuracy/pinterest-timeline.html">
+    <title>Finance Search Latency Tracker</title>
+    <script src="finance-search/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="finance-search/finance-search.html">
   </head>
   <body unresolved>
-    <p><code>&lt;pinterest-timeline&gt;</code> Latency Tracker</p>
+    <p><code>&lt;finance-search&gt;</code> Latency Tracker</p>
     <template id="Demo" is="dom-bind">  
-      <pinterest-timeline id="componentTested" language="en" token="AdCKtwyMSg_tKhDOvhzQ-25yrkSHFJKOjZfO6N9DaxDMLKAvZgAAAAA"
-      component_directory="./pinterest-timeline-accuracy/"
+      <finance-search company-symbol="Alphabet Inc."
       >
-      </pinterest-timeline>
+      </finance-search>
       </br></br>
       <button name="es" on-click="changeIdiom">Spanish</button>
       <button name="en" on-click="changeIdiom">English</button>
@@ -67,7 +66,7 @@
       //We send the desired time events after a fixed period of time
       window.setTimeout(function() {
         var componentName = document.getElementById("componentTested").tagName;
-        var endpoint = "https://api.pinterest.com/v1/"
+        var endpoint = "https://centauro.ls.fi.upm.es:4444/stock"
         trackEvents(componentName, "accuracy", endpoint);
       },5000);
     </script>
