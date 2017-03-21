@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <!-- start Mixpanel -->
+    <script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+      for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f)}})(document,window.mixpanel||[]);
+    mixpanel.init("53da31965c3d047fa72de756aae43db1");
+    </script><!-- end Mixpanel -->
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>Pinterest-timeline Latency Tracker</title>
+    <script src="pinterest-timeline-accuracy/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="pinterest-timeline-accuracy/pinterest-timeline.html">
+  </head>
+  <body unresolved>
+    <p><code>&lt;pinterest-timeline&gt;</code> Latency Tracker</p>
+    <template id="Demo" is="dom-bind">  
+      <pinterest-timeline id="componentTested" language="en" token="AdCKtwyMSg_tKhDOvhzQ-25yrkSHFJKOjZfO6N9DaxDMLKAvZgAAAAA"
+      component_directory="./pinterest-timeline-accuracy/"
+      >
+      </pinterest-timeline>
+      </br></br>
+      <button name="es" on-click="changeIdiom">Spanish</button>
+      <button name="en" on-click="changeIdiom">English</button>
+    </template>
+    <script>
+      Demo.language = "es";
+      Demo.changeIdiom = function(event,detail) {
+        Demo.language = event.target.getAttribute('name');
+      }
+
+      function getParameterByName(name, url) {
+          if (!url) url = window.location.href;
+          url = url.toLowerCase(); // This is just to avoid case sensitiveness  
+          name = name.replace(/[\[\]]/g, "\\$&").toLowerCase();// This is just to avoid case sensitiveness for query parameter name
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, " "));
+      }
+
+      trackEvents = function(componentName, version, endpoint){
+        var timestamp = Date.now();
+        var resourceList = performance.getEntriesByType("resource");
+        console.log(resourceList);
+        //We search for the request done to the endpoint desired
+        for (var i = 0; i<resourceList.length; i++) {
+          if(resourceList[i].initiatorType === "xmlhttprequest" && resourceList[i].name.match(endpoint)!= null){
+            // We send to MixPanel the desired data about instagram timeline
+            console.log("Voy a mandar un evento")
+            var properties = {
+              "component": componentName.toLowerCase(),
+              "version": version,
+              "experiment_timestamp": timestamp,
+              "requestDuration": resourceList[i].duration,
+              "responseEndTime": resourceList[i].responseEnd,
+              "fetchStartTime": resourceList[i].fetchStart,
+              "experiment_id": getParameterByName('experiment'),
+              "request": resourceList[i].name
+            }
+            mixpanel.track("latencyMetric", properties);
+          }
+        }
+      };
+
+      //We send the desired time events after a fixed period of time
+      window.setTimeout(function() {
+        var componentName = document.getElementById("componentTested").tagName;
+        var endpoint = "https://api.pinterest.com/v1/"
+        trackEvents(componentName, "accuracy", endpoint);
+      },5000);
+    </script>
+  </body>
+</html>
