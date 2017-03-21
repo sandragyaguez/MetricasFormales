@@ -15,7 +15,7 @@
   <body unresolved>
     <p><code>&lt;finance-search&gt;</code> Latency Tracker</p>
     <template id="Demo" is="dom-bind">  
-      <finance-search fullname="Alphabet Inc." company_symbol="GOOGL"
+      <finance-search id="componentTested" fullname="Alphabet Inc." company_symbol="GOOGL"
       >
       </finance-search>
       </br></br>
@@ -65,7 +65,8 @@
 
       //We send the desired time events after a fixed period of time
       window.setTimeout(function() {
-        var componentName = document.getElementById("componentTested").tagName;
+        var component = document.getElementById("componentTested")
+        var componentName = component.tagName;
         var endpoint = "https://centauro.ls.fi.upm.es:4444/stock"
         trackEvents(componentName, "accuracy", endpoint);
       },5000);
