@@ -343,7 +343,7 @@ def main():
 		elif social_network == 'finance':
 			symbol = "Alphabet Inc."
 			finance_url = "https://centauro.ls.fi.upm.es:4444/stock"
-			finance_data = {"q": "select * from yahoo.finance.quote where symbol in (\'Alphabet Inc.\')"} 
+			finance_data = {"q": "select * from yahoo.finance.quote where symbol in (\'GOOGL\')"} 
 			finance_values = urllib.urlencode(finance_data)
 			finance_url_complete = finance_url + '?' + finance_values
 
@@ -353,6 +353,8 @@ def main():
 			data = urllib2.urlopen(req, context=context)
 			endTime = time.time()
 			response = data.read()
+
+			print response
 
 			time_req = (endTime - startTime) * 1000
 
