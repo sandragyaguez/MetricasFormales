@@ -6,6 +6,7 @@ import sys
 import httplib
 import urllib
 import json
+import ssl
 import webbrowser
 import mixpanel
 from mixpanel_client import MixpanelQueryClient
@@ -346,9 +347,10 @@ def main():
 			finance_values = urllib.urlencode(finance_data)
 			finance_url_complete = finance_url + '?' + finance_values
 
-			req = urrlib2.Request(finance_url_complete)
+			req = urllib2.Request(finance_url_complete)
+			context = ssl._create_unverified_context()
 			startTime = time.time()
-			data = urllib2.urlopen(req)
+			data = urllib2.urlopen(req, context=context)
 			endTime = time.time()
 			response = data.read()
 
