@@ -354,6 +354,7 @@ def main():
 			endTime = time.time()
 			response = data.read()
 
+			# We calculate the time of the made request
 			time_req = (endTime - startTime) * 1000
 
 			mp.track("1111", 'latencyMetric', {
