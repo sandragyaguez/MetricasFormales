@@ -11,7 +11,7 @@ document.addEventListener('WebComponentsReady', function () {
   //timeout para dar tiempo al componente a que se cargue
   window.setTimeout(function () {
     //id del primer elemento que muestra el timeline
-
+    
     var sortedPosts = element.timeline_posts.sort(element._sortPosts);
     last_element_id = sortedPosts[0];
     var min_size = element.timeline_posts.length;
@@ -31,20 +31,22 @@ document.addEventListener('WebComponentsReady', function () {
             //componente es lo mismo que he twitteado yo
             last_element_id = posts[0].id;
           } else {
+            if (posts[i].object._content){
+              posts[i].object.content = posts[i].object._content;
+            }
             //el time es el mismo para los tres tweets porque se muestran al
             // avoid char 65279 (utf8 delimiter?)
-            var post_text = posts[i].object && posts[i].object.content ? posts[i].object.content.slice(0, posts[i].object.content.length - 1) : '';
+            var post_text = posts[i].object && posts[i].object.content? posts[i].object.content.slice(0, posts[i].object.content.length-1):'';
             if (post_text == publish_text) {
               var diccionario = {
                 'time': time,
                 'post': publish_text
               }
               var dicc_string = JSON.stringify(diccionario);
-              mixpanel.track("master", {
+              mixpanel.track("accuracy", {
                 'value': dicc_string
               });
               var publicado = posts[i].published;
-
             }
           }
         }

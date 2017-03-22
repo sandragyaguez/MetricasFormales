@@ -1,6 +1,7 @@
 //Codigo javascript que escucha el componente para detectar los cambios (nuevos datos), calcular el tiempo y mandarlos a mixpanel
 // Hay que escuchar la funcion de polymer de cuando un componente esta listo (mirar webcomponents)
 document.addEventListener('WebComponentsReady', function () {
+  console.log('Tiempo de entrada', new Date());
   //selecccionamos el componente de twitter con el querySelector
   var element = document.querySelector("googleplus-timeline");
   //Return the querystring part of a URL
@@ -40,7 +41,7 @@ document.addEventListener('WebComponentsReady', function () {
                 'post': publish_text
               }
               var dicc_string = JSON.stringify(diccionario);
-              mixpanel.track("master", {
+              mixpanel.track("latency", {
                 'value': dicc_string
               });
               var publicado = posts[i].published;
