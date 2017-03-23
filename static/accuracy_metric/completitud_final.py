@@ -1731,6 +1731,38 @@ if social_network in network_list:
                 mpTraffic.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
 
 
+############################################
+############################################
+        #CASO6: OPEN-WEATHER
+############################################
+############################################
+
+    elif social_network == 'open-weather':
+
+        ##########################################################################################################################################
+        #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
+        ##########################################################################################################################################
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/open-weather/demo/WeatherCompletitud.html")
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherCompletitudLatency.html")
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherCompletitudAccuracy.html")
+                sleep(3)
+               
+        request_uri= "https://centauro.ls.fi.upm.es:4444/weather"
+        
+        headers= {"content-type":"application/x-www-form-urlencoded"}
+        #verify=False para que no me de errores de SSL
+        s= requests.get(request_uri, verify=False, headers=headers)
+        print s
+        # timeline=s.json()
+
+
+
 
 
 
