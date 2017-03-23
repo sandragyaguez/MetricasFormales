@@ -8,17 +8,17 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <title>Pinterest-timeline Latency Tracker</title>
-    <script src="pinterest-timeline-latency/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="pinterest-timeline-latency/pinterest-timeline.html">
+    <title>Open-weather Latency Tracker</title>
+    <script src="open-weather/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="open-weather/open-weather.html">
   </head>
   <body unresolved>
-    <p><code>&lt;pinterest-timeline&gt;</code> Latency Tracker</p>
+    <p><code>&lt;open-weather&gt;</code> Latency Tracker</p>
     <template id="Demo" is="dom-bind">  
-      <pinterest-timeline id="componentTested" language="en" token="AdCKtwyMSg_tKhDOvhzQ-25yrkSHFJKOjZfO6N9DaxDMLKAvZgAAAAA"
-      component_directory="./pinterest-timeline-latency/"
+      <open-weather id="componentTested" lat="40.4893538421231" lon="-3.6827461557" units="metric" language="es"
+      appId="655f716c02b3f0aceac9e3567cfb46a8"
       >
-      </pinterest-timeline>
+      </open-weather>
       </br></br>
       <button name="es" on-click="changeIdiom">Spanish</button>
       <button name="en" on-click="changeIdiom">English</button>
@@ -66,8 +66,9 @@
 
       //We send the desired time events after a fixed period of time
       window.setTimeout(function() {
-        var componentName = document.getElementById("componentTested").tagName;
-        var endpoint = "https://api.pinterest.com/v1/"
+        var component = document.getElementById("componentTested");
+        var componentName = component.tagName;
+        var endpoint = "https://centauro.ls.fi.upm.es:4444/weather"
         trackEvents(componentName, "latency", endpoint);
       },5000);
     </script>
