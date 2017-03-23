@@ -43,15 +43,15 @@ echo $PID
 # echo "Realizando pruebas sobre el componente pinterest-timeline..."
 # python measureLatency.py pinterest
 
-sleep 10
-echo "#################################################################"
-echo "Realizando pruebas sobre el componente finance-search..."
-python measureLatency.py finance
-
 # sleep 10
 # echo "#################################################################"
-# echo "Realizando pruebas sobre el componente open-weather..."
-# python measureLatency.py weather
+# echo "Realizando pruebas sobre el componente finance-search..."
+# python measureLatency.py finance
+
+sleep 10
+echo "#################################################################"
+echo "Realizando pruebas sobre el componente open-weather..."
+python measureLatency.py weather
 
 # sleep 10
 # echo "##################################################################"
@@ -66,8 +66,8 @@ echo "Recolectando y calculando métrica de latencia sobre los componentes proba
 # python collectLatencyRecords.py facebook-wall
 # python collectLatencyRecords.py googleplus-timeline
 # python collectLatencyRecords.py pinterest-timeline
-python collectLatencyRecords.py finance-search
-# python collectLatencyRecords.py open-weather
+# python collectLatencyRecords.py finance-search
+python collectLatencyRecords.py open-weather
 # python collectLatencyRecords.py traffic-incidents
 echo "Métricas calculadas"
 
