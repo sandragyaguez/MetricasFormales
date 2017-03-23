@@ -341,7 +341,7 @@ def main():
 			webbrowser.open_new(server_base_url + "/Latency/PinterestTimelineLatency.html?experiment=" + experiment_id)
 
 		elif social_network == 'finance':
-			symbol = "Alphabet Inc."
+			# symbol = "Alphabet Inc."
 			finance_url = "https://centauro.ls.fi.upm.es:4444/stock"
 			finance_data = {"q": "select * from yahoo.finance.quote where symbol in (\'GOOGL\')"} 
 			finance_values = urllib.urlencode(finance_data)
@@ -371,6 +371,71 @@ def main():
 			webbrowser.open_new(server_base_url + "/Accuracy/FinanceSearchLatency.html?experiment=" + experiment_id)
 			time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Latency/FinanceSearchLatency.html?experiment=" + experiment_id)
+
+		elif social_network == 'weather':
+			weather_url = "https://centauro.ls.fi.upm.es:4444/weather"
+			weather_data = {"lat": "40.4893538421231",
+							"lon": "-3.6827461557",
+							"units": "metric",
+							"lang": "es",
+							"appId": "655f716c02b3f0aceac9e3567cfb46a8"}
+			weather_values = urllib.urlencode(weather_data)
+			weather_url_complete = weather_url + '?' + weather_values
+
+			req = urllib2.Request(weather_url_complete)
+			context = ssl._create_unverified_context()
+			startTime = time.time()
+			data = urllib2.urlopen(req, context=context)
+			endTime = time.time()
+			response = data.read()
+
+			time_req = (endTime - startTime) * 1000
+
+			mp.track("1111", 'latencyMetric', {
+				'component': 'open-weather',
+				'version': 'host',
+				'requestDuration': time_req,
+				'experiment': experiment_id,
+				'request': "All requests"
+				})
+
+			# We open a window for each component version
+			webbrowser.open_new(server_base_url + "/Stable/OpenWeatherLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Accuracy/OpenWeatherLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Latency/OpenWeatherLatency.html?experiment=" + experiment_id)
+
+		elif social_network == "traffic":
+			traffic_url = "https://centauro.ls.fi.upm.es:4444/traffic"
+			traffic_data = {"map": "50.6064499990991,-1.028659200900901,52.4082518009009,0.7731426009009009",
+							"key": "AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"}
+			traffic_values = urllib.urlencode(traffic_data)
+			traffic_url_complete = traffic_url + '?' + traffic_values
+
+			req = urllib2.Request(traffic_url_complete)
+			context = ssl._create_unverified_context()
+			startTime = time.time()
+			data = urllib2.urlopen(req, context=context)
+			endTime = time.time()
+			response = data.read()
+
+			time_req = (endTime - startTime) * 1000
+
+			mp.track("1111", 'latencyMetric', {
+				'component': 'traffic-incidents',
+				'version': 'host',
+				'requestDuration': time_req,
+				'experiment': experiment_id,
+				'request': "All requests"
+				})
+
+			# We open a window for each component version
+			webbrowser.open_new(server_base_url + "/Stable/TrafficIncidentsLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Accuracy/TrafficIncidentsLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Latency/TrafficIncidentsLatency.html?experiment=" + experiment_id)
 
 
 
