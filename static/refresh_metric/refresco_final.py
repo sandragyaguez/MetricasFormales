@@ -34,12 +34,14 @@ import ast
 import mixpanel
 import mixpanel_api, json
 from mixpanel import Mixpanel
+from postGoogle import post as postGoogle
+
 mpTwitter = Mixpanel("070bf8a01a6127ebf78325716490697a")
 mpFacebook=Mixpanel("f9177cf864c2778e099d5ec71113d0bf")
 mpPinterest=Mixpanel("98b144c253b549db5cdeb812a9323ca3")
 mpTraffic=Mixpanel("d47fab64a1be9d41d8b1e8850df74754")
 mpWeather=Mixpanel("1a7d93449a9b07f9d00e86e03a1a7d6a")
-
+mpGoogleplus = Mixpanel('6751dd100b3e2547ac09c6ce4e5707ac')
 
 network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather"]
 version_list = ["master","latency", "accuracy"]
@@ -428,22 +430,47 @@ if social_network in network_list:
     elif social_network == 'googleplus':
 
         ##########################################################################################################################################
-        #---------------------------------------------------------DATOS FACEBOOK API--------------------------------------------------------------
+        #---------------------------------------------------------DATOS GOOGLEPLUS API--------------------------------------------------------------
         ##########################################################################################################################################
-        
+
+        # generate random text
+        def randomword(length):
+            return ''.join(random.choice(string.lowercase) for i in range(length))
+        randomtext = randomword(20)
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/googleplus-timeline/demo/GoogleplusRefresco.html")
+                webbrowser.open_new(url_base_local + "/Master/googleplus-timeline/demo/GoogleplusRefresco.html?" + randomtext)
                 sleep(5)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/googleplus-timeline/demo/GoogleplusRefrescoLatency.html")
+                webbrowser.open_new(url_base_local + "/Latency/googleplus-timeline/demo/GoogleplusRefrescoLatency.html?" + randomtext)
                 sleep(5)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline/demo/GoogleplusRefrescoAccuracy.html")
+                webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline/demo/GoogleplusRefrescoAccuracy.html?" + randomtext)
                 sleep(5)
 
+        ##########################################################################################################################################
+        #----------------------------------------DATOS GOOGLEPLUS COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
+        ##########################################################################################################################################
+        postTime = postGoogle.publish(randomtext)
+        latency=0
+        if (version=="latency"):
+            latency=10
+        ## request mixpanel response
+        sleep(70+latency)
+        panel = mixpanel_api.Mixpanel("9cf467a3377c3c9f482966fb4866c005","ae85ca196b7052f19cea93661d8a5389")
+        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
+        respuesta=panel.request(['events/properties/values'], params, format='json')
+        
+        # remove unicode
+        respuesta = [ ast.literal_eval(data) for data in respuesta ]
+        correct_post = [post for post in respuesta if post['post'] == randomtext][0]
 
-             
+        final_time = correct_post['time']/1000 - postTime
+        mpGoogleplus.track(final_time, "Final time "+ version,{"time final": final_time, "post": correct_post['post'], "version":version})
+        print "Tiempo final: ", final_time
+        print "Version:", version
+        print "Post: ", correct_post['post']     
+        
 
 #--------------------------------------------------
 #CASO4: PINTEREST
