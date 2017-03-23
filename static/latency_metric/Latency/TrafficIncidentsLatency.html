@@ -9,16 +9,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>Pinterest-timeline Latency Tracker</title>
-    <script src="pinterest-timeline-latency/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="pinterest-timeline-latency/pinterest-timeline.html">
+    <script src="traffic-incidents/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="traffic-incidents/traffic-incidents.html">
   </head>
   <body unresolved>
-    <p><code>&lt;pinterest-timeline&gt;</code> Latency Tracker</p>
+    <p><code>&lt;traffic-incidents&gt;</code> Latency Tracker</p>
     <template id="Demo" is="dom-bind">  
-      <pinterest-timeline id="componentTested" language="en" token="AdCKtwyMSg_tKhDOvhzQ-25yrkSHFJKOjZfO6N9DaxDMLKAvZgAAAAA"
-      component_directory="./pinterest-timeline-latency/"
+      <traffic-incidents id="componentTested" api_key_geocoding="AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM"
+       app_key_traffic="AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-" refresh_time="60000"
+       traffic_info="{{traffic}}" city="madrid"
       >
-      </pinterest-timeline>
+      </traffic-incidents>
       </br></br>
       <button name="es" on-click="changeIdiom">Spanish</button>
       <button name="en" on-click="changeIdiom">English</button>
@@ -66,8 +67,9 @@
 
       //We send the desired time events after a fixed period of time
       window.setTimeout(function() {
-        var componentName = document.getElementById("componentTested").tagName;
-        var endpoint = "https://api.pinterest.com/v1/"
+        var component = document.getElementById("componentTested");
+        var componentName = component.tagName;
+        var endpoint = "https://centauro.ls.fi.upm.es:4444/traffic"
         trackEvents(componentName, "latency", endpoint);
       },5000);
     </script>
