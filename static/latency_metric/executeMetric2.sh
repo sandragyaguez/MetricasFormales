@@ -48,15 +48,15 @@ echo $PID
 # echo "Realizando pruebas sobre el componente finance-search..."
 # python measureLatency.py finance
 
-sleep 10
-echo "#################################################################"
-echo "Realizando pruebas sobre el componente open-weather..."
-python measureLatency.py weather
-
 # sleep 10
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente traffic-incidents..."
-# python measureLatency.py traffic
+# echo "#################################################################"
+# echo "Realizando pruebas sobre el componente open-weather..."
+# python measureLatency.py weather
+
+sleep 10
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente traffic-incidents..."
+python measureLatency.py traffic
 
 sleep 10
 echo "##################################################################"
@@ -67,8 +67,8 @@ echo "Recolectando y calculando métrica de latencia sobre los componentes proba
 # python collectLatencyRecords.py googleplus-timeline
 # python collectLatencyRecords.py pinterest-timeline
 # python collectLatencyRecords.py finance-search
-python collectLatencyRecords.py open-weather
-# python collectLatencyRecords.py traffic-incidents
+# python collectLatencyRecords.py open-weather
+python collectLatencyRecords.py traffic-incidents
 echo "Métricas calculadas"
 
 # Matamos el proceso correspondiente al servidor local de componentes de python
