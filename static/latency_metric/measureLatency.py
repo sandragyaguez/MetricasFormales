@@ -179,7 +179,7 @@ def main():
 
 		elif social_network == 'twitter':
 			#twitter_url = "http://metricas-formales.appspot.com/oauth/twitter"
-			twitter_url = "http://metricas-formales.appspot.com/oauth/twitter"
+			twitter_url = "https://centauro.ls.fi.upm.es/api/aux/twitterTimeline"
 			data = {'access_token': "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
           			'secret_token': "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
           			'consumer_key': "BOySBn8XHlyYDQiGiqZ1tzllx",
@@ -192,9 +192,10 @@ def main():
 
 			# We measure the request/response latency from host
 			req = urllib2.Request(full_url) #ana aqui tenia puesta la peticion a twitter_url sin pasarle los parametros
+			context = ssl._create_unverified_context()
 			# We set the start time
 			startTime = time.time()
-			data = urllib2.urlopen(req)
+			data = urllib2.urlopen(req, context=context)
 			# We set end time
 			endTime = time.time()
 			response = data.read()
@@ -213,11 +214,11 @@ def main():
 			})
 
 			#We open a window for each component version
-			webbrowser.open_new("http://metricas-formales.appspot.com/app/latency_metric/Stable/TwitterTimelineLatency.html?experiment="+ experiment_id)
+			webbrowser.open_new(server_base_url + "/Stable/TwitterTimelineLatency.html?experiment="+ experiment_id)
 			time.sleep(10)
-			webbrowser.open_new("http://metricas-formales.appspot.com/app/latency_metric/Latency/TwitterTimelineLatency.html?experiment="+ experiment_id)
+			webbrowser.open_new(server_base_url + "/Latency/TwitterTimelineLatency.html?experiment="+ experiment_id)
 			time.sleep(10)
-			webbrowser.open_new("http://metricas-formales.appspot.com/app/latency_metric/Accuracy/TwitterTimelineLatency.html?experiment="+ experiment_id)
+			webbrowser.open_new(server_base_url + "/Accuracy/TwitterTimelineLatency.html?experiment="+ experiment_id)
 			
 
 		elif social_network == 'googleplus' and len(sys.argv) >= 3:
