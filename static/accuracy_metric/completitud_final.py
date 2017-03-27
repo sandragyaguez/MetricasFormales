@@ -27,7 +27,7 @@ import hashlib
 from random import randrange
 from mixpanel import Mixpanel
 import mixpanel_api
-
+import datetime
 #objetos Mixpanel para las distintas redes sociales (token del project)
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
 mpFacebook=Mixpanel("04ae91408ffe85bf83628993704feb15")
@@ -37,7 +37,7 @@ mpTraffic=Mixpanel("85519859ef8995bfe213dfe822e72ab3")
 
 
 #---------------------------------------------------------------------------------------------------------------------
-network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather"]
+network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search"]
 version_list = ["master","latency", "accuracy"]
 url_base_remote= "http://metricas-formales.appspot.com/app/accuracy_metric"
 url_base_local= "http://localhost:8080/accuracy_metric"
@@ -1726,7 +1726,9 @@ if social_network in network_list:
                 contadorFallos=contadorFallos/float(contador)
                 print contadorFallos
                 mpTraffic.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
+      
 
+    elif social_network == 'finance-search':
 
 ############################################
 ############################################
@@ -1815,9 +1817,58 @@ if social_network in network_list:
         # dictPythonType=dict(zipPythonType)
 
 
+        ##########################################################################################################################################
+        #-------------------------------------------------------DATOS STOCK API---------------------------------------------------------------
+        ##########################################################################################################################################
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/finance-search/demo/FinanceSearchMaster.html")
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/finance-search/demo/FinanceSearchLatency.html")
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new(url_base_local + "/Accuracy/finance-search/demo/FinanceSearchAccuracy.html")
+                sleep(3)
+               
+        symbol = "GOOGL"
+        query = 'select * from yahoo.finance.quote where symbol in ("%s")' % symbol
 
+        request_uri= "https://centauro.ls.fi.upm.es:4444/stock?q=%s" % query
+        headers= {"content-type":"application/x-www-form-urlencoded"}
+        #verify=False para que no me de errores de SSL
+        response= requests.get(request_uri, verify=False, headers=headers)
+        
+        data = response.json()
+        data = data['query']['results']['quote'][0]
 
-
+        ##########################################################################################################################################
+        #----------------------------------------DATOS STOCK COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
+        ##########################################################################################################################################
+        latency=0
+        if version == 'latency':
+          latency=10
+        sleep(10+latency)
+        panel = mixpanel_api.Mixpanel('67699e9fba765cebbbe98621271db4ba','fbb422f045419447722e54b70690c638')
+        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
+        response=panel.request(['events/properties/values'], params, format='json')
+        response = [ json.loads(res) for res in response ]
+        response = sorted(response, key=lambda x: -x['Date'])
+        response = response[0]
+        errors = 0
+        analyzed = 0.0
+        
+        for key,value in response.iteritems():
+          key = str(key)
+          value = str(value)
+          if key != 'Date':
+            analyzed += 1
+            if data[key] != value:
+              print "El campo %s no es igual en ambos lados: %s vs %s" % (key, value, data[key])
+              errors+=1
+        contadorFallos = errors/analyzed
+        print "% fallos " + version, ' :', contadorFallos
+        mpTraffic.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
 
     else:
         print "Wrong social network or missing param"

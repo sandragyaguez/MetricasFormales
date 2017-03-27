@@ -42,8 +42,9 @@ mpPinterest=Mixpanel("98b144c253b549db5cdeb812a9323ca3")
 mpTraffic=Mixpanel("d47fab64a1be9d41d8b1e8850df74754")
 mpWeather=Mixpanel("1a7d93449a9b07f9d00e86e03a1a7d6a")
 mpGoogleplus = Mixpanel('6751dd100b3e2547ac09c6ce4e5707ac')
+mpStock = Mixpanel("92f1f1dd586a4cad694bb8e8678456c2")
 
-network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather"]
+network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search"]
 version_list = ["master","latency", "accuracy"]
 url_base_remote= "http://metricas-formales.appspot.com/app/refresh_metric"
 url_base_local= "http://localhost:8080/refresh_metric"
@@ -998,7 +999,75 @@ if social_network in network_list:
                         print "final_time: " + str(final_time)
                         mpWeather.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
 
+    elif social_network == 'finance-search':
 
+        ##########################################################################################################################################
+        #-------------------------------------------------------DATOS STOCK API---------------------------------------------------------------
+        ##########################################################################################################################################
+        
 
+        data = {"Symbol": "GOOGL", "Change": 10, "DaysLow": 10, "DaysHigh": 10, "YearLow": 10, "YearHigh": 10, "Volume": 10, "LastTradePriceOnly": 10, "Name":"Alphabet Inc."}
+        data_text = urllib.urlencode(data)
+        random_id = random.randint(0,1000000)
+        data_text = data_text + "&id=%d" % random_id
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/finance-search/demo/FinanceSearchRefresco.html?" + data_text)
+                sleep(8)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/finance-search/demo/FinanceSearchRefrescoLatency.html?" + data_text)
+                sleep(8)
+            elif(version=="accuracy"):
+                webbrowser.open_new(url_base_local + "/Accuracy/finance-search/demo/FinanceSearchRefrescoAccuracy.html?" + data_text)
+                sleep(8)
 
+        ##########################################################################################################################################
+        #----------------------------------------DATOS STOCK COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
+        ##########################################################################################################################################
+        datos = "data= " + urllib.quote(str(data))
 
+        headers= {
+            "content-type":"application/x-www-form-urlencoded"
+        }
+        url = "https://centauro.ls.fi.upm.es:4444/stock"
+        response = requests.post(url, data=data, verify=False, headers=headers)
+        print response, response.json()      
+        postTime=time.time()
+        
+        latency=0
+        if (version=="latency"):
+            latency=10
+        
+        ## request mixpanel response
+        sleep(70+latency)
+        panel = mixpanel_api.Mixpanel("f0210615849097c6917b114203c83c6c","544ff7d21c1ab56433d8b6fc2ba7a137")
+        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
+        respuesta=panel.request(['events/properties/values'], params, format='json')
+        
+        # remove unicode
+        respuesta = [ ast.literal_eval(data) for data in respuesta ]
+        correct_post = [ post for post in respuesta if post['id'] == str(random_id) ]
+        
+        if len(correct_post) == 1:
+          correct_post = correct_post[0]
+        else:
+          print "No se encontro el evento relacionado con el id: %f" % random_id
+          # Clean data
+          headers= {
+            "content-type":"application/x-www-form-urlencoded"
+          }
+          url = "https://centauro.ls.fi.upm.es:4444/fakes/stock/clean"
+          response = requests.get(url, verify=False, headers=headers)
+
+        final_time = correct_post['time']/1000 - postTime
+        mpStock.track(final_time, "Final time "+ version,{"time final": final_time, "id": correct_post['id'], "version":version})
+        print "Tiempo final: ", final_time
+        print "Version:", version
+        print "Post id: ", correct_post['id']
+
+        # Clean data
+        headers= {
+          "content-type":"application/x-www-form-urlencoded"
+        }
+        url = "https://centauro.ls.fi.upm.es:4444/fakes/stock/clean"
+        response = requests.get(url, verify=False, headers=headers)
