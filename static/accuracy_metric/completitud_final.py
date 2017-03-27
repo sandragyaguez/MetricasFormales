@@ -1423,9 +1423,6 @@ if social_network in network_list:
             listacont.append(contador)
             contador=contador+1
 
-
-
-
         zipPythonDesc=zip(listacont,lista_descrip)
         #diccionario contador y usuarios
         dictPythonText=dict(zipPythonDesc)
@@ -1740,7 +1737,7 @@ if social_network in network_list:
     elif social_network == 'open-weather':
 
         ##########################################################################################################################################
-        #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
+        #-------------------------------------------------------DATOS WEATHER API---------------------------------------------------------------
         ##########################################################################################################################################
         if version in version_list:
             if(version=="master"):
@@ -1752,15 +1749,70 @@ if social_network in network_list:
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherCompletitudAccuracy.html")
                 sleep(3)
-               
-        request_uri= "https://centauro.ls.fi.upm.es:4444/weather"
+        
+        #pasar parametros de weather   
+
+        request_uri= "https://centauro.ls.fi.upm.es:4444/weather?lat=40.4336199&lon=-3.8134707000000003&units=metric&lang=es&appId=655f716c02b3f0aceac9e3567cfb46a8"
         
         headers= {"content-type":"application/x-www-form-urlencoded"}
         #verify=False para que no me de errores de SSL
         s= requests.get(request_uri, verify=False, headers=headers)
         print s
-        # timeline=s.json()
+        timeline=s.json()
 
+        lista_city=[]
+        lista_date=[]
+        lista_temp=[]
+        lista_temp_max=[]
+        lista_temp_min=[]
+        lista_icon=[]
+        listacont=[]
+        contador=0
+
+        for k,v in timeline.iteritems():
+            if(timeline.has_key('city')):
+                values1=timeline.get('city',None)
+            if (timeline.has_key('list')):
+                values3=timeline.get('list',None)
+                
+        for m,n in values1.iteritems():
+            if(values1.has_key('name')):
+                values2=values1.get('name',None)
+            lista_city.append(values2)
+
+        for v in values3:
+            if(v.has_key('dt_txt')):
+                values4=v.get('dt_txt',None)
+            lista_date.append(values4)
+            if(v.has_key('weather')):
+                values5=v.get('weather',None)
+
+        for r in values5:
+            if(r.has_key('icon')):
+                values6=r.get('icon',None)
+            lista_icon.append(values6)
+
+            #me falta coger temp, max, min.
+            #mirar si es necesario comparar todas el tiempo de todas las horas del dia
+
+
+
+        #     #la lista de contador la hago para poder identificar cada descripcion con su type de imagen y su date
+        #     listacont.append(contador)
+        #     contador=contador+1
+
+
+
+
+        # zipPythonDesc=zip(listacont,lista_descrip)
+        # #diccionario contador y usuarios
+        # dictPythonText=dict(zipPythonDesc)
+        # zipPythonDate=zip(listacont,lista_date)
+        # #diccionario contador y textos
+        # dictPythonDate=dict(zipPythonDate)
+        # zipPythonType=zip(listacont,lista_type)
+        # #diccionario contador e imagenes
+        # dictPythonType=dict(zipPythonType)
 
 
 
