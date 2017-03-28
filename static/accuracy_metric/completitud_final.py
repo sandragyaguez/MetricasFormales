@@ -30,12 +30,12 @@ import mixpanel_api
 import datetime
 #objetos Mixpanel para las distintas redes sociales (token del project)
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
-mpFacebook=Mixpanel("04ae91408ffe85bf83628993704feb15")
-mpGoogle=Mixpanel("f2655b08b62cc657d6865f8af003bdd9")
-mpPinterest=Mixpanel("6ceb3a37029277deb7f530ac7d65d7d4")
-mpTraffic=Mixpanel("85519859ef8995bfe213dfe822e72ab3")
-mPWeather=Mixpanel("19ecdb19541d1e7b61dce3d4d5fa485b")
-
+mpFacebook = Mixpanel("04ae91408ffe85bf83628993704feb15")
+mpGoogle = Mixpanel("f2655b08b62cc657d6865f8af003bdd9")
+mpPinterest = Mixpanel("6ceb3a37029277deb7f530ac7d65d7d4")
+mpTraffic = Mixpanel("85519859ef8995bfe213dfe822e72ab3")
+mpWeather = Mixpanel("19ecdb19541d1e7b61dce3d4d5fa485b")
+mpStock = Mixpanel("f2703d11ce4b2e6fed5d95f400306e48")
 
 #---------------------------------------------------------------------------------------------------------------------
 network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search"]
@@ -108,7 +108,7 @@ if social_network in network_list:
                 text = tweet['retweeted_status']['text']
             else:
                 #guardo texto del tweet
-                text=tweet['text']
+                text = tweet['text']
             #guardo id del tweet
             id_tweet1=tweet['id_str']
             id_tweet1=int(id_tweet1)
@@ -122,7 +122,7 @@ if social_network in network_list:
         zipPython=zip(ids,lis)
         zipPythonUser=zip(ids,users)
         #diccionario de tweets e ids
-        dictPython=dict(zipPython)
+        dictPytho = dict(zipPython)
         #diccionario de users e ids
         dictPythonUser=dict(zipPythonUser)
 
@@ -1782,7 +1782,7 @@ if social_network in network_list:
               errors+=1
         contadorFallos = errors/analyzed
         print "% fallos " + version, ' :', contadorFallos
-        mpTraffic.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
+        mpStock.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
 
 
 ############################################

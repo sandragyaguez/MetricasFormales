@@ -142,6 +142,29 @@ python completitud_final.py pinterest accuracy
 sleep 10
 pkill chrome
 
+
+##############################
+########### STOCK ############
+##############################
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente finance-search: metrica completitud version master"
+python completitud_final.py finance-search master
+sleep 10
+pkill chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente finance-search: metrica completitud version latency"
+python completitud_final.py finance-search latency
+sleep 10
+pkill chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente finance-search: metrica completitud version accuracy"
+python completitud_final.py finance-search accuracy
+sleep 10
+pkill chrome
+
 echo "##################################################################"
 echo "##################################################################"
 echo "Valores calculados para la metrica de completitud"
