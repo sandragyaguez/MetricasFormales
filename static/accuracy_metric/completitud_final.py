@@ -34,6 +34,7 @@ mpFacebook=Mixpanel("04ae91408ffe85bf83628993704feb15")
 mpGoogle=Mixpanel("f2655b08b62cc657d6865f8af003bdd9")
 mpPinterest=Mixpanel("6ceb3a37029277deb7f530ac7d65d7d4")
 mpTraffic=Mixpanel("85519859ef8995bfe213dfe822e72ab3")
+mPWeather=Mixpanel("19ecdb19541d1e7b61dce3d4d5fa485b")
 
 
 #---------------------------------------------------------------------------------------------------------------------
@@ -1730,6 +1731,60 @@ if social_network in network_list:
 
     elif social_network == 'finance-search':
 
+        ##########################################################################################################################################
+        #-------------------------------------------------------DATOS STOCK API---------------------------------------------------------------
+        ##########################################################################################################################################
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/finance-search/demo/FinanceSearchMaster.html")
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/finance-search/demo/FinanceSearchLatency.html")
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new(url_base_local + "/Accuracy/finance-search/demo/FinanceSearchAccuracy.html")
+                sleep(3)
+               
+        symbol = "GOOGL"
+        query = 'select * from yahoo.finance.quote where symbol in ("%s")' % symbol
+
+        request_uri= "https://centauro.ls.fi.upm.es:4444/stock?q=%s" % query
+        headers= {"content-type":"application/x-www-form-urlencoded"}
+        #verify=False para que no me de errores de SSL
+        response= requests.get(request_uri, verify=False, headers=headers)
+        
+        data = response.json()
+        data = data['query']['results']['quote'][0]
+
+        ##########################################################################################################################################
+        #----------------------------------------DATOS STOCK COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
+        ##########################################################################################################################################
+        latency=0
+        if version == 'latency':
+          latency=10
+        sleep(10+latency)
+        panel = mixpanel_api.Mixpanel('67699e9fba765cebbbe98621271db4ba','fbb422f045419447722e54b70690c638')
+        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
+        response=panel.request(['events/properties/values'], params, format='json')
+        response = [ json.loads(res) for res in response ]
+        response = sorted(response, key=lambda x: -x['Date'])
+        response = response[0]
+        errors = 0
+        analyzed = 0.0
+        
+        for key,value in response.iteritems():
+          key = str(key)
+          value = str(value)
+          if key != 'Date':
+            analyzed += 1
+            if data[key] != value:
+              print "El campo %s no es igual en ambos lados: %s vs %s" % (key, value, data[key])
+              errors+=1
+        contadorFallos = errors/analyzed
+        print "% fallos " + version, ' :', contadorFallos
+        mpTraffic.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
+
+
 ############################################
 ############################################
         #CASO6: OPEN-WEATHER
@@ -1788,87 +1843,164 @@ if social_network in network_list:
             lista_date.append(values4)
             if(v.has_key('weather')):
                 values5=v.get('weather',None)
+            if(v.has_key('main')):
+                values7=v.get('main',None)
 
         for r in values5:
             if(r.has_key('icon')):
                 values6=r.get('icon',None)
             lista_icon.append(values6)
 
-            #me falta coger temp, max, min.
-            #mirar si es necesario comparar todas el tiempo de todas las horas del dia
+        for t,p in values7.iteritems():
+            if (values7.has_key('temp')):
+                values8=values7.get('temp',None)
+            lista_temp.append(values8)
+            if(values7.has_key('temp_max')):
+                values9=values7.get('temp_max',None)
+            lista_temp_max.append(values9)
+            if (values7.has_key('temp_min')):
+                values10=values7.get('temp_min',None)
+            lista_temp_min.append(values10)
+            #la lista de contador la hago para poder identificar cada descripcion con su type de imagen y su date
+            listacont.append(contador)
+            contador=contador+1
 
 
+        zipPythonCity=zip(listacont,lista_city)
+        dictPythonCity=dict(zipPythonCity)
 
-        #     #la lista de contador la hago para poder identificar cada descripcion con su type de imagen y su date
-        #     listacont.append(contador)
-        #     contador=contador+1
+        zipPythonDate=zip(listacont,lista_date)
+        dictPythonDate=dict(zipPythonDate)
 
+        zipPythonIcon=zip(listacont,lista_icon)
+        dictPythonIcon=dict(zipPythonIcon)
 
+        zipPythonTemp=zip(listacont,lista_temp)
+        dictPythonTemp=dict(zipPythonTemp)
+        
+        zipPythonTemp_Max=zip(listacont,lista_temp_max)
+        dictPythonTemp_Max=dict(zipPythonTemp_Max)
+        
+        zipPythonTemp_Min=zip(listacont,lista_temp_min)
+        dictPythonTemp_Min=dict(zipPythonTemp_Min)
 
-
-        # zipPythonDesc=zip(listacont,lista_descrip)
-        # #diccionario contador y usuarios
-        # dictPythonText=dict(zipPythonDesc)
-        # zipPythonDate=zip(listacont,lista_date)
-        # #diccionario contador y textos
-        # dictPythonDate=dict(zipPythonDate)
-        # zipPythonType=zip(listacont,lista_type)
-        # #diccionario contador e imagenes
-        # dictPythonType=dict(zipPythonType)
-
-
+         ##########################################################################################################################################
+        #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
-        #-------------------------------------------------------DATOS STOCK API---------------------------------------------------------------
-        ##########################################################################################################################################
+        sleep(10)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("aab0e30bdb1ec923fe2d85fb95e051ec","a019aa23c38827f307f0d5eff0d0d6f5")
+        contadorFallos=0
+        lista=[]
+        # listapos=[]
+        listadate=[]
+        listacity=[]
+        listaicon=[]
+        listemp=[]
+        listemp_max=[]
+        listemp_min=[]
+
         if version in version_list:
-            if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/finance-search/demo/FinanceSearchMaster.html")
-                sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/finance-search/demo/FinanceSearchLatency.html")
-                sleep(3)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/finance-search/demo/FinanceSearchAccuracy.html")
-                sleep(3)
-               
-        symbol = "GOOGL"
-        query = 'select * from yahoo.finance.quote where symbol in ("%s")' % symbol
+            if version=="master":
+            #defino los parametros necesarios para la peticion
+                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+                respuesta=x.request(['events/properties/values'], params, format='json')
 
-        request_uri= "https://centauro.ls.fi.upm.es:4444/stock?q=%s" % query
-        headers= {"content-type":"application/x-www-form-urlencoded"}
-        #verify=False para que no me de errores de SSL
-        response= requests.get(request_uri, verify=False, headers=headers)
-        
-        data = response.json()
-        data = data['query']['results']['quote'][0]
+                for x in respuesta:
+                    #pasar de unicode a dict
+                    resp = ast.literal_eval(x)
+                    lista.append(resp)
+                print lista
 
-        ##########################################################################################################################################
-        #----------------------------------------DATOS STOCK COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
-        ##########################################################################################################################################
-        latency=0
-        if version == 'latency':
-          latency=10
-        sleep(10+latency)
-        panel = mixpanel_api.Mixpanel('67699e9fba765cebbbe98621271db4ba','fbb422f045419447722e54b70690c638')
-        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-        response=panel.request(['events/properties/values'], params, format='json')
-        response = [ json.loads(res) for res in response ]
-        response = sorted(response, key=lambda x: -x['Date'])
-        response = response[0]
-        errors = 0
-        analyzed = 0.0
-        
-        for key,value in response.iteritems():
-          key = str(key)
-          value = str(value)
-          if key != 'Date':
-            analyzed += 1
-            if data[key] != value:
-              print "El campo %s no es igual en ambos lados: %s vs %s" % (key, value, data[key])
-              errors+=1
-        contadorFallos = errors/analyzed
-        print "% fallos " + version, ' :', contadorFallos
-        mpTraffic.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
+                #ordeno la lista de diccionarios por la posicion (va de 0 a x)
+                #newlist = sorted(lista, key=lambda posicion: posicion['i'])
+
+                for y in lista:
+                    citycomp=y.items()[0][1]
+                    tempcomp=y.items()[1][1]
+                    tempMaxcomp=y.items()[2][1]
+                    fechacomp=y.items()[3][1]
+                    tempMincomp=y.items()[4][1]
+                    iconcomp=y.items()[5][1]
+
+                    listacity.append(citycomp)
+                    listemp.append(tempcomp)
+                    listemp_max.append(tempMaxcomp)
+                    listadate.append(fechacomp)
+                    listemp_min.append(tempMincomp)
+                    listaicon.append(iconcomp)
+                    
+        #         zipCompDate=zip(listapos,listadate)
+        #         zipCompType=zip(listapos,listatype)
+        #         zipCompText=zip(listapos,listatext)
+        #         #Diccionario posicion, date
+        #         dictCompDate=dict(zipCompDate)
+        #         #Diccionario posicion, type
+        #         dictCompType=dict(zipCompType)
+        #         #Diccionario posicion, descripcion
+        #         dictCompText=dict(zipCompText)
+
+        #         #Recorro el diccionario del componente, k es la posicion y v el date
+        #         for k,v in dictCompDate.iteritems():
+        #         #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+        #             if(dictPythonDate.has_key(k)):
+        #             #si es asi, cojo los values de python y del componente y los comparo
+        #                 vPythonDate=dictPythonDate.get(k,None)
+        #                 if cmp(vPythonDate,v)==0:
+        #                     True
+        #                 else:
+        #                     print "falla en posicion: " + str(k) 
+        #                     print "el date que falla es : " + v
+        #                     liskey.append(k)
+        #                     lisvalue.append(v)
+        #                     listaFallosDate=zip(liskey,lisvalue)
+        #                     contadorFallos=contadorFallos+1
+        #             else:
+        #                 print "el date que no esta es: " + v
+        #                 print "corresponde a la posicion: " + str(k)
+
+
+        #         #Recorro el diccionario del componente, k es la posicion y v es la imagen
+        #         for k,v in dictCompType.iteritems():
+        #             #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+        #             if(dictPythonType.has_key(k)):
+        #                 #si es asi, cojo los values de python y del componente y los comparo
+        #                 vPythonType=dictPythonType.get(k,None)
+        #                 if cmp(vPythonType,v)==0:
+        #                     True
+        #                 else:
+        #                     print "falla en posicion: " + str(k) 
+        #                     print "el type de la imagen que falla es : " + str(v)
+        #                     liskey.append(k)
+        #                     lisvalue.append(v)
+        #                     listaFallosType=zip(liskey,lisvalue)
+        #                     contadorFallos=contadorFallos+1
+        #             else:
+        #                 print "el type de la imagen que no esta es: " + v
+        #                 print "corresponde a la posicion: " + str(k)
+
+        #         #Recorro el diccionario del componente, k es la posicion y v es el texto
+        #         for k,v in dictCompText.iteritems():
+        #             #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+        #             if(dictPythonText.has_key(k)):
+        #                 #si es asi, cojo los values de python y del componente y los comparo
+        #                 vPythonText=dictPythonText.get(k,None)
+        #                 if cmp(vPythonText,v)==0:
+        #                     True
+        #                 else:
+        #                     print "falla en posicion: " + str(k) 
+        #                     print "el texto que falla es : " + v
+        #                     liskey.append(k)
+        #                     lisvalue.append(v)
+        #                     listaFallosText=zip(liskey,lisvalue)
+        #                     contadorFallos=contadorFallos+1
+
+        #         contadorFallos=contadorFallos/float(contador)
+        #         print contadorFallos
+        #         mpTraffic.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
+
+
+
 
     else:
         print "Wrong social network or missing param"
