@@ -1865,6 +1865,7 @@ if social_network in network_list:
             listacont.append(contador)
             contador=contador+1
 
+        print contador
 
         zipPythonCity=zip(listacont,lista_city)
         dictPythonCity=dict(zipPythonCity)
