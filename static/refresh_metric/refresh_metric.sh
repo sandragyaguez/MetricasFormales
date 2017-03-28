@@ -122,6 +122,52 @@ sleep 10
 pkill chrome
 
 
+#---------#
+# STOCK
+#---------#
+
+# Ejecutamos scripts para medir y recolectar los datos
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente finance-search: metrica refresco version master"
+python refresco_final.py finance-search master
+sleep 10
+killall chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente finance-search: metrica refresco version latency"
+python refresco_final.py finance-search latency
+sleep 10
+pkill chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente finance-search: metrica refresco version accuracy"
+python refresco_final.py finance-search accuracy
+sleep 10
+pkill chrome
+
+#---------#
+#WEATHER
+#---------#
+
+# Ejecutamos scripts para medir y recolectar los datos
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente googleplus: metrica refresco version master"
+python refresco_final.py googleplus master
+sleep 10
+killall chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente googleplus: metrica refresco version latency"
+python refresco_final.py googleplus latency
+sleep 10
+pkill chrome
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente googleplus: metrica refresco version accuracy"
+python refresco_final.py googleplus accuracy
+sleep 10
+pkill chrome
+
 echo "##################################################################"
 echo "##################################################################"
 echo "Valores calculados para la metrica de refresco"
