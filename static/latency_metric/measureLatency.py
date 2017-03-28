@@ -209,8 +209,8 @@ def main():
 			    'component': 'twitter-timeline',
 			    'version': 'host',
 			    'requestDuration': requestTime,
-				  'experiment': experiment_id,
-				  'request': twitter_url
+				'experiment': experiment_id,
+				'request': twitter_url
 			})
 
 			#We open a window for each component version
