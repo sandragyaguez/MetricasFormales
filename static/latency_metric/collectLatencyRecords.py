@@ -113,7 +113,7 @@ def main():
 					# We check for duplicate in latency results
 					result_id = experimentClient["experiment_id"] + tag
 					if latency_records == None:
-						# We calculate the differences and send it back to Mixpanel
+						# We calculate the differences and send it back to Mixpanel (component - host)
 						latency = experimentClient["requestDuration"] - experimentHost["requestDuration"]
 						sendResults(component, experimentHost["experiment"], experimentClient['experiment_timestamp'],experimentClient['request'],tag,latency,result_id)
 					else:
