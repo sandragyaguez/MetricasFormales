@@ -25,5 +25,9 @@
     "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.4",
     "paper-material": "PolymerElements/paper-material#~1.0.2",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.4"
+  },
+  "resolutions": {
+    "paper-icon-button": "^1.1.2",
+    "iron-ajax": "^1.4.3"
   }
 }
