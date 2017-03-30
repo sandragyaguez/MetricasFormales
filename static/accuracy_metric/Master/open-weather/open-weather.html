@@ -27,6 +27,8 @@ If lat and lon are no defined. it will try to get your location
 <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+
+
 <link rel="stylesheet" type="text/css" href="bower_components/weather-icons/css/weather-icons.min.css">
 <dom-module id="open-weather">
   
@@ -349,21 +351,21 @@ Polymer({
       level = level > 6 ? 6 : level;
       return level
     }
-var getMinMax = function(day,list){
-     var minmax = {min:100,max:-100};
-     list.forEach(function(el){
-       el_dt = new Date(el.dt*1000);
-       if (dt.getDay() == el_dt.getDay() && dt.getMonth() == el_dt.getMonth() && dt.getYear() == el_dt.getYear()){
-         if (el.main.temp_min < minmax.min){
-           minmax.min = Math.round(el.main.temp_min);
-         }
-         if (el.main.temp_max > minmax.max){
-           minmax.max = Math.round(el.main.temp_max);
-         }
-       }
-     });
-     return minmax;
-   }
+    var getMinMax = function(day,list){
+      var minmax = {min:100,max:-100};
+      list.forEach(function(el){
+        el_dt = new Date(el.dt*1000);
+        if (dt.getDay() == el_dt.getDay() && dt.getMonth() == el_dt.getMonth() && dt.getYear() == el_dt.getYear()){
+          if (el.main.temp_min < minmax.min){
+            minmax.min = Math.round(el.main.temp_min);
+          }
+          if (el.main.temp_max > minmax.max){
+            minmax.max = Math.round(el.main.temp_max);
+          }
+        }
+      });
+      return minmax;
+    }
     this.set('next_days',[]);
     this.set('data',[]);
     for (var i=0;i<list.length;i++) {
@@ -373,9 +375,8 @@ var getMinMax = function(day,list){
       current_time += now.getMinutes() > 9? ':' + now.getMinutes(): ':0' + now.getMinutes();
       var day = dt.getUTCDate();
       var month = dt.getMonth() +1;
-      var year = dt.getYear();
-      var init = Math.floor(i/8)*8;
-      var minmax = getMinMax(dt, list);
+      var year = dt.getFullYear();
+      var minmax = getMinMax(dt,list);
       var weather = {
         icon: this._iconMapping[list[i].weather[0].icon],
         conditiontext: list[i].weather[0].description,

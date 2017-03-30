@@ -1816,7 +1816,7 @@ if social_network in network_list:
         s= requests.get(request_uri, verify=False, headers=headers)
         print s
         timeline=s.json()
-
+        print timeline
         lista_city=[]
         lista_date=[]
         lista_temp=[]
@@ -1885,7 +1885,13 @@ if social_network in network_list:
         zipPythonTemp_Min=zip(listacont,lista_temp_min)
         dictPythonTemp_Min=dict(zipPythonTemp_Min)
 
-         ##########################################################################################################################################
+#MIGUEL: RECORDAR COMO COGER LOS DATOS DE HOY EN LA RESPUESTA DE LA PETICION QUE HAGO A LA API
+#EN EL COMPONENTE YA TENGO LOS DATOS QUE TENGO QUE COMPARAR
+#VER SI TENGO QUE COMPARAR EL TIEMPO (AL MENOS EL ICONO) DE LOS DIAS SIGUIENTE QUE APARECEN EN EL COMPONENTE
+#HACER LAS TRES VERSIONES
+
+
+        ##########################################################################################################################################
         #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
         sleep(10)
@@ -1900,6 +1906,8 @@ if social_network in network_list:
         listemp=[]
         listemp_max=[]
         listemp_min=[]
+        listime=[]
+        lisdia=[]
 
         if version in version_list:
             if version=="master":
@@ -1911,23 +1919,26 @@ if social_network in network_list:
                     #pasar de unicode a dict
                     resp = ast.literal_eval(x)
                     lista.append(resp)
-                print lista
-
+                
                 #ordeno la lista de diccionarios por la posicion (va de 0 a x)
                 #newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
                 for y in lista:
-                    citycomp=y.items()[0][1]
-                    tempcomp=y.items()[1][1]
-                    tempMaxcomp=y.items()[2][1]
-                    fechacomp=y.items()[3][1]
-                    tempMincomp=y.items()[4][1]
-                    iconcomp=y.items()[5][1]
+                    timecomp=y.items()[0][1]
+                    citycomp=y.items()[1][1]
+                    tempcomp=y.items()[2][1]
+                    tempMaxcomp=y.items()[3][1]
+                    fechacomp=y.items()[4][1]
+                    diacomp=y.items()[5][1]
+                    tempMincomp=y.items()[6][1]
+                    iconcomp=y.items()[7][1]
 
+                    listime.append(timecomp)
                     listacity.append(citycomp)
                     listemp.append(tempcomp)
                     listemp_max.append(tempMaxcomp)
                     listadate.append(fechacomp)
+                    lisdia.append(diacomp)
                     listemp_min.append(tempMincomp)
                     listaicon.append(iconcomp)
                     
