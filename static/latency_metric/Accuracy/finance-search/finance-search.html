@@ -15,6 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
 
+
 <!--
 An element providing a solution to no problem in particular.
 
@@ -34,6 +35,7 @@ Example:
 
 <dom-module id="finance-search">
   <template>
+
       <style include="iron-flex iron-flex-alignment">
         :host {
           display: inline-block;
@@ -103,6 +105,7 @@ Example:
           </div>
         </template>
       </template>
+
         <search-company symbol="{{company_symbol}}" company="{{fullname}}"></search-company>
         <div class="container">
             <div id="empty" class="horizontal layout center-center post empty" hidden>
@@ -117,11 +120,13 @@ Example:
                 </div>
             </template>
         </div>
+
     </div>
 
   </template>
 
   <script>
+    
       Polymer({
           is: 'finance-search',
 
@@ -171,3 +176,4 @@ Example:
       });
   </script>
 </dom-module>
+
