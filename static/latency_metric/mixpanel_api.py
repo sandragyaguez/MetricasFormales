@@ -22,24 +22,20 @@ import hashlib
 import urllib
 import urllib2
 import time
-import demjson
 try:
     import json
 except ImportError:
     import simplejson as json
-from mixpanel_query.utils import _totext
 
-class Mixpanel_api(object):
+class Mixpanel(object):
 
-    ENDPOINT = 'https://data.mixpanel.com/api'
-    # ENDPOINT = 'http://mixpanel.com/api'
+    ENDPOINT = 'http://mixpanel.com/api'
     VERSION = '2.0'
 
     def __init__(self, api_key, api_secret):
         self.api_key = api_key
         self.api_secret = api_secret
 
-    
     def request(self, methods, params, format='json'):
         """
             methods - List of methods to be joined, e.g. ['events', 'properties', 'values']
@@ -56,9 +52,9 @@ class Mixpanel_api(object):
 
         request = urllib2.urlopen(request_url, timeout=120)
         data = request.read()
-        print data
+
         return json.loads(data)
-    
+
     def unicode_urlencode(self, params):
         """
             Convert lists to JSON encoded strings, and correctly handle any
@@ -105,50 +101,14 @@ class Mixpanel_api(object):
         return hash.hexdigest()
 
 if __name__ == '__main__':
-    api = Mixpanel_api(
-        api_key = '862a8448704d584ce149704707a0e4e7',
-        api_secret = '59bf255504e02918c9dc83eb7640144c'
+    api = Mixpanel(
+        api_key = 'YOUR KEY',
+        api_secret = 'YOUR SECRET'
     )
-    query = {
-        'event' : ['latencyMetric'],
-        'name': 'experiment_id',
-        'from_date': '2016-03-01',
-        'to_date': '2016-03-16',
-        'where': 'properties["component"]=="facebook-wall" and properties["version"]=="stable"'
-    }
-
-    data = api.request(['export'], query)
-    # print data 
-    
-    # params1={'event':["latencyMetric"], 
-    #     'name':'requestDuration',
-    #         'type':"general",
-    #         'from_date':'2016-03-01',
-    #         'to_date':'2016-06-15',
-    #         'unit':"day", 
-    #         'interval':1}
-
-
-    # params1_post={'event':["latencyMetric"], 
-    #         'name':'experiment_id',
-    #         'type':"general",
-    #         'from_date':'2016-04-01',
-    #         'to_date':'2016-06-15',
-    #         'unit':"day", 
-    #         'interval':1}
-    # params2_post = {'event':["latencyMetric"], 
-    #         'name':'component-id',
-    #         'type':"general",
-    #         'from_date':'2016-04-01',
-    #         'to_date':'2016-06-15',
-    #         'unit':"day", 
-    #         'interval':1}
-
-    # respuesta_post=api.request(['events/properties/values'], params1, format='json')
-    # respuesta_post_sort=sorted(respuesta_post)
-
-    # respuesta_post1=api.request(['events/properties/values'], params1_post, format='json')
-    # respuesta_post_sort1=sorted(respuesta_post1)
-
-    # listapost=zip(respuesta_post_sort1,respuesta_post_sort)
-    # print listapost
+    data = api.request(['export'], {
+        'event' : ['pages'],
+        'unit' : 'hour',
+        'interval' : 24,
+        'type': 'general'
+    })
+    print data
