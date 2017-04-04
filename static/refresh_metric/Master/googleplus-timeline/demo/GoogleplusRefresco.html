@@ -22,33 +22,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <body unresolved>
 
-    <template id="Demo" is="dom-bind">
-        <template is="dom-if" if="{{token}}">
-            <googleplus-timeline token="{{token}}" language="{{language}}" api_key="{{api_key}}">
-            </googleplus-timeline>
-            </br>
-            </br>
-            <button name="es" on-click="changeIdiom">Spanish</button>
-            <button name="en" on-click="changeIdiom">English</button>
-        </template>
+  <template id="Demo" is="dom-bind">
+    <template is="dom-if" if="{{token}}">
+      <googleplus-timeline token="{{token}}" language="{{language}}" api_key="{{api_key}}">
+      </googleplus-timeline>
+      </br>
+      </br>
+      <button name="es" on-click="changeIdiom">Spanish</button>
+      <button name="en" on-click="changeIdiom">English</button>
     </template>
-    <script>
-        Demo.api_key = "AIzaSyAArT6pflqm1-rj9Nwppuj_4z15FFh4Kis";
-        Demo.language = "es";
-        Demo.token = "ya29.GmHfA044PaAO_1YYjdNM81kpzodb8IMnnLwIvEvZK1oYRsGyAZHHqYN2cwrSy3F-fZNwN0vUIAQ60Ajal9dPumfezlG0NdvqStH4QpjR-nlFWkZJSh2dsvHzdpuLP2r2Tg5B";
-        Demo.changeIdiom = function (event, detail) {
-            Demo.language = event.target.getAttribute('name');
-        }
+  </template>
+  <script>
+    Demo.api_key = "AIzaSyAArT6pflqm1-rj9Nwppuj_4z15FFh4Kis";
+    Demo.language = "es";
+    Demo.token = "ya29.Gl0VBC16TIZ1xXSMoIysVlDHKZqsdEnmzNXuBo8LBWp5qfn7qZnJxuNU9BnOcEyVkIGr8yL7jBkx8Sj919bU9AXNNX4rd17BE1-UrONKVFqdkZ4aV5rsLmahoZv8eVo";
+    Demo.changeIdiom = function (event, detail) {
+      Demo.language = event.target.getAttribute('name');
+    }
 
-        Demo.onSignIn = function (googleUser) {
-            // The ID token you need to pass to your backend:
-            // We set the access token obtained
-            Demo.token = googleUser.detail.token;
-            console.log(Demo.token);
-        };
-
-    </script>
-            <script src='GooglePlusRefresco.js' type='text/javascript'></script>
+    Demo.onSignIn = function (googleUser) {
+      // The ID token you need to pass to your backend:
+      // We set the access token obtained
+      Demo.token = googleUser.detail.token;
+      console.log(Demo.token);
+    };
+  </script>
+  <script src='GooglePlusRefresco.js' type='text/javascript'></script>
 
 </body>
 
