@@ -19,7 +19,22 @@
 #   This script get the results stored in Mixpanel and saves them in a file   #
 ###############################################################################
 
-
+# First, we made the necessary imports to run the script
+import json, csv, time
 import mixpanel
 from mixpanel_client import MixpanelQueryClient
 from mixpanel import Mixpanel
+
+# We need the tokens for Mixpanel projects to get the results
+mp_latency = Mixpanel("53da31965c3d047fa72de756aae43db1") # events sender
+query_client = MixpanelQueryClient('582d4b303bf22dd746b5bb1b9acbff63', '8b2d351133ac2a5d4df0700afc595fb6') # query client
+
+# Initial and final date
+START_DATE = time.strftime("%Y-%m-%d")
+END_DATE = START_DATE
+
+# Query to get data of the all Results events
+resp = query_client.get_export(START_DATE, END_DATE, 'latencyResult', result_key='result_id')
+
+# Resp is a dict, access to fields
+print resp
