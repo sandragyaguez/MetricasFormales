@@ -30,11 +30,19 @@ mp_latency = Mixpanel("53da31965c3d047fa72de756aae43db1") # events sender
 query_client = MixpanelQueryClient('582d4b303bf22dd746b5bb1b9acbff63', '8b2d351133ac2a5d4df0700afc595fb6') # query client
 
 # Initial and final date
-START_DATE = time.strftime("%Y-%m-%d")
-END_DATE = START_DATE
+START_DATE = "2017-04-04"
+END_DATE = time.strftime("%Y-%m-%d")
 
 # Query to get data of the all Results events
 resp = query_client.get_export(START_DATE, END_DATE, 'latencyResult', result_key='result_id')
 
 # Resp is a dict, access to fields
-print resp
+for key in resp.keys():
+	# Time to show the information stored
+	print "#########################################################"
+	print "Componente: " + resp[key]["component"]
+	print "Version evaluada: " + resp[key]["tag"]
+	print "Valor de metrica: " + str(resp[key]["latency"])
+	print "Id de experimento: " + str(resp[key]["experiment_id"])
+	print "#########################################################"
+	print "------------------------------------------------------------"
