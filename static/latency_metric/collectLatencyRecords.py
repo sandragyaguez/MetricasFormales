@@ -19,7 +19,7 @@ mp = Mixpanel("53da31965c3d047fa72de756aae43db1")
 START_DATE = time.strftime("%Y-%m-%d")
 END_DATE = START_DATE
 # La fecha desde la que has empezado a enviar datos a Mixpanel (se usa para ver si hay algún resultado final que pueda estar duplicado)
-START_STUDY_DATE = "2017-03-15"
+START_STUDY_DATE = "2017-04-04"
 
 # Send metric results to MixPanel
 def sendResults(component_name, experiment_id, experiment_timestamp, request, tag ,result, event_key):
@@ -74,6 +74,7 @@ def main():
 				# For each experiment result obtained in host (a certain request to the G+ API), we obtain the results in the different versions
 				for event_version, eventClient in event_request_dict.iteritems():
 					print "----------------------------------"
+					print ">>> Id del experimento: ", experimentHost['experiment']
 					tag = eventClient["version"] + " vs host"
 					# We check for duplicate in latency results
 					result_id = eventClient["event_id"] + tag

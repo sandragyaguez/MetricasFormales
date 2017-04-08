@@ -172,9 +172,9 @@ def main():
 			time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Latency/FacebookWallLatency.html?experiment="+ experiment_id +
 			 "&facebook_token=" + access_token)
-			time.sleep(10)
-			webbrowser.open_new(server_base_url + "/Accuracy/FacebookWallLatency.html?experiment="+ experiment_id +
-			 "&facebook_token=" + access_token)
+			# time.sleep(10)
+			# webbrowser.open_new(server_base_url + "/Accuracy/FacebookWallLatency.html?experiment="+ experiment_id +
+			#  "&facebook_token=" + access_token)
 
 
 		elif social_network == 'twitter':
@@ -217,8 +217,8 @@ def main():
 			webbrowser.open_new(server_base_url + "/Stable/TwitterTimelineLatency.html?experiment="+ experiment_id)
 			time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Latency/TwitterTimelineLatency.html?experiment="+ experiment_id)
-			time.sleep(10)
-			webbrowser.open_new(server_base_url + "/Accuracy/TwitterTimelineLatency.html?experiment="+ experiment_id)
+			# time.sleep(10)
+			# webbrowser.open_new(server_base_url + "/Accuracy/TwitterTimelineLatency.html?experiment="+ experiment_id)
 			
 
 		elif social_network == 'googleplus' and len(sys.argv) >= 3:
@@ -226,8 +226,8 @@ def main():
 			# We open a window for each component version
 			webbrowser.open_new(server_base_url + "/Stable/GoogleplusLatency.html?experiment=" + experiment_id)
 			time.sleep(10)
-			webbrowser.open_new(server_base_url + "/Accuracy/GoogleplusLatency.html?experiment=" + experiment_id)
-			time.sleep(10)
+			# webbrowser.open_new(server_base_url + "/Accuracy/GoogleplusLatency.html?experiment=" + experiment_id)
+			# time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Latency/GoogleplusLatency.html?experiment=" + experiment_id)
 		
 			# First, we obtain data generated today from stable versions
@@ -337,8 +337,8 @@ def main():
 			# We open a window for each component version
 			webbrowser.open_new(server_base_url + "/Stable/PinterestTimelineLatency.html?experiment=" + experiment_id)
 			time.sleep(10)
-			webbrowser.open_new(server_base_url + "/Accuracy/PinterestTimelineLatency.html?experiment=" + experiment_id)
-			time.sleep(10)
+			# webbrowser.open_new(server_base_url + "/Accuracy/PinterestTimelineLatency.html?experiment=" + experiment_id)
+			# time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Latency/PinterestTimelineLatency.html?experiment=" + experiment_id)
 
 		elif social_network == 'finance':
@@ -369,8 +369,8 @@ def main():
 			# We open a window for each component version
 			webbrowser.open_new(server_base_url + "/Stable/FinanceSearchLatency.html?experiment=" + experiment_id)
 			time.sleep(10)
-			webbrowser.open_new(server_base_url + "/Accuracy/FinanceSearchLatency.html?experiment=" + experiment_id)
-			time.sleep(10)
+			# webbrowser.open_new(server_base_url + "/Accuracy/FinanceSearchLatency.html?experiment=" + experiment_id)
+			# time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Latency/FinanceSearchLatency.html?experiment=" + experiment_id)
 
 		elif social_network == 'weather':
@@ -403,8 +403,8 @@ def main():
 			# We open a window for each component version
 			webbrowser.open_new(server_base_url + "/Stable/OpenWeatherLatency.html?experiment=" + experiment_id)
 			time.sleep(10)
-			webbrowser.open_new(server_base_url + "/Accuracy/OpenWeatherLatency.html?experiment=" + experiment_id)
-			time.sleep(10)
+			# webbrowser.open_new(server_base_url + "/Accuracy/OpenWeatherLatency.html?experiment=" + experiment_id)
+			# time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Latency/OpenWeatherLatency.html?experiment=" + experiment_id)
 
 		elif social_network == "traffic":
@@ -434,12 +434,9 @@ def main():
 			# We open a window for each component version
 			webbrowser.open_new(server_base_url + "/Stable/TrafficIncidentsLatency.html?experiment=" + experiment_id)
 			time.sleep(10)
-			webbrowser.open_new(server_base_url + "/Accuracy/TrafficIncidentsLatency.html?experiment=" + experiment_id)
-			time.sleep(10)
+			# webbrowser.open_new(server_base_url + "/Accuracy/TrafficIncidentsLatency.html?experiment=" + experiment_id)
+			# time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Latency/TrafficIncidentsLatency.html?experiment=" + experiment_id)
-
-
-
 	
 	else:
 		print "Wrong social network or missing param"
