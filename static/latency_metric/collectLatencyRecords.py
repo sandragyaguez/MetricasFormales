@@ -74,7 +74,6 @@ def main():
 				# For each experiment result obtained in host (a certain request to the G+ API), we obtain the results in the different versions
 				for event_version, eventClient in event_request_dict.iteritems():
 					print "----------------------------------"
-					print ">>> Id del experimento: ", experimentHost['experiment']
 					tag = eventClient["version"] + " vs host"
 					# We check for duplicate in latency results
 					result_id = eventClient["event_id"] + tag
