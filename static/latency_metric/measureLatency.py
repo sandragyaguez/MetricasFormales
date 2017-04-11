@@ -27,8 +27,8 @@ def replicate_googleplus_requests(access_token, experiment_id, experiment_list):
 		# print experiment
 		# print "------------------------------------------"
 		# print ">>> Endpoint: " + google_url
-		# if experiment['requestCount'] >= 2:
-		if experiment['request'].find("me") >= 0:
+		if experiment['requestCount'] >= 2:
+		# if experiment['request'].find("me") >= 0:
 			options_requestTime = 0
 			# Si replicamos un experimento cliente en el que se han realizado dos llamadas,
 			# haremos primero una petición de tipo OPTIONS y luego una de tipo GET
