@@ -9,7 +9,7 @@
 # - 	Hay que cambiar el token que está en FacebookWallLatency.html (carpeta Stable) y la variable FACEBOOK_TOKEN
 # En GoogleplusLatency.html (Carpetas Accuracy, Latency, Stable) cambiar el valor de la variable access_token y la variable GOOGLE_TOKEN
 FACEBOOK_TOKEN="EAACEdEose0cBAL4OrKLZAYbmCuEL7a0yHtVMFCKxYxRxoUZCAcpGCh5PUb8aCyVYKZB9ZBpK4UZBP2e6fjUGa14QFkJsLt8rzsD1uBphEVlCHkp0Bnvvkyq4MdZA6VJZCgRLhKoKI4erSimZA0tEswlrX9JbrHICWZBAcD0GxPPhiyZBVFYvrT5ZBCy5jUlIqO3hRYZD"
-GOOGLE_TOKEN="ya29.GmEoBJePAjdw2b8kEfLzUAl6yhNABuRezIqrVAxl0F8Rziu7HEBtmjsTnakoJf5uyule41-NYGRyG14EYrIgchE7OskRVzrLMtsLuyGrbMx7j7H1QeG6MYLgURBMXuhbCMWH"
+GOOGLE_TOKEN="ya29.GmEqBJXQBVHayej2822ruTLopdMrn6Aa8U4n407umVDPPSyui-xybKpWYUk-z3COGndZxgYuCcU2KHOvV_bq7A3DSAd32jWFoC3l8yNHCEZaz3AEnMbMSIbg35CjJoGF_w6n"
 
 # Comentar esta línea si los componentes están deplegados en remoto
 python -m SimpleHTTPServer >> /dev/null &
@@ -27,16 +27,16 @@ PID=`echo $!`
 # echo "Realizando pruebas sobre el componente github-events..."
 # python measureLatency.py github
 
-sleep 10
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente facebook-wall..."
-python measureLatency.py facebook $FACEBOOK_TOKEN
-
-# lo tengo en latency_metric_ana por falta de espacion al desplegar en app engine
 # sleep 10
 # echo "##################################################################"
-# echo "Realizando pruebas sobre el componente googleplus-timeline..."
-# python measureLatency.py googleplus $GOOGLE_TOKEN
+# echo "Realizando pruebas sobre el componente facebook-wall..."
+# python measureLatency.py facebook $FACEBOOK_TOKEN
+
+# lo tengo en latency_metric_ana por falta de espacion al desplegar en app engine
+sleep 10
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente googleplus-timeline..."
+python measureLatency.py googleplus $GOOGLE_TOKEN
 
 # sleep 10
 # echo "##################################################################"
@@ -63,8 +63,8 @@ echo "##################################################################"
 echo "Recolectando y calculando métrica de latencia sobre los componentes probados..."
 # python collectLatencyRecords.py instagram-timeline
 # python collectLatencyRecords.py github-events
-python collectLatencyRecords.py facebook-wall
-# python collectLatencyRecords.py googleplus-timeline
+# python collectLatencyRecords.py facebook-wall
+python collectLatencyRecords.py googleplus-timeline
 # python collectLatencyRecords.py pinterest-timeline
 # python collectLatencyRecords.py finance-search
 # python collectLatencyRecords.py open-weather
