@@ -28,7 +28,9 @@ def sendResults(component_name, experiment_id, experiment_timestamp, tag ,result
 	global mp
 	print ">>> Tag de la comparación: ", tag
 	print ">>> Diferencia de latencia: ", result
+	print ">>> Id del experimento: ", experiment_id
 	print ">>> Envio resultados a Mixpanel..."
+	print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 	mp.track("1111", 'latencyResult', {
 			    'component': component_name,
 			    'experiment_id': experiment_id,
@@ -56,10 +58,13 @@ def main():
 		if component == 'googleplus-timeline':
 			total_latency_stable = 0
 			total_latency_latency = 0
+			general_time_stable = 0
+			general_time_latency = 0
 			tag = ""
 			experiment_id = 0
 			experiment_timestamp = 0
 			request = ""
+			result_id = ""
 			# Obtain data from mixpanel
 			# First, we obtain data generated from host versions.
 			# The method will return a dict, where the field experiment_id will be the key
@@ -86,6 +91,8 @@ def main():
 					experiment_id = eventHost["experiment_id"]
 					experiment_timestamp = eventClient['experiment_timestamp']
 					request = eventClient["request"]
+					print "Request del cliente: ", request
+					print "Request del servidor: ", eventHost["request"]
 					# We check for duplicate in latency results
 					result_id = eventClient["event_id"] + tag
 					if not result_id in latency_records:
@@ -97,9 +104,12 @@ def main():
 							total_latency_latency += latency
 					else:
 						print ">>> El experimento " + eventClient["experiment_id"] + " con peticion " + eventClient["request"] + " con la comparacion " + tag + " ya se ha calculado previamente, por lo que no volvemos a enviar los calculos"
+				
+				general_time_stable += total_latency_stable
+				general_time_latency += total_latency_latency
 					
-				sendResults(component, experiment_id, experiment_timestamp, "stable vs host", total_latency_stable, result_id)
-				sendResults(component, experiment_id, experiment_timestamp, "latency_defects vs host", total_latency_latency, result_id)
+			sendResults(component, experiment_id, experiment_timestamp, "stable vs host", general_time_stable, result_id)
+			sendResults(component, experiment_id, experiment_timestamp, "latency_defects vs host", general_time_latency, result_id)
 		else:
 			print ">>> Calculando métricas de latencia de experimentos realizados desde " + START_DATE + " hasta " + END_DATE
 			# Obtain data from mixpanel
