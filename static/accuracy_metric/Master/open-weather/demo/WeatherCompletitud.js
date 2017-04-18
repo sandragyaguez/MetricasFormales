@@ -30,7 +30,8 @@
           var icon=element.data[i].icon
           var temp=element.data[i].currentTemp
           var temp_max=element.data[i].maxTemp
-          var temp_min=element.data[i].minTemp        
+          var temp_min=element.data[i].minTemp
+              
 
           //almaceno todas las variables en un diccionario
           var diccionario = {
@@ -42,6 +43,7 @@
             'temp': temp,
             'temp_max': temp_max,
             'temp_min':temp_min,
+            'i':i
           }
           var dicc_string = JSON.stringify(diccionario);
           //mando a mixpanel los campos recogidos en el diccionario
