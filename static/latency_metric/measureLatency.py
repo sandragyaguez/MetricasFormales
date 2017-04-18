@@ -6,6 +6,7 @@ import sys
 import httplib
 import urllib
 import json
+import ssl
 import webbrowser
 import mixpanel
 from mixpanel_client import MixpanelQueryClient
@@ -69,7 +70,7 @@ def replicate_googleplus_requests(access_token, experiment_id, experiment_list):
 
 # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/145634995501895/
 def main():
-	network_list = ["instagram", "facebook", "github", "googleplus", "twitter", "pinterest"]
+	network_list = ["instagram", "facebook", "github", "googleplus", "twitter", "pinterest", "traffic", "finance", "weather"]
 	server_base_url = "http://localhost:8000"
 	if len(sys.argv) >= 2:
 		social_network = sys.argv[1]
@@ -178,7 +179,7 @@ def main():
 
 		elif social_network == 'twitter':
 			#twitter_url = "http://metricas-formales.appspot.com/oauth/twitter"
-			twitter_url = "http://metricas-formales.appspot.com/oauth/twitter"
+			twitter_url = "https://centauro.ls.fi.upm.es/api/aux/twitterTimeline"
 			data = {'access_token': "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
           			'secret_token': "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
           			'consumer_key': "BOySBn8XHlyYDQiGiqZ1tzllx",
@@ -191,9 +192,10 @@ def main():
 
 			# We measure the request/response latency from host
 			req = urllib2.Request(full_url) #ana aqui tenia puesta la peticion a twitter_url sin pasarle los parametros
+			context = ssl._create_unverified_context()
 			# We set the start time
 			startTime = time.time()
-			data = urllib2.urlopen(req)
+			data = urllib2.urlopen(req, context=context)
 			# We set end time
 			endTime = time.time()
 			response = data.read()
@@ -207,16 +209,16 @@ def main():
 			    'component': 'twitter-timeline',
 			    'version': 'host',
 			    'requestDuration': requestTime,
-				  'experiment': experiment_id,
-				  'request': twitter_url
+				'experiment': experiment_id,
+				'request': twitter_url
 			})
 
 			#We open a window for each component version
-			webbrowser.open_new("http://metricas-formales.appspot.com/app/latency_metric/Stable/TwitterTimelineLatency.html?experiment="+ experiment_id)
+			webbrowser.open_new(server_base_url + "/Stable/TwitterTimelineLatency.html?experiment="+ experiment_id)
 			time.sleep(10)
-			webbrowser.open_new("http://metricas-formales.appspot.com/app/latency_metric/Latency/TwitterTimelineLatency.html?experiment="+ experiment_id)
+			webbrowser.open_new(server_base_url + "/Latency/TwitterTimelineLatency.html?experiment="+ experiment_id)
 			time.sleep(10)
-			webbrowser.open_new("http://metricas-formales.appspot.com/app/latency_metric/Accuracy/TwitterTimelineLatency.html?experiment="+ experiment_id)
+			webbrowser.open_new(server_base_url + "/Accuracy/TwitterTimelineLatency.html?experiment="+ experiment_id)
 			
 
 		elif social_network == 'googleplus' and len(sys.argv) >= 3:
@@ -338,6 +340,106 @@ def main():
 			webbrowser.open_new(server_base_url + "/Accuracy/PinterestTimelineLatency.html?experiment=" + experiment_id)
 			time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Latency/PinterestTimelineLatency.html?experiment=" + experiment_id)
+
+		elif social_network == 'finance':
+			# symbol = "Alphabet Inc."
+			finance_url = "https://centauro.ls.fi.upm.es:4444/stock"
+			finance_data = {"q": "select * from yahoo.finance.quote where symbol in (\'GOOGL\')"} 
+			finance_values = urllib.urlencode(finance_data)
+			finance_url_complete = finance_url + '?' + finance_values
+
+			req = urllib2.Request(finance_url_complete)
+			context = ssl._create_unverified_context()
+			startTime = time.time()
+			data = urllib2.urlopen(req, context=context)
+			endTime = time.time()
+			response = data.read()
+
+			# We calculate the time of the made request
+			time_req = (endTime - startTime) * 1000
+
+			mp.track("1111", 'latencyMetric', {
+				'component': 'finance-search',
+				'version': 'host',
+				'requestDuration': time_req,
+				'experiment': experiment_id,
+				'request': "All requests"
+			})
+
+			# We open a window for each component version
+			webbrowser.open_new(server_base_url + "/Stable/FinanceSearchLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Accuracy/FinanceSearchLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Latency/FinanceSearchLatency.html?experiment=" + experiment_id)
+
+		elif social_network == 'weather':
+			weather_url = "https://centauro.ls.fi.upm.es:4444/weather"
+			weather_data = {"lat": "40.4893538421231",
+							"lon": "-3.6827461557",
+							"units": "metric",
+							"lang": "es",
+							"appId": "655f716c02b3f0aceac9e3567cfb46a8"}
+			weather_values = urllib.urlencode(weather_data)
+			weather_url_complete = weather_url + '?' + weather_values
+
+			req = urllib2.Request(weather_url_complete)
+			context = ssl._create_unverified_context()
+			startTime = time.time()
+			data = urllib2.urlopen(req, context=context)
+			endTime = time.time()
+			response = data.read()
+
+			time_req = (endTime - startTime) * 1000
+
+			mp.track("1111", 'latencyMetric', {
+				'component': 'open-weather',
+				'version': 'host',
+				'requestDuration': time_req,
+				'experiment': experiment_id,
+				'request': "All requests"
+				})
+
+			# We open a window for each component version
+			webbrowser.open_new(server_base_url + "/Stable/OpenWeatherLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Accuracy/OpenWeatherLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Latency/OpenWeatherLatency.html?experiment=" + experiment_id)
+
+		elif social_network == "traffic":
+			traffic_url = "https://centauro.ls.fi.upm.es:4444/traffic"
+			traffic_data = {"map": "50.6064499990991,-1.028659200900901,52.4082518009009,0.7731426009009009",
+							"key": "AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"}
+			traffic_values = urllib.urlencode(traffic_data)
+			traffic_url_complete = traffic_url + '?' + traffic_values
+
+			req = urllib2.Request(traffic_url_complete)
+			context = ssl._create_unverified_context()
+			startTime = time.time()
+			data = urllib2.urlopen(req, context=context)
+			endTime = time.time()
+			response = data.read()
+
+			time_req = (endTime - startTime) * 1000
+
+			mp.track("1111", 'latencyMetric', {
+				'component': 'traffic-incidents',
+				'version': 'host',
+				'requestDuration': time_req,
+				'experiment': experiment_id,
+				'request': "All requests"
+				})
+
+			# We open a window for each component version
+			webbrowser.open_new(server_base_url + "/Stable/TrafficIncidentsLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Accuracy/TrafficIncidentsLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Latency/TrafficIncidentsLatency.html?experiment=" + experiment_id)
+
+
+
 	
 	else:
 		print "Wrong social network or missing param"

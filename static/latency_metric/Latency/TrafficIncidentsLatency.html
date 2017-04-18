@@ -8,15 +8,18 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <title>googleplus-timeline Latency Tracker</title>
-    <script src="googleplus-timeline/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="googleplus-timeline/googleplus-timeline.html">
+    <title>Traffic-incidents Latency Tracker</title>
+    <script src="traffic-incidents/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="traffic-incidents/traffic-incidents.html">
   </head>
   <body unresolved>
-    <p><code>&lt;googleplus-timeline&gt;</code> Latency Tracker</p>
+    <p><code>&lt;traffic-incidents&gt;</code> Latency Tracker</p>
     <template id="Demo" is="dom-bind">  
-      <googleplus-timeline id="componentTested" token="ya29.GmEcBLeRox6t8jMcnNg79G651oVC3bv1YTgTrEmGBQxhGBoCj5IHQOkLTdHRosdw7Zfce7rN9ebAu5eOnmZ9aYVpnHvrWF2ai-JUoZn4iDBdPBD834mcS0MgWbwNnI6mFI2F" language="{{language}}">
-      </googleplus-timeline>
+      <traffic-incidents id="componentTested" api_key_geocoding="AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM"
+       app_key_traffic="AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-" refresh_time="60000"
+       traffic_info="{{traffic}}" city="madrid"
+      >
+      </traffic-incidents>
       </br></br>
       <button name="es" on-click="changeIdiom">Spanish</button>
       <button name="en" on-click="changeIdiom">English</button>
@@ -43,42 +46,19 @@
         var resourceList = performance.getEntriesByType("resource");
         console.log(resourceList);
         //We search for the request done to the endpoint desired
-        var google_resources = {}
-        // We populate the json object that represents the events that will be sent to Mixpanel
         for (var i = 0; i<resourceList.length; i++) {
           if(resourceList[i].initiatorType === "xmlhttprequest" && resourceList[i].name.match(endpoint)!= null){
-            request = resourceList[i].name
-            if (!google_resources.hasOwnProperty(request)){
-              google_resources[request] = {"requestDuration": resourceList[i].duration,
-                "responseEndTime": resourceList[i].responseEnd,
-                "fetchStartTime": resourceList[i].fetchStart,
-                "requestCount": 1 }
-            }else{
-              google_resources[request] = {"requestDuration": google_resources[request]["requestDuration"] + resourceList[i].duration,
-                "responseEndTime": google_resources[request]["responseEndTime"] + resourceList[i].responseEnd,
-                "fetchStartTime": google_resources[request]["fetchStartTime"] + resourceList[i].fetchStart,
-                "requestCount" : google_resources[request]["requestCount"] + 1 }
-            }
-          }
-        }
-        // We iterate over google resources and send it the metrics to mixpanel
-        for (var key in google_resources){
-          if(google_resources.hasOwnProperty(key)){
-            console.log(google_resources[key])
-            // We send to MixPanel the desired data about googleplus-timeline
+            // We send to MixPanel the desired data about instagram timeline
             console.log("Voy a mandar un evento")
             var properties = {
               "component": componentName.toLowerCase(),
               "version": version,
               "experiment_timestamp": timestamp,
+              "requestDuration": resourceList[i].duration,
+              "responseEndTime": resourceList[i].responseEnd,
+              "fetchStartTime": resourceList[i].fetchStart,
               "experiment_id": getParameterByName('experiment'),
-              "request": key,
-              // Computed attributes based on the request
-              "requestDuration": google_resources[request]["requestDuration"],
-              "responseEndTime": google_resources[key]["responseEndTime"],
-              "fetchStartTime": google_resources[request]["fetchStartTime"],
-              "requestCount": google_resources[request]["requestCount"],
-              "event_id": getParameterByName('experiment') + key
+              "request": resourceList[i].name
             }
             mixpanel.track("latencyMetric", properties);
           }
@@ -87,9 +67,10 @@
 
       //We send the desired time events after a fixed period of time
       window.setTimeout(function() {
-        var componentName = document.getElementById("componentTested").tagName;
-        var endpoint = "https://www.googleapis.com/plus/v1/";
-        trackEvents(componentName, "latency_defects",endpoint);
+        var component = document.getElementById("componentTested");
+        var componentName = component.tagName;
+        var endpoint = "https://centauro.ls.fi.upm.es:4444/traffic"
+        trackEvents(componentName, "latency", endpoint);
       },5000);
     </script>
   </body>

@@ -19,14 +19,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>Twitter-timeline Latency Tracker</title>
 
-    <script src="twitter-timeline/static/bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <script src="twitter-timeline/bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="twitter-timeline/static/twitter-timeline.html">
   </head>
   
   <body unresolved>
     <template id="Demo" is="dom-bind" >
       <p><code>&lt;twitter-timeline&gt;</code> Latency Tracker</p>
-      <twitter-timeline id="componentTested" endpoint="http://metricas-formales.appspot.com/oauth/twitter" access-token="3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf" secret-token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock" consumer-key="J4bjMZmJ6hh7r0wlG9H90cgEe" consumer-secret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" count="200" language="{{language}}" component_base="twitter-timeline/static/">
+      <twitter-timeline id="componentTested" endpoint="https://centauro.ls.fi.upm.es/api/aux/twitterTimeline" access-token="3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf" secret-token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock" consumer-key="BOySBn8XHlyYDQiGiqZ1tzllx" consumer-secret="xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE" count="200" language="{{language}}" component_base="twitter-timeline/static/">
       <br>
       <button name="es" on-click="changeIdiom">Spanish</button>
       <button name="en" on-click="changeIdiom">English</button>
@@ -55,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       trackEvents = function(componentName, version, endpoint){
         var timestamp = Date.now();
         var resourceList = performance.getEntriesByType("resource");
-        console.log(resourceList);
+        //console.log(resourceList);
         //We search for the request done to the endpoint desired
         for (var i = 0; i<resourceList.length; i++) {
           if(resourceList[i].initiatorType === "xmlhttprequest" && resourceList[i].name.match(endpoint)!= null){
