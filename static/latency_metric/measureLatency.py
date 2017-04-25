@@ -168,7 +168,7 @@ def main():
 			    'component': 'facebook-wall',
 			    'version': 'host',
 			    'requestDuration': requestTime,
-			    'experiment': experiment_id,
+			    'experiment': experiment_dict,
 			    'request': facebook_url
 			})
 			# Lanzamos una pestaña por cada versión del componente (El componente de Facebook tiene solo una version implementada)
