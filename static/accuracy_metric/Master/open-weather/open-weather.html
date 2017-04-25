@@ -323,6 +323,7 @@ Polymer({
       return res;
     }
     var list = res.list;
+    this.set('_data', list);
     var days = {
       es:['Dom','Lun','Mar','Mie','Jue','Vie','Sab'],
       en:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],

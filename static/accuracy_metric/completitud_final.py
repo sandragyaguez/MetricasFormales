@@ -1816,6 +1816,11 @@ if social_network in network_list:
         s= requests.get(request_uri, verify=False, headers=headers)
         print s
         timeline=s.json()
+
+        # BORRAR!!!
+        #b = [a['main']['temp_min'] for a in timeline['list']]
+        #print b
+
         lista_city=[]
         lista_date=[]
         lista_temp=[]
@@ -1824,6 +1829,7 @@ if social_network in network_list:
         lista_icon=[]
         listacont=[]
         contador=0
+
 
         for k,v in timeline.iteritems():
             if(timeline.has_key('city')):
@@ -1837,9 +1843,11 @@ if social_network in network_list:
             lista_city.append(values2)
 
         for v in values3:
-            if(v.has_key('dt_txt')):
-                values4=v.get('dt_txt',None)
-            lista_date.append(values4)
+            if(v.has_key('dt')):
+                values4=v.get('dt',None)
+                date=datetime.datetime.fromtimestamp(values4).strftime('%d/%m/%Y')
+                if (date==time.strftime("%d/%m/%Y")):
+                    lista_date.append(date)
             if(v.has_key('weather')):
                 values5=v.get('weather',None)
             if(v.has_key('main')):
@@ -1871,24 +1879,22 @@ if social_network in network_list:
 
         zipPythonDate=zip(listacont,lista_date)
         dictPythonDate=dict(zipPythonDate)
-        print dictPythonDate
 
         zipPythonIcon=zip(listacont,lista_icon)
         dictPythonIcon=dict(zipPythonIcon)
 
         zipPythonTemp=zip(listacont,lista_temp)
         dictPythonTemp=dict(zipPythonTemp)
+        print dictPythonTemp
         
         zipPythonTemp_Max=zip(listacont,lista_temp_max)
         dictPythonTemp_Max=dict(zipPythonTemp_Max)
+        print dictPythonTemp_Max
+
         
         zipPythonTemp_Min=zip(listacont,lista_temp_min)
         dictPythonTemp_Min=dict(zipPythonTemp_Min)
-
-#MIGUEL: RECORDAR COMO COGER LOS DATOS DE HOY EN LA RESPUESTA DE LA PETICION QUE HAGO A LA API
-#EN EL COMPONENTE YA TENGO LOS DATOS QUE TENGO QUE COMPARAR
-#ME FALTA HACER COMPROBACION DE DIA, PARA COGER SOLO LOS DEL DIA DE HOY COMO SE HACE EN JS
-
+        print dictPythonTemp_Min
 
 
         ##########################################################################################################################################
@@ -1933,9 +1939,11 @@ if social_network in network_list:
                     poscomp=y.items()[3][1]
                     tempMaxcomp=y.items()[4][1]
                     fechacomp=y.items()[5][1]
+                    fechacomp=datetime.datetime.strptime(fechacomp,'%d/%m/%Y').strftime('%d/%m/%Y')
                     diacomp=y.items()[6][1]
                     tempMincomp=y.items()[7][1]
                     iconcomp=y.items()[8][1]
+
 
                     listime.append(timecomp)
                     listacity.append(citycomp)
@@ -1966,7 +1974,10 @@ if social_network in network_list:
                 dictCompTemp_Min=dict(zipCompTemp_Min)
                 dictCompIcon=dict(zipCompIcon)
 
-                print dictCompDate
+                print dictCompTemp
+                print dictCompTemp_Max
+                print dictCompTemp_Min
+
 
                 #Recorro el diccionario del componente, k es la posicion y v el date
                 for k,v in dictCompCity.iteritems():
@@ -1981,41 +1992,39 @@ if social_network in network_list:
                             print "la city que falla es : " + v
                             liskey.append(k)
                             lisvalue.append(v)
+                            listaFallosCity=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+          
+
+                for k,v in dictCompDate.iteritems():
+                    if(dictPythonDate.has_key(k)):
+                        vPythonDate=dictPythonDate.get(k,None)
+                        if cmp(vPythonDate,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "la fecha que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
                             listaFallosDate=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
-                    else:
-                        print "la city que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
 
-
-                #Recorro el diccionario del componente, k es la posicion y v es la imagen
                 for k,v in dictCompTemp.iteritems():
-                    print v
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonTemp.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonTemp=dictPythonTemp.get(k,None)
-                        print vPythonTemp
                         if cmp(vPythonTemp,v)==0:
-                            print vPythonTemp
-                            print v
                             True
                         else:
                             print "falla en posicion: " + str(k) 
                             print "el temp que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosType=zip(liskey,lisvalue)
+                            listaFallosTemp=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
-                    else:
-                        print "el temp que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
+                    
 
-                #Recorro el diccionario del componente, k es la posicion y v es el texto
                 for k,v in dictCompTemp_Max.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonTemp_Max.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonTemp_Max=dictPythonTemp_Max.get(k,None)
                         if cmp(vPythonTemp_Max,v)==0:
                             True
@@ -2024,15 +2033,11 @@ if social_network in network_list:
                             print "el tiempo max que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
+                            listaFallosTemp_Max=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
 
-
-                #Recorro el diccionario del componente, k es la posicion y v es el texto
                 for k,v in dictCompTemp_Min.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonTemp_Min.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonTemp_Min=dictPythonTemp_Min.get(k,None)
                         if cmp(vPythonTemp_Min,v)==0:
                             True
@@ -2041,15 +2046,12 @@ if social_network in network_list:
                             print "el tiempo min que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
+                            listaFallosTemp_Min=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
 
 
-                #Recorro el diccionario del componente, k es la posicion y v es el texto
                 for k,v in dictCompIcon.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonIcon.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonIcon=dictPythonIcon.get(k,None)
                         if cmp(vPythonIcon,v)==0:
                             True
@@ -2058,7 +2060,7 @@ if social_network in network_list:
                             print "el icon que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
+                            listaFallosIcon=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1                
 
 
@@ -2087,6 +2089,7 @@ if social_network in network_list:
                     poscomp=y.items()[3][1]
                     tempMaxcomp=y.items()[4][1]
                     fechacomp=y.items()[5][1]
+                    fechacomp=datetime.datetime.strptime(fechacomp,'%d/%m/%Y').strftime('%d/%m/%Y')
                     diacomp=y.items()[6][1]
                     tempMincomp=y.items()[7][1]
                     iconcomp=y.items()[8][1]
@@ -2120,13 +2123,9 @@ if social_network in network_list:
                 dictCompTemp_Min=dict(zipCompTemp_Min)
                 dictCompIcon=dict(zipCompIcon)
 
-                print dictCompDate
 
-                #Recorro el diccionario del componente, k es la posicion y v el date
                 for k,v in dictCompCity.iteritems():
-                #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonCity.has_key(k)):
-                    #si es asi, cojo los values de python y del componente y los comparo
                         vPythonCity=dictPythonCity.get(k,None)
                         if cmp(vPythonCity,v)==0:
                             True
@@ -2135,19 +2134,29 @@ if social_network in network_list:
                             print "la city que falla es : " + v
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosDate=zip(liskey,lisvalue)
+                            listaFallosCity=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
                     else:
                         print "la city que no esta es: " + v
                         print "corresponde a la posicion: " + str(k)
 
 
-                #Recorro el diccionario del componente, k es la posicion y v es la imagen
+                for k,v in dictCompDate.iteritems():
+                    if(dictPythonDate.has_key(k)):
+                        vPythonDate=dictPythonDate.get(k,None)
+                        if cmp(vPythonDate,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "la fecha que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosDate=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+
+
                 for k,v in dictCompTemp.iteritems():
-                    print v
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonTemp.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonTemp=dictPythonTemp.get(k,None)
                         print vPythonTemp
                         if cmp(vPythonTemp,v)==0:
@@ -2159,17 +2168,12 @@ if social_network in network_list:
                             print "el temp que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosType=zip(liskey,lisvalue)
+                            listaFallosTemp=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
-                    else:
-                        print "el temp que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
+   
 
-                #Recorro el diccionario del componente, k es la posicion y v es el texto
                 for k,v in dictCompTemp_Max.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonTemp_Max.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonTemp_Max=dictPythonTemp_Max.get(k,None)
                         if cmp(vPythonTemp_Max,v)==0:
                             True
@@ -2178,15 +2182,12 @@ if social_network in network_list:
                             print "el tiempo max que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
+                            listaFallosTemp_Max=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
 
 
-                #Recorro el diccionario del componente, k es la posicion y v es el texto
                 for k,v in dictCompTemp_Min.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonTemp_Min.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonTemp_Min=dictPythonTemp_Min.get(k,None)
                         if cmp(vPythonTemp_Min,v)==0:
                             True
@@ -2195,15 +2196,12 @@ if social_network in network_list:
                             print "el tiempo min que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
+                            listaFallosTemp_Min=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
 
 
-                #Recorro el diccionario del componente, k es la posicion y v es el texto
                 for k,v in dictCompIcon.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonIcon.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonIcon=dictPythonIcon.get(k,None)
                         if cmp(vPythonIcon,v)==0:
                             True
@@ -2212,7 +2210,7 @@ if social_network in network_list:
                             print "el icon que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
+                            listaFallosIcon=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1                
 
 
@@ -2240,6 +2238,7 @@ if social_network in network_list:
                     poscomp=y.items()[3][1]
                     tempMaxcomp=y.items()[4][1]
                     fechacomp=y.items()[5][1]
+                    fechacomp=datetime.datetime.strptime(fechacomp,'%d/%m/%Y').strftime('%d/%m/%Y')
                     diacomp=y.items()[6][1]
                     tempMincomp=y.items()[7][1]
                     iconcomp=y.items()[8][1]
@@ -2273,13 +2272,9 @@ if social_network in network_list:
                 dictCompTemp_Min=dict(zipCompTemp_Min)
                 dictCompIcon=dict(zipCompIcon)
 
-                print dictCompDate
 
-                #Recorro el diccionario del componente, k es la posicion y v el date
                 for k,v in dictCompCity.iteritems():
-                #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonCity.has_key(k)):
-                    #si es asi, cojo los values de python y del componente y los comparo
                         vPythonCity=dictPythonCity.get(k,None)
                         if cmp(vPythonCity,v)==0:
                             True
@@ -2288,19 +2283,29 @@ if social_network in network_list:
                             print "la city que falla es : " + v
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosDate=zip(liskey,lisvalue)
+                            listaFallosCity=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
                     else:
                         print "la city que no esta es: " + v
                         print "corresponde a la posicion: " + str(k)
 
 
-                #Recorro el diccionario del componente, k es la posicion y v es la imagen
+                for k,v in dictCompDate.iteritems():
+                    if(dictPythonDate.has_key(k)):
+                        vPythonDate=dictPythonDate.get(k,None)
+                        if cmp(vPythonDate,v)==0:
+                            True
+                        else:
+                            print "falla en posicion: " + str(k) 
+                            print "la fecha que falla es : " + v
+                            liskey.append(k)
+                            lisvalue.append(v)
+                            listaFallosDate=zip(liskey,lisvalue)
+                            contadorFallos=contadorFallos+1
+
+
                 for k,v in dictCompTemp.iteritems():
-                    print v
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonTemp.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonTemp=dictPythonTemp.get(k,None)
                         print vPythonTemp
                         if cmp(vPythonTemp,v)==0:
@@ -2312,17 +2317,12 @@ if social_network in network_list:
                             print "el temp que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosType=zip(liskey,lisvalue)
+                            listaFallosTemp=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
-                    else:
-                        print "el temp que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
+                   
 
-                #Recorro el diccionario del componente, k es la posicion y v es el texto
                 for k,v in dictCompTemp_Max.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonTemp_Max.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonTemp_Max=dictPythonTemp_Max.get(k,None)
                         if cmp(vPythonTemp_Max,v)==0:
                             True
@@ -2331,15 +2331,12 @@ if social_network in network_list:
                             print "el tiempo max que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
+                            listaFallosTemp_Max=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
 
 
-                #Recorro el diccionario del componente, k es la posicion y v es el texto
                 for k,v in dictCompTemp_Min.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonTemp_Min.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonTemp_Min=dictPythonTemp_Min.get(k,None)
                         if cmp(vPythonTemp_Min,v)==0:
                             True
@@ -2348,15 +2345,12 @@ if social_network in network_list:
                             print "el tiempo min que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
+                            listaFallosTemp_Min=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1
 
 
-                #Recorro el diccionario del componente, k es la posicion y v es el texto
                 for k,v in dictCompIcon.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPythonIcon.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
                         vPythonIcon=dictPythonIcon.get(k,None)
                         if cmp(vPythonIcon,v)==0:
                             True
@@ -2365,7 +2359,7 @@ if social_network in network_list:
                             print "el icon que falla es : " + str(v)
                             liskey.append(k)
                             lisvalue.append(v)
-                            listaFallosText=zip(liskey,lisvalue)
+                            listaFallosIcon=zip(liskey,lisvalue)
                             contadorFallos=contadorFallos+1                
 
 
