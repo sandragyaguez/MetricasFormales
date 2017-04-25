@@ -20,7 +20,6 @@
         var date= new Date();
         var dateToday=(date.getDate() + "/" + (date.getMonth() +1) + "/" + date.getFullYear());
         console.log(dateToday)
-        //recorro todos los elementos del timeline de twitter
         for (var i = 0; i<element.data.length;i++){
           if(element.data[i].current_date===dateToday){
           var city=element.data[i].name
@@ -48,8 +47,9 @@
           var dicc_string = JSON.stringify(diccionario);
           //mando a mixpanel los campos recogidos en el diccionario
           mixpanel.track("latency",{'value':dicc_string});
+          console.log("no manda nada")
 
           }
         }
-      }, 2000);
+      }, 7000);
       });

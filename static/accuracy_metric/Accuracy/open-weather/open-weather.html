@@ -383,7 +383,7 @@ If lat and lon are no defined. it will try to get your location
        var minmax = {min:100,max:-100};
        list.forEach(function(el){
          el_dt = new Date(el.dt*1000);
-         if (dt.getDay() == el_dt.getDay() && dt.getMonth() == el_dt.getMonth() && dt.getYear() == el_dt.getYear()){
+         if (dt.getDay() == el_dt.getDay() && dt.getMonth() == el_dt.getMonth() && dt.getFullYear() == el_dt.getFullYear()){
            if (el.main.temp_min < minmax.min){
              minmax.min = Math.round(el.main.temp_min);
            }
@@ -404,7 +404,7 @@ If lat and lon are no defined. it will try to get your location
         current_time += now.getMinutes() > 9 ? ':' + now.getMinutes() : ':0' + now.getMinutes();
         var day = dt.getUTCDate();
         var month = dt.getMonth() + 1;
-        var year = dt.getYear();
+        var year = dt.getFullYear();
         var init = Math.floor(i / 8) * 8;
         var minmax = getMinMax(dt, list);
         var weather = {

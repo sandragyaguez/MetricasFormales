@@ -1821,6 +1821,9 @@ if social_network in network_list:
         #b = [a['main']['temp_min'] for a in timeline['list']]
         #print b
 
+#PROBLEMA: ESTOY COGIENDO SIEMPRE LA ULTIMA TEMP
+
+
         lista_city=[]
         lista_date=[]
         lista_temp=[]
@@ -2081,6 +2084,7 @@ if social_network in network_list:
                 
                 #ordeno la lista de diccionarios por la posicion (va de 0 a x)
                 newlist = sorted(lista, key=lambda posicion: posicion['i'])
+                print newlist
 
                 for y in lista:
                     timecomp=y.items()[0][1] #es la hora

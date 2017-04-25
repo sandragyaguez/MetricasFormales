@@ -6,7 +6,7 @@
         var element= document.querySelector("open-weather");
         window.setTimeout(function() {
         console.log(element);
-        console.log(element.data.length)
+        console.log(element.data.length);
         //recorro todos los elementos del timeline de twitter
         //for (var i = 0; i<element.current_date.length;i++){
           // var city=element.current_date.name
@@ -20,7 +20,6 @@
         var date= new Date();
         var dateToday=(date.getDate() + "/" + (date.getMonth() +1) + "/" + date.getFullYear());
         console.log(dateToday)
-        //recorro todos los elementos del timeline de twitter
         for (var i = 0; i<element.data.length;i++){
           if(element.data[i].current_date===dateToday){
           var city=element.data[i].name

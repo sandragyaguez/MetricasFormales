@@ -20,9 +20,12 @@
         var date= new Date();
         var dateToday=(date.getDate() + "/" + (date.getMonth() +1) + "/" + date.getFullYear());
         console.log(dateToday)
-        //recorro todos los elementos del timeline de twitter
+
         for (var i = 0; i<element.data.length;i++){
+            console.log(element.data[i].current_date)
+
           if(element.data[i].current_date===dateToday){
+
           var city=element.data[i].name
           var date=element.data[i].current_date
           var time=element.data[i].current_time
@@ -32,7 +35,6 @@
           var temp_max=element.data[i].maxTemp
           var temp_min=element.data[i].minTemp
               
-
           //almaceno todas las variables en un diccionario
           var diccionario = {
             'city': city,
