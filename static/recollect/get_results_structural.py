@@ -36,4 +36,9 @@ END_DATE = time.strftime("%Y-%m-%d")
 # Query to get data from Mixpanel
 resp = query_client.get_export(START_DATE, END_DATE, result_key="experiment_id")
 
-print resp
+# Access to fields of the data
+for key in resp.keys():
+	print "#########################################################"
+	print "Component: " + resp[key]["file_name"]
+	print "Valor de metrica: " + str(resp[key]["unique_imports"])
+	print "#########################################################"
