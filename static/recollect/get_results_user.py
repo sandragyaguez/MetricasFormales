@@ -22,7 +22,7 @@
 # First, we made the necessary imports to run the script
 import json, csv, time
 import mixpanel
-from mixpanel_client import MixpanelQueryClient
+from new_mixpanel_client import MixpanelQueryClient
 from mixpanel import Mixpanel
 
 # We need the tokens for Mixpanel projects to get the results
@@ -30,16 +30,20 @@ mp_user = Mixpanel("d3bef513d72a99cc1e8bd3ca133e0f69")
 query_client = MixpanelQueryClient("c2c6f5c021a293bf6e850746540a82ed", "cb2011ee8d19c4e6dcf68c1cca1b151a")
 
 # Boundary dates for retrieving data
-START_DATE = "2017-04-21"
+START_DATE = "2017-04-27"
 END_DATE = time.strftime("%Y-%m-%d")
 
 # Query to get data from Mixpanel
-resp = query_client.get_export(START_DATE, END_DATE, result_key="timestamp")
+query = 'properties["user"]=="testConwet14"'
+event = ["initialQuestion", "question2", "question3", "question4", "question5", "question6", "advantage", "drawback"]
+resp = query_client.get_export(START_DATE, END_DATE, where=query, response_format='json')
 
-for key in resp.keys():
-	print resp[key]["user"]
-	print resp[key]["component"]
-	print resp[key]["version"]
-	print resp[key]["timestamp"]
-	print resp[key]["question"]
-	print "-------------------------------"
+cont = 0
+for event in resp:
+	print event["properties"]["user"]
+	print event["properties"]["version"]
+	print event["properties"]["component"]
+	print event["properties"]["question"]
+	print event["properties"]["selection"]
+	cont += 1
+print cont
