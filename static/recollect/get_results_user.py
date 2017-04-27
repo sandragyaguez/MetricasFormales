@@ -34,15 +34,17 @@ START_DATE = "2017-04-27"
 END_DATE = time.strftime("%Y-%m-%d")
 
 # Query to get data from Mixpanel
-query = 'properties["user"]=="testConwet14"'
+query = 'properties["user"]=="testConwet5"'
 event = ["initialQuestion", "question2", "question3", "question4", "question5", "question6", "advantage", "drawback"]
 resp = query_client.get_export(START_DATE, END_DATE, where=query, response_format='json')
 
 cont = 0
 for event in resp:
 	print event["properties"]["user"]
-	print event["properties"]["version"]
-	print event["properties"]["component"]
+	# if event["properties"]["component"]:
+	# 	print event["properties"]["component"]
+	# if event["properties"]["version"]:
+	# 	print event["properties"]["version"]
 	print event["properties"]["question"]
 	print event["properties"]["selection"]
 	cont += 1
