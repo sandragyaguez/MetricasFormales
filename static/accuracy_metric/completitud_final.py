@@ -1848,67 +1848,76 @@ if social_network in network_list:
            lista_city.append(values2)
 
         values3 = filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == time.strftime("%d/%m/%Y"), timeline['list'])
-
-        for v in values3:
-            #print v
-            if(v.has_key('dt')):
-                values4=v.get('dt',None)
-                date=datetime.datetime.fromtimestamp(values4).strftime('%d/%m/%Y')
-                if (date==time.strftime("%d/%m/%Y")):
-                    lista_date.append(date)
-            if(v.has_key('weather')):
-                values5=v.get('weather',None)
-                lista_values5.append(values5[0])
-
-            if(v.has_key('main')):
-                values7=v.get('main',None)
-                lista_values7.append(values7)
-
-        for r in lista_values5:
-            if(r.has_key('icon')):
-                values6=r.get('icon',None)
-            lista_icon.append(values6)
-
-        for t in lista_values7:
-            #print t, p
-            if (t.has_key('temp')):
-                values8=int(round(t['temp']))
-            lista_temp.append(values8)
-            if(t.has_key('temp_max')):
-                values9=int(round(t['temp_max']))
-            lista_temp_max.append(values9)
-            if (t.has_key('temp_min')):
-                values10=int(round(t['temp_min']))
-            lista_temp_min.append(values10)
-            #la lista de contador la hago para poder identificar cada descripcion con su type de imagen y su date
-            listacont.append(contador)
-            contador=contador+1
-
-        print contador
-
-        zipPythonCity=zip(listacont,lista_city)
-        dictPythonCity=dict(zipPythonCity)
-
-        zipPythonDate=zip(listacont,lista_date)
-        dictPythonDate=dict(zipPythonDate)
-
-        zipPythonIcon=zip(listacont,lista_icon)
-        dictPythonIcon=dict(zipPythonIcon)
-
-
-        zipPythonTemp=zip(listacont,lista_temp)
-        dictPythonTemp=dict(zipPythonTemp)
-        #print "Datos de la api. Actual", dictPythonTemp
         
-        lista_temp_max = [max(lista_temp_max)]*len(lista_temp_max)
-        zipPythonTemp_Max=zip(listacont,lista_temp_max)
-        dictPythonTemp_Max=dict(zipPythonTemp_Max)
-        #print "Datos de la api.Maxima", dictPythonTemp_Max
+        nextdate=datetime.datetime.now().date()
+        for i in range(1): 
+            nextdate += datetime.timedelta(days=1)
+        values_next_day1=filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == nextdate.strftime("%d/%m/%Y"), timeline['list'])
 
-        lista_temp_min = [min(lista_temp_min)]*len(lista_temp_min)
-        zipPythonTemp_Min=zip(listacont,lista_temp_min)
-        dictPythonTemp_Min=dict(zipPythonTemp_Min)
-        #print "Datos de la api. Minima", dictPythonTemp_Min
+        def recorrer_timeline(lista_timeline):    
+
+            for v in lista_timeline:
+                #print v
+                if(v.has_key('dt')):
+                    values4=v.get('dt',None)
+                    date=datetime.datetime.fromtimestamp(values4).strftime('%d/%m/%Y')
+                    #if (date==time.strftime("%d/%m/%Y")):
+                    lista_date.append(date)
+                if(v.has_key('weather')):
+                    values5=v.get('weather',None)
+                    lista_values5.append(values5[0])
+
+                if(v.has_key('main')):
+                    values7=v.get('main',None)
+                    lista_values7.append(values7)
+
+            for r in lista_values5:
+                if(r.has_key('icon')):
+                    values6=r.get('icon',None)
+                lista_icon.append(values6)
+
+            for t in lista_values7:
+                #print t, p
+                if (t.has_key('temp')):
+                    values8=int(round(t['temp']))
+                lista_temp.append(values8)
+                if(t.has_key('temp_max')):
+                    values9=int(round(t['temp_max']))
+                lista_temp_max.append(values9)
+                if (t.has_key('temp_min')):
+                    values10=int(round(t['temp_min']))
+                lista_temp_min.append(values10)
+                #la lista de contador la hago para poder identificar cada descripcion con su type de imagen y su date
+                listacont.append(contador)
+                contador=contador+1
+
+            zipPythonCity=zip(listacont,lista_city)
+            dictPythonCity=dict(zipPythonCity)
+
+            zipPythonDate=zip(listacont,lista_date)
+            dictPythonDate=dict(zipPythonDate)
+
+            zipPythonIcon=zip(listacont,lista_icon)
+            dictPythonIcon=dict(zipPythonIcon)
+
+            zipPythonTemp=zip(listacont,lista_temp)
+            dictPythonTemp=dict(zipPythonTemp)
+            #print "Datos de la api. Actual", dictPythonTemp
+            
+            lista_temp_max = [max(lista_temp_max)]*len(lista_temp_max)
+            zipPythonTemp_Max=zip(listacont,lista_temp_max)
+            dictPythonTemp_Max=dict(zipPythonTemp_Max)
+            #print "Datos de la api.Maxima", dictPythonTemp_Max
+
+            lista_temp_min = [min(lista_temp_min)]*len(lista_temp_min)
+            zipPythonTemp_Min=zip(listacont,lista_temp_min)
+            dictPythonTemp_Min=dict(zipPythonTemp_Min)
+            #print "Datos de la api. Minima", dictPythonTemp_Min
+
+            return dictPythonCity,dictCompDate,dictPythonIcon,dictPythonTemp, dictPythonTemp_Max,dictPythonTemp_Min
+
+
+        recorrer_timeline(values3)
 
 
         iconMapping={

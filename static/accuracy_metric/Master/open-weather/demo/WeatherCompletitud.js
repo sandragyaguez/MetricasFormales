@@ -50,5 +50,18 @@
 
           }
         }
+        element.next_days.forEach(function(day){
+          var diccionario = {
+            'city': city,
+            'fecha': date,
+            'hora': time,
+            'dia': day,
+            'icon': icon,
+            'temp': temp,
+            'temp_max': temp_max,
+            'temp_min':temp_min,
+            'i':i
+          }
+        })
       }, 2000);
       });
