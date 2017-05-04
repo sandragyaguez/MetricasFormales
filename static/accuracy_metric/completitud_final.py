@@ -1815,6 +1815,7 @@ if social_network in network_list:
         #verify=False para que no me de errores de SSL
         s= requests.get(request_uri, verify=False, headers=headers)
         print s
+
         timeline=s.json()
 
         # BORRAR!!!
@@ -1822,7 +1823,7 @@ if social_network in network_list:
         #print b
 
 #PROBLEMA: ESTOY COGIENDO SIEMPRE LA ULTIMA TEMP
-
+        
 
         lista_city=[]
         lista_date=[]
@@ -1831,21 +1832,25 @@ if social_network in network_list:
         lista_temp_min=[]
         lista_icon=[]
         listacont=[]
-        contador=0
-
-
+        lista_values5=[]
+        lista_values7=[]
+        contador=0     
+ 
         for k,v in timeline.iteritems():
-            if(timeline.has_key('city')):
-                values1=timeline.get('city',None)
-            if (timeline.has_key('list')):
-                values3=timeline.get('list',None)
-                
+           if(timeline.has_key('city')):
+               values1=timeline.get('city',None)
+           if (timeline.has_key('list')):
+               values3=timeline.get('list',None)
+               
         for m,n in values1.iteritems():
-            if(values1.has_key('name')):
-                values2=values1.get('name',None)
-            lista_city.append(values2)
+           if(values1.has_key('name')):
+               values2=values1.get('name',None)
+           lista_city.append(values2)
+
+        values3 = filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == time.strftime("%d/%m/%Y"), timeline['list'])
 
         for v in values3:
+            #print v
             if(v.has_key('dt')):
                 values4=v.get('dt',None)
                 date=datetime.datetime.fromtimestamp(values4).strftime('%d/%m/%Y')
@@ -1853,23 +1858,27 @@ if social_network in network_list:
                     lista_date.append(date)
             if(v.has_key('weather')):
                 values5=v.get('weather',None)
+                lista_values5.append(values5[0])
+
             if(v.has_key('main')):
                 values7=v.get('main',None)
+                lista_values7.append(values7)
 
-        for r in values5:
+        for r in lista_values5:
             if(r.has_key('icon')):
                 values6=r.get('icon',None)
             lista_icon.append(values6)
 
-        for t,p in values7.iteritems():
-            if (values7.has_key('temp')):
-                values8=values7.get('temp',None)
+        for t in lista_values7:
+            #print t, p
+            if (t.has_key('temp')):
+                values8=int(round(t['temp']))
             lista_temp.append(values8)
-            if(values7.has_key('temp_max')):
-                values9=values7.get('temp_max',None)
+            if(t.has_key('temp_max')):
+                values9=int(round(t['temp_max']))
             lista_temp_max.append(values9)
-            if (values7.has_key('temp_min')):
-                values10=values7.get('temp_min',None)
+            if (t.has_key('temp_min')):
+                values10=int(round(t['temp_min']))
             lista_temp_min.append(values10)
             #la lista de contador la hago para poder identificar cada descripcion con su type de imagen y su date
             listacont.append(contador)
@@ -1886,19 +1895,42 @@ if social_network in network_list:
         zipPythonIcon=zip(listacont,lista_icon)
         dictPythonIcon=dict(zipPythonIcon)
 
+
         zipPythonTemp=zip(listacont,lista_temp)
         dictPythonTemp=dict(zipPythonTemp)
-        print dictPythonTemp
+        #print "Datos de la api. Actual", dictPythonTemp
         
+        lista_temp_max = [max(lista_temp_max)]*len(lista_temp_max)
         zipPythonTemp_Max=zip(listacont,lista_temp_max)
         dictPythonTemp_Max=dict(zipPythonTemp_Max)
-        print dictPythonTemp_Max
+        #print "Datos de la api.Maxima", dictPythonTemp_Max
 
-        
+        lista_temp_min = [min(lista_temp_min)]*len(lista_temp_min)
         zipPythonTemp_Min=zip(listacont,lista_temp_min)
         dictPythonTemp_Min=dict(zipPythonTemp_Min)
-        print dictPythonTemp_Min
+        #print "Datos de la api. Minima", dictPythonTemp_Min
 
+
+        iconMapping={
+            "01d": "wi-day-sunny",
+            "01n": "wi-night-clear",
+            "02d": "wi-day-cloudy",
+            "02n": "wi-night-cloudy",
+            "03d": "wi-cloudy",
+            "03n": "wi-cloudy",
+            "04d": "wi-cloudy",
+            "04n": "wi-cloudy",
+            "09d": "wi-showers",
+            "09n": "wi-showers",
+            "10d": "wi-day-rain",
+            "10n": "wi-night-rain",
+            "11d": "wi-thunderstorm",
+            "11n": "wi-thunderstorm",
+            "13d": "wi-snow",
+            "13n": "wi-snow",
+            "50d": "wi-fog",
+            "50n": "wi-fog"
+        }
 
         ##########################################################################################################################################
         #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
@@ -1977,9 +2009,9 @@ if social_network in network_list:
                 dictCompTemp_Min=dict(zipCompTemp_Min)
                 dictCompIcon=dict(zipCompIcon)
 
-                print dictCompTemp
-                print dictCompTemp_Max
-                print dictCompTemp_Min
+                #print "Componente. Temp actual", dictCompTemp
+                #print "Componente. Temp max", dictCompTemp_Max
+                #print "Componente. Temp min",dictCompTemp_Min
 
 
                 #Recorro el diccionario del componente, k es la posicion y v el date
@@ -2056,7 +2088,7 @@ if social_network in network_list:
                 for k,v in dictCompIcon.iteritems():
                     if(dictPythonIcon.has_key(k)):
                         vPythonIcon=dictPythonIcon.get(k,None)
-                        if cmp(vPythonIcon,v)==0:
+                        if cmp(iconMapping[vPythonIcon],v)==0:
                             True
                         else:
                             print "falla en posicion: " + str(k) 
@@ -2084,7 +2116,6 @@ if social_network in network_list:
                 
                 #ordeno la lista de diccionarios por la posicion (va de 0 a x)
                 newlist = sorted(lista, key=lambda posicion: posicion['i'])
-                print newlist
 
                 for y in lista:
                     timecomp=y.items()[0][1] #es la hora
@@ -2162,10 +2193,7 @@ if social_network in network_list:
                 for k,v in dictCompTemp.iteritems():
                     if(dictPythonTemp.has_key(k)):
                         vPythonTemp=dictPythonTemp.get(k,None)
-                        print vPythonTemp
                         if cmp(vPythonTemp,v)==0:
-                            print vPythonTemp
-                            print v
                             True
                         else:
                             print "falla en posicion: " + str(k) 
@@ -2207,7 +2235,7 @@ if social_network in network_list:
                 for k,v in dictCompIcon.iteritems():
                     if(dictPythonIcon.has_key(k)):
                         vPythonIcon=dictPythonIcon.get(k,None)
-                        if cmp(vPythonIcon,v)==0:
+                        if cmp(iconMapping[vPythonIcon],v)==0:
                             True
                         else:
                             print "falla en posicion: " + str(k) 
@@ -2311,10 +2339,7 @@ if social_network in network_list:
                 for k,v in dictCompTemp.iteritems():
                     if(dictPythonTemp.has_key(k)):
                         vPythonTemp=dictPythonTemp.get(k,None)
-                        print vPythonTemp
                         if cmp(vPythonTemp,v)==0:
-                            print vPythonTemp
-                            print v
                             True
                         else:
                             print "falla en posicion: " + str(k) 
@@ -2356,7 +2381,7 @@ if social_network in network_list:
                 for k,v in dictCompIcon.iteritems():
                     if(dictPythonIcon.has_key(k)):
                         vPythonIcon=dictPythonIcon.get(k,None)
-                        if cmp(vPythonIcon,v)==0:
+                        if cmp(iconMapping[vPythonIcon],v)==0:
                             True
                         else:
                             print "falla en posicion: " + str(k) 
