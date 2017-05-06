@@ -1,0 +1,818 @@
+##################################################################
+Realizando pruebas sobre el componente googleplus-timeline...
+Se ha abierto una nueva ventana en la sesión actual del navegador.
+Se ha abierto una nueva ventana en la sesión actual del navegador.
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/104154372062506621799/activities/public
+>>> Request time:  373.882055283
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/103002129785319943723/activities/public
+>>> Request time:  579.176187515
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/107253160657697294293/activities/public
+>>> Request time:  324.942111969
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/114212204400586779866/activities/public
+>>> Request time:  451.477050781
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/105882586443149604417/activities/public
+>>> Request time:  810.199022293
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/me/people/visible
+>>> Request time:  196.373939514
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/111605692352070880124/activities/public
+>>> Request time:  315.123081207
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/109585718013377778719/activities/public
+>>> Request time:  322.072982788
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/107596762386165998776/activities/public
+>>> Request time:  362.104892731
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/114649073411111177345/activities/public
+>>> Request time:  398.138046265
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/100314550890644056726/activities/public
+>>> Request time:  650.161981583
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/108505895629704398121/activities/public
+>>> Request time:  456.08997345
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/108402718399571394604/activities/public
+>>> Request time:  307.450056076
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/101101775940501546480/activities/public
+>>> Request time:  760.935783386
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/109721257644982768239/activities/public
+>>> Request time:  601.349830627
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/100649675761516434025/activities/public
+>>> Request time:  340.808153152
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/111395306401981598462/activities/public
+>>> Request time:  775.444984436
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/114562083342340135920/activities/public
+>>> Request time:  790.476083755
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/105823087839438272523/activities/public
+>>> Request time:  485.551118851
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/109652192980106597144/activities/public
+>>> Request time:  1022.14097977
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/105420148026396807788/activities/public
+>>> Request time:  349.561929703
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/101123109320610840701/activities/public
+>>> Request time:  568.774938583
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/116446715202399397327/activities/public
+>>> Request time:  597.707986832
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/100703735937103656396/activities/public
+>>> Request time:  382.780075073
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/103127615938920254845/activities/public
+>>> Request time:  674.225091934
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/102860501900098846931/activities/public
+>>> Request time:  692.919015884
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/me/activities/public
+>>> Request time:  331.54296875
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/109032526588990077803/activities/public
+>>> Request time:  533.635854721
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/104191601556868003406/activities/public
+>>> Request time:  360.39686203
+>>> Request count:  1
+>>> Endpoint: https://www.googleapis.com/plus/v1/people/104721337054784711777/activities/public
+>>> Request time:  327.053070068
+>>> Request count:  1
+##################################################################
+Recolectando y calculando métrica de latencia sobre los componentes probados...
+ ### COMPONENTE  googleplus-timeline   ###
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  117.23502655
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  241.32002655
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  405.766091537
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  529.851091537
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  121.847949219
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  245.932949219
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  190.544209671
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  314.629209671
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  162.336907578
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  286.421907578
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -128.935017395
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -4.85001739502
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -247.333922195
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -123.248922195
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  253.230891418
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  377.315891418
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -143.604912567
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -19.5199125671
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  190.544924927
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  314.629924927
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  200.836024475
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  324.921024475
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  4.55006141663
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  128.635061417
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -96.7361114502
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  27.3488885498
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  237.589202118
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  361.674202118
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  257.99091835
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  382.07591835
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  238.099894714
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  362.184894714
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  266.227088165
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  390.312088165
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -151.398100662
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -27.3131006622
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -187.610783386
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -63.5257833862
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  214.730105591
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  338.815105591
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  227.134070587
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  351.219070587
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  241.97491188
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  366.05991188
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  48.5130168915
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  172.598016891
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  211.220107269
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  335.305107269
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -83.7079666138
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  40.3770333862
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  89.5400859833
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  213.625085983
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  87.7738811493
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  211.858881149
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  257.251820755
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  381.336820755
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  258.201918793
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  382.286918793
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  248.382888031
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  372.467888031
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -236.874022293
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -112.789022293
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  213.057122421
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  337.142122421
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -544.995941925
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -420.910941925
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -132.023014832
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -7.93801483154
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -76.8369815826
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  47.2480184174
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  199.497065735
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  323.582065735
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  199.442944717
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  323.527944717
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  248.684964371
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  372.769964371
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  265.874943924
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  389.959943924
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  231.270156097
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  355.355156097
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  241.78203125
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  365.86703125
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  15.3861858368
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  139.471185837
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -109.137930679
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  14.9470693207
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -5.85118751526
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  118.233812485
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  239.979825211
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  364.064825211
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  212.92813797
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  337.01313797
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -154.25101738
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -30.1660173798
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  232.876143646
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  356.961143646
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -100.900091934
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  23.1849080658
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -24.3829868317
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  99.7020131683
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -50.0961921692
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  73.9888078308
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  192.368111801
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  316.453111801
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  223.763070297
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  347.848070297
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -10.4068897247
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  113.678110275
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  376.951060486
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  501.036060486
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  212.222895813
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  336.307895813
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  232.516846848
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  356.601846848
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  85.6459953308
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  209.730995331
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  240.41780014
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  364.50280014
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -76.2011192322
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  47.8838807678
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  99.5410301208
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  223.626030121
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  411.759934616
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  535.844934616
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -217.151083755
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -93.0660837555
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  220.890841675
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  344.975841675
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -54.8478744507
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  69.2371255493
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -44.9458740234
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  79.1391259766
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  164.638123703
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  288.723123703
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  280.978999329
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  405.063999329
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  199.827037048
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  323.912037048
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  205.835900497
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  329.920900497
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -194.130101013
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -70.0451010132
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -448.815979767
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -324.730979767
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -202.119984436
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -78.034984436
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  252.656064224
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  376.741064224
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  186.333022308
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  310.418022308
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  175.186953735
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  299.271953735
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  39.6891452789
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  163.774145279
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  251.252017212
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  375.337017212
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -146.6800354
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -22.5950354004
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  203.456959915
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  327.541959915
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  230.321011734
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  354.406011734
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  246.271929932
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  370.356929932
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -20.8708427429
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  103.214157257
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -119.594015884
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  4.4909841156
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  233.232817841
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  357.317817841
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -63.6760375977
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  60.4089624023
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -175.045885849
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  -50.960885849
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  -28.0248306274
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  96.0601693726
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  148.784003448
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  272.869003448
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  latency_defects vs host
+>>> Diferencia de latencia:  228.977999878
+>>> Envio resultados a Mixpanel...
+----------------------------------
+>>> Tag de la comparación:  stable vs host
+>>> Diferencia de latencia:  353.062999878
+>>> Envio resultados a Mixpanel...
+Métricas calculadas
