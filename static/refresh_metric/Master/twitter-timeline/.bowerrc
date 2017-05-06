@@ -1,3 +1,4 @@
 {
-	"directory": "../"
+	"directory": "../",
+	"registry": "http://centauro.ls.fi.upm.es:5555"
 }
