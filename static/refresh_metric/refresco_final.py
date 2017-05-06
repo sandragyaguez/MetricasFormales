@@ -47,7 +47,7 @@ mpStock = Mixpanel("92f1f1dd586a4cad694bb8e8678456c2")
 network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search"]
 version_list = ["master","latency", "accuracy"]
 url_base_remote= "http://metricas-formales.appspot.com/app/refresh_metric"
-url_base_local= "http://localhost:8080/refresh_metric"
+url_base_local= "http://localhost:8000/"
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),consola: python refresco.py twitter coge la "variable" twitter
 if len(sys.argv) >= 2:
@@ -94,13 +94,13 @@ if social_network in network_list:
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_remote + "/Master/twitter-timeline/static/TwitterRefresco.html" + "?" + estado)
+                webbrowser.open_new(url_base_local + "/Master/twitter-timeline/static/TwitterRefresco.html" + "?" + estado)
                 sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_remote + "/Latency/twitter-timeline/static/TwitterRefrescoLatency.html"  + "?" + estado)
-                sleep(3)
+            # elif(version=="latency"):
+            #     webbrowser.open_new(url_base_remote + "/Latency/twitter-timeline/static/TwitterRefrescoLatency.html"  + "?" + estado)
+            #     sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_remote + "/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado)
+                webbrowser.open_new(url_base_local + "/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado)
                 sleep(3)
 
    
