@@ -47,7 +47,7 @@ mpStock = Mixpanel("92f1f1dd586a4cad694bb8e8678456c2")
 network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search"]
 version_list = ["master","latency", "accuracy"]
 url_base_remote= "http://metricas-formales.appspot.com/app/refresh_metric"
-url_base_local= "http://localhost:8000/"
+url_base_local= "http://localhost:8000"
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),consola: python refresco.py twitter coge la "variable" twitter
 if len(sys.argv) >= 2:
@@ -74,8 +74,8 @@ if social_network in network_list:
         ##########################################################################################################################################
 
         #Las credenciales no cambian, a no ser que se quieran hacer peticiones con un usuarios que no sea Deus
-        CONSUMER_KEY = 'J4bjMZmJ6hh7r0wlG9H90cgEe' #Consumer key
-        CONSUMER_SECRET = '8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf' #Consumer secret
+        CONSUMER_KEY = 'BOySBn8XHlyYDQiGiqZ1tzllx' #Consumer key
+        CONSUMER_SECRET = 'xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE' #Consumer secret
         ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
         ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
 
@@ -96,12 +96,12 @@ if social_network in network_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/twitter-timeline/static/TwitterRefresco.html" + "?" + estado)
                 sleep(3)
-            # elif(version=="latency"):
-            #     webbrowser.open_new(url_base_remote + "/Latency/twitter-timeline/static/TwitterRefrescoLatency.html"  + "?" + estado)
-            #     sleep(3)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/twitter-timeline/static/TwitterRefrescoLatency.html"  + "?" + estado)
                 sleep(3)
+            # elif(version=="accuracy"):
+            #     webbrowser.open_new(url_base_local + "/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado)
+            #     sleep(3)
 
    
         #Request publicar tweet
@@ -492,9 +492,9 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestRefrescoLatency.html" + "?" + image_url)
                 sleep(3)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestRefrescoAccuracy.html" + "?" + image_url)
-                sleep(3)
+            # elif(version=="accuracy"):
+            #     webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestRefrescoAccuracy.html" + "?" + image_url)
+            #     sleep(3)
 
         access_token="AXh-Xld9fy7jeDuI23ovntIthRVjFI6N-kmb11xDmW-C0gBCfwAAAAA"
         post_my_board= "https://api.pinterest.com/v1/me/pins/?access_token=" + access_token
