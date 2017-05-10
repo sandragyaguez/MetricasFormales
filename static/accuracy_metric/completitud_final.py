@@ -1846,7 +1846,7 @@ if social_network in network_list:
            if(values1.has_key('name')):
                values2=values1.get('name',None)
            lista_city.append(values2)
-
+        # Current day
         values3 = filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == time.strftime("%d/%m/%Y"), timeline['list'])
         
         nextdate=datetime.datetime.now().date()
