@@ -12,16 +12,16 @@ PID=`echo $!`
 #---------#
 
 # Ejecutamos scripts para medir y recolectar los datos
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version master"
-# python refresco_final.py twitter master
-# sleep 10
-# # killall chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version master"
+python refresco_final.py twitter master
+sleep 10
+# killall chrome
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version latency"
-# python refresco_final.py twitter latency
-# sleep 10
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version latency"
+python refresco_final.py twitter latency
+sleep 10
 # pkill chrome
 
 # echo "##################################################################"
@@ -59,16 +59,16 @@ PID=`echo $!`
 #---------#
 
 # Ejecutamos scripts para medir y recolectar los datos
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente pinterest-timeline: metrica refresco version master"
-python refresco_final.py pinterest master
-sleep 10
-# killall chrome
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente pinterest-timeline: metrica refresco version master"
+# python refresco_final.py pinterest master
+# sleep 10
+# # killall chrome
 
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente pinterest-timeline: metrica refresco version latency"
-python refresco_final.py pinterest latency
-sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente pinterest-timeline: metrica refresco version latency"
+# python refresco_final.py pinterest latency
+# sleep 10
 # pkill chrome
 
 # echo "##################################################################"
