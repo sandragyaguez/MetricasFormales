@@ -95,10 +95,10 @@ if social_network in network_list:
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/twitter-timeline/static/TwitterRefresco.html" + "?" + estado)
-                sleep(3)
+                sleep(10)
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/twitter-timeline/static/TwitterRefrescoLatency.html"  + "?" + estado)
-                sleep(3)
+                sleep(10)
             # elif(version=="accuracy"):
             #     webbrowser.open_new(url_base_local + "/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado)
             #     sleep(3)
