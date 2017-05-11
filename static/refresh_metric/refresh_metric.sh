@@ -12,17 +12,17 @@ PID=`echo $!`
 #---------#
 
 # Ejecutamos scripts para medir y recolectar los datos
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version master"
-python refresco_final.py twitter master
-sleep 10
-# killall chrome
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version master"
+# python refresco_final.py twitter master
+# sleep 10
+# # killall chrome
 
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version latency"
-python refresco_final.py twitter latency
-sleep 10
-# pkill chrome
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version latency"
+# python refresco_final.py twitter latency
+# sleep 10
+# # pkill chrome
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version accuracy"
@@ -39,7 +39,7 @@ sleep 10
 # echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version master"
 # python refresco_final.py facebook master
 # sleep 10
-# pkill chrome
+# # pkill chrome
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version latency"
@@ -86,7 +86,7 @@ sleep 10
 # echo "Realizando pruebas sobre el componente traffic-incidents: metrica refresco version master"
 # python refresco_final.py traffic-incidents master
 # sleep 10
-# killall chrome
+# # killall chrome
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente traffic-incidents: metrica refresco version latency"
@@ -109,7 +109,7 @@ sleep 10
 # echo "Realizando pruebas sobre el componente open-weather: metrica refresco version master"
 # python refresco_final.py open-weather master
 # sleep 10
-# killall chrome
+# # killall chrome
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente open-weather: metrica refresco version latency"
@@ -133,7 +133,7 @@ sleep 10
 # echo "Realizando pruebas sobre el componente finance-search: metrica refresco version master"
 # python refresco_final.py finance-search master
 # sleep 10
-# killall chrome
+# # killall chrome
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente finance-search: metrica refresco version latency"
@@ -148,20 +148,20 @@ sleep 10
 # pkill chrome
 
 #---------#
-#WEATHER
+#GOOGLEPLUS
 #---------#
 
 # Ejecutamos scripts para medir y recolectar los datos
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente googleplus: metrica refresco version master"
-# python refresco_final.py googleplus master
-# sleep 10
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente googleplus: metrica refresco version master"
+python refresco_final.py googleplus master
+sleep 10
 # killall chrome
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente googleplus: metrica refresco version latency"
-# python refresco_final.py googleplus latency
-# sleep 10
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente googleplus: metrica refresco version latency"
+python refresco_final.py googleplus latency
+sleep 10
 # # pkill chrome
 
 # echo "##################################################################"
