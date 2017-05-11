@@ -141,7 +141,7 @@ if social_network in network_list:
         #-----------------------------------------DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
         #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
-        sleep(70)
+        sleep(100)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("c10939e3faf2e34b4abb4f0f1594deaa","4a3b46218b0d3865511bc546384b8928")
         lista=[]
@@ -446,10 +446,10 @@ if social_network in network_list:
         randomtext = randomword(20)
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/googleplus-timeline/demo/GoogleplusRefresco.html?" + randomtext)
+                webbrowser.open_new(url_base_local + "/Master/googleplus-timeline-stable/demo/GoogleplusRefresco.html?" + randomtext)
                 sleep(5)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/googleplus-timeline/demo/GoogleplusRefrescoLatency.html?" + randomtext)
+                webbrowser.open_new(url_base_local + "/Latency/googleplus-timeline-latency/demo/GoogleplusRefrescoLatency.html?" + randomtext)
                 sleep(5)
             # elif(version=="accuracy"):
             #     webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline/demo/GoogleplusRefrescoAccuracy.html?" + randomtext)
