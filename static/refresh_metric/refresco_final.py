@@ -94,10 +94,10 @@ if social_network in network_list:
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/twitter-timeline/static/TwitterRefresco.html" + "?" + estado)
+                webbrowser.open_new(url_base_local + "/Master/twitter-timeline-stable/static/TwitterRefresco.html" + "?" + estado)
                 sleep(10)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/twitter-timeline/static/TwitterRefrescoLatency.html"  + "?" + estado)
+                webbrowser.open_new(url_base_local + "/Latency/twitter-timeline-latency/static/TwitterRefrescoLatency.html"  + "?" + estado)
                 sleep(10)
             # elif(version=="accuracy"):
             #     webbrowser.open_new(url_base_local + "/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado)
@@ -282,12 +282,14 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/facebook-wall/FacebookRefrescoLatency.html" + "?" + message)
                 sleep(5)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html" + "?" + message)
-                sleep(5)
+            # elif(version=="accuracy"):
+            #     webbrowser.open_new(url_base_local + "/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html" + "?" + message)
+            #     sleep(5)
 
+        # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
+        
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
-        access_token='EAANMUmJPs2UBAMhsmC2RmpMyUZCaY8qcB7hnNbCvVhOvcTZB6cPmfyAHNiSP90UoZChLeoAWrHwgZCtaGOubUW3GEZBZBSP5qlqvPrMZBhzmXJtPCDaE5VcPIYA2cZCmZACY3PZAZApfMZCQEHMoyxXGs90vK05L81vDMOTICNuntJLhuwZDZD'
+        access_token='EAANMUmJPs2UBAJDmwTaoaqCuvnSsW0Is5D2ouBm6E2ZCwxu2ABQxs5qTr35IEs4Lk2q7YywZBMoPHazkOFZAbezJL0hCwBxqpt3YeHZCLeFrhREOnBcxeSPBoAQ1fTtjNdBnKZCOMTEMSZBxrMF7TsvVKfukLDlQXqsZCFAJmnxFiETm7Hf2wmyO53IyvxEBYYZD'
 
         listestado=[]
         listtpubl_ms=[]
@@ -434,6 +436,10 @@ if social_network in network_list:
         #---------------------------------------------------------DATOS GOOGLEPLUS API--------------------------------------------------------------
         ##########################################################################################################################################
 
+        # Url para obtener nuevo token google: https://developers.google.com/+/web/api/rest/latest/activities/list#try-it
+        # (Para el caso de Google, haces una peticion a la API con el explorer API, vas a networks, y coges el token que
+        # viene en el header Authorization: 'Bearer TOKEN')
+
         # generate random text
         def randomword(length):
             return ''.join(random.choice(string.lowercase) for i in range(length))
@@ -445,9 +451,9 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/googleplus-timeline/demo/GoogleplusRefrescoLatency.html?" + randomtext)
                 sleep(5)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline/demo/GoogleplusRefrescoAccuracy.html?" + randomtext)
-                sleep(5)
+            # elif(version=="accuracy"):
+            #     webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline/demo/GoogleplusRefrescoAccuracy.html?" + randomtext)
+            #     sleep(5)
 
         ##########################################################################################################################################
         #----------------------------------------DATOS GOOGLEPLUS COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
@@ -469,7 +475,7 @@ if social_network in network_list:
         final_time = correct_post['time']/1000 - postTime
         mpGoogleplus.track(final_time, "Final time "+ version,{"time final": final_time, "post": correct_post['post'], "version":version})
         print "Tiempo final: ", final_time
-        print "Version:", version
+        print "Version: ", version
         print "Post: ", correct_post['post']     
         
 
@@ -841,14 +847,14 @@ if social_network in network_list:
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/open-weather/demo/WeatherRefresco.html" + "?" + datos2)
+                webbrowser.open_new(url_base_local + "/Master/open-weather-stable/demo/WeatherRefresco.html" + "?" + datos2)
                 sleep(3)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherRefrescoLatency.html" + "?" + datos2)
+                webbrowser.open_new(url_base_local + "/Latency/open-weather-latency/demo/WeatherRefrescoLatency.html" + "?" + datos2)
                 sleep(3)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + datos2)
-                sleep(3)
+            # elif(version=="accuracy"):
+            #     webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + datos2)
+            #     sleep(3)
 
         listpost=[]
         listtpubl_ms=[]
