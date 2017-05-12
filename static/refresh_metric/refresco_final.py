@@ -143,6 +143,7 @@ if social_network in network_list:
         #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
         sleep(100)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        
         x=mixpanel_api.Mixpanel("c10939e3faf2e34b4abb4f0f1594deaa","4a3b46218b0d3865511bc546384b8928")
         lista=[]
         listacomp=[]
