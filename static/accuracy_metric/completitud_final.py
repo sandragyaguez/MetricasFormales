@@ -1800,9 +1800,9 @@ if social_network in network_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/open-weather/demo/WeatherCompletitud.html")
                 sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherCompletitudLatency.html")
-                sleep(3)
+            # elif(version=="latency"):
+            #     webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherCompletitudLatency.html")
+            #     sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherCompletitudAccuracy.html")
                 sleep(3)
@@ -1850,12 +1850,14 @@ if social_network in network_list:
         values3 = filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == time.strftime("%d/%m/%Y"), timeline['list'])
         
         nextdate=datetime.datetime.now().date()
-        for i in range(1): 
+        values_next_day = []
+        for i in range(4): 
             nextdate += datetime.timedelta(days=1)
-        values_next_day1=filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == nextdate.strftime("%d/%m/%Y"), timeline['list'])
+            values_next_day1=filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == nextdate.strftime("%d/%m/%Y"), timeline['list'])
+            values_next_day.append(values_next_day1)
 
-        def recorrer_timeline(lista_timeline):    
-
+        def recorrer_timeline(lista_timeline):
+            
             for v in lista_timeline:
                 #print v
                 if(v.has_key('dt')):
@@ -1894,15 +1896,21 @@ if social_network in network_list:
             zipPythonCity=zip(listacont,lista_city)
             dictPythonCity=dict(zipPythonCity)
 
-            zipPythonDate=zip(listacont,lista_date)
-            dictPythonDate=dict(zipPythonDate)
+            if not lista_date == []:
+                zipPythonDate=zip(listacont,lista_date)
+                dictPythonDate=dict(zipPythonDate)
+            else:
+                dictPythonDate = {}
 
             zipPythonIcon=zip(listacont,lista_icon)
             dictPythonIcon=dict(zipPythonIcon)
 
-            zipPythonTemp=zip(listacont,lista_temp)
-            dictPythonTemp=dict(zipPythonTemp)
-            #print "Datos de la api. Actual", dictPythonTemp
+            if not lista_temp == []:
+                zipPythonTemp=zip(listacont,lista_temp)
+                dictPythonTemp=dict(zipPythonTemp)
+                #print "Datos de la api. Actual", dictPythonTemp
+            else:
+                dictPythonTemp = {}
             
             lista_temp_max = [max(lista_temp_max)]*len(lista_temp_max)
             zipPythonTemp_Max=zip(listacont,lista_temp_max)
@@ -1914,10 +1922,13 @@ if social_network in network_list:
             dictPythonTemp_Min=dict(zipPythonTemp_Min)
             #print "Datos de la api. Minima", dictPythonTemp_Min
 
-            return dictPythonCity,dictCompDate,dictPythonIcon,dictPythonTemp, dictPythonTemp_Max,dictPythonTemp_Min
+            return dictPythonCity,dictPythonDate,dictPythonIcon,dictPythonTemp, dictPythonTemp_Max,dictPythonTemp_Min
 
+        res = []
+        res.append(recorrer_timeline(values3))
 
-        recorrer_timeline(values3)
+        for day in values_next_day:
+            res.append(recorrer_timeline(day))
 
 
         iconMapping={
@@ -2272,6 +2283,7 @@ if social_network in network_list:
                 #ordeno la lista de diccionarios por la posicion (va de 0 a x)
                 newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
+                # No deberías recorrer newlist? Recorriendo resultados de Mixpanel
                 for y in lista:
                     timecomp=y.items()[0][1] #es la hora
                     citycomp=y.items()[1][1]
