@@ -829,14 +829,12 @@ if social_network in network_list:
         #resto uno al tiempo porque cuando le pregunto al componente las horas me las da como GTM+1 y python lo tiene en GTM+0
         #entonces el componente tiene las horas 1 4 7 10 13 19 22 en GTM+1 
         tiempo=int(tiempo)-1
-        print tiempo
 
         #cuando divido entres 3 conozco el intervalo en el que estoy y a partir de que elemento tengo que coger en el array par apublicar
         #si por ejemplo tiempo=12. Divido 12/3=4 y se que tengo que publicar desde la posicion 4 de mi array datos
         
 
         intervalo=tiempo/int(3)
-        print intervalo
         #pongo datos random para que cada post sea unico
         datos = [{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"}, {"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"}]
         
@@ -849,10 +847,10 @@ if social_network in network_list:
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/open-weather-stable/demo/WeatherRefresco.html" + "?" + datos2)
-                sleep(3)
+                sleep(10)
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/open-weather-latency/demo/WeatherRefrescoLatency.html" + "?" + datos2)
-                sleep(3)
+                sleep(10)
             # elif(version=="accuracy"):
             #     webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + datos2)
             #     sleep(3)
@@ -892,7 +890,7 @@ if social_network in network_list:
         #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
         ##########################################################################################################################################
         #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
-        sleep(70)
+        sleep(100)
         #limpio la cache antes de coger datos del componente
         url = "https://centauro.ls.fi.upm.es:4444/fakes/weather/clean"
         response = requests.get(url, verify=False)
