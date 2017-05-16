@@ -2281,7 +2281,7 @@ if social_network in network_list:
                     lista.append(resp)
                 
                 #ordeno la lista de diccionarios por la posicion (va de 0 a x)
-                newlist = sorted(lista, key=lambda posicion: posicion['i'])
+                # newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
                 # No deberías recorrer newlist? Recorriendo resultados de Mixpanel
                 for y in lista:
