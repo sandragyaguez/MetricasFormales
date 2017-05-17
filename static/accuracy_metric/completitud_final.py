@@ -1822,7 +1822,7 @@ if social_network in network_list:
         #b = [a['main']['temp_min'] for a in timeline['list']]
         #print b
 
-#PROBLEMA: ESTOY COGIENDO SIEMPRE LA ULTIMA TEMP
+        #PROBLEMA: ESTOY COGIENDO SIEMPRE LA ULTIMA TEMP
         
 
         lista_city=[]
@@ -1922,7 +1922,7 @@ if social_network in network_list:
             dictPythonTemp_Min=dict(zipPythonTemp_Min)
             #print "Datos de la api. Minima", dictPythonTemp_Min
 
-            return dictPythonCity,dictPythonDate,dictPythonIcon,dictPythonTemp, dictPythonTemp_Max,dictPythonTemp_Min
+            return [dictPythonCity,dictPythonDate,dictPythonIcon,dictPythonTemp, dictPythonTemp_Max,dictPythonTemp_Min]
 
         res = []
         res.append(recorrer_timeline(values3))
@@ -1985,7 +1985,7 @@ if social_network in network_list:
                     lista.append(resp)
                 
                 #ordeno la lista de diccionarios por la posicion (va de 0 a x)
-                newlist = sorted(lista, key=lambda posicion: posicion['i'])
+                # newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
                 for y in lista:
                     timecomp=y.items()[0][1] #es la hora
@@ -2033,90 +2033,96 @@ if social_network in network_list:
                 #print "Componente. Temp max", dictCompTemp_Max
                 #print "Componente. Temp min",dictCompTemp_Min
 
-
-                #Recorro el diccionario del componente, k es la posicion y v el date
-                for k,v in dictCompCity.iteritems():
-                #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonCity.has_key(k)):
-                    #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonCity=dictPythonCity.get(k,None)
-                        if cmp(vPythonCity,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "la city que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosCity=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
+                for response in res:
+                    dictPythonCity = response[0]
+                    dictPythonDate = response[1]
+                    dictPythonIcon = response[2]
+                    dictPythonTemp = response[3]
+                    dictPythonTemp_Max = response[4]
+                    dictPythonTemp_min = response[5]
+                    #Recorro el diccionario del componente, k es la posicion y v el date
+                    for k,v in dictCompCity.iteritems():
+                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                        if(dictPythonCity.has_key(k)):
+                        #si es asi, cojo los values de python y del componente y los comparo
+                            vPythonCity=dictPythonCity.get(k,None)
+                            if cmp(vPythonCity,v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "la city que falla es : " + v
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosCity=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1
           
 
-                for k,v in dictCompDate.iteritems():
-                    if(dictPythonDate.has_key(k)):
-                        vPythonDate=dictPythonDate.get(k,None)
-                        if cmp(vPythonDate,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "la fecha que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosDate=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
+                    for k,v in dictCompDate.iteritems():
+                        if(dictPythonDate.has_key(k)):
+                            vPythonDate=dictPythonDate.get(k,None)
+                            if cmp(vPythonDate,v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "la fecha que falla es : " + v
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosDate=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1
 
-                for k,v in dictCompTemp.iteritems():
-                    if(dictPythonTemp.has_key(k)):
-                        vPythonTemp=dictPythonTemp.get(k,None)
-                        if cmp(vPythonTemp,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el temp que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosTemp=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
+                    for k,v in dictCompTemp.iteritems():
+                        if(dictPythonTemp.has_key(k)):
+                            vPythonTemp=dictPythonTemp.get(k,None)
+                            if cmp(vPythonTemp,v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "el temp que falla es : " + str(v)
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosTemp=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1
                     
 
-                for k,v in dictCompTemp_Max.iteritems():
-                    if(dictPythonTemp_Max.has_key(k)):
-                        vPythonTemp_Max=dictPythonTemp_Max.get(k,None)
-                        if cmp(vPythonTemp_Max,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el tiempo max que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosTemp_Max=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
+                    for k,v in dictCompTemp_Max.iteritems():
+                        if(dictPythonTemp_Max.has_key(k)):
+                            vPythonTemp_Max=dictPythonTemp_Max.get(k,None)
+                            if cmp(vPythonTemp_Max,v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "el tiempo max que falla es : " + str(v)
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosTemp_Max=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1
 
-                for k,v in dictCompTemp_Min.iteritems():
-                    if(dictPythonTemp_Min.has_key(k)):
-                        vPythonTemp_Min=dictPythonTemp_Min.get(k,None)
-                        if cmp(vPythonTemp_Min,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el tiempo min que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosTemp_Min=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
+                    for k,v in dictCompTemp_Min.iteritems():
+                        if(dictPythonTemp_Min.has_key(k)):
+                            vPythonTemp_Min=dictPythonTemp_Min.get(k,None)
+                            if cmp(vPythonTemp_Min,v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "el tiempo min que falla es : " + str(v)
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosTemp_Min=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1
 
 
-                for k,v in dictCompIcon.iteritems():
-                    if(dictPythonIcon.has_key(k)):
-                        vPythonIcon=dictPythonIcon.get(k,None)
-                        if cmp(iconMapping[vPythonIcon],v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el icon que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosIcon=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1                
+                    for k,v in dictCompIcon.iteritems():
+                        if(dictPythonIcon.has_key(k)):
+                            vPythonIcon=dictPythonIcon.get(k,None)
+                            if cmp(iconMapping[vPythonIcon],v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "el icon que falla es : " + str(v)
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosIcon=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1                
 
 
                 contadorFallos=contadorFallos/float(contador)
@@ -2325,6 +2331,8 @@ if social_network in network_list:
                 dictCompTemp_Min=dict(zipCompTemp_Min)
                 dictCompIcon=dict(zipCompIcon)
 
+                for response in res:
+                    
 
                 for k,v in dictCompCity.iteritems():
                     if(dictPythonCity.has_key(k)):
