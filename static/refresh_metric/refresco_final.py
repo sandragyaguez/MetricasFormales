@@ -290,7 +290,7 @@ if social_network in network_list:
         # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
         
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
-        access_token='EAANMUmJPs2UBAJDmwTaoaqCuvnSsW0Is5D2ouBm6E2ZCwxu2ABQxs5qTr35IEs4Lk2q7YywZBMoPHazkOFZAbezJL0hCwBxqpt3YeHZCLeFrhREOnBcxeSPBoAQ1fTtjNdBnKZCOMTEMSZBxrMF7TsvVKfukLDlQXqsZCFAJmnxFiETm7Hf2wmyO53IyvxEBYYZD'
+        access_token='EAANMUmJPs2UBAGO3kih5ywQREUbZAbYu3IEmLtKXoRWMw8BtIZA2AZAaaKCmYOZAKg7ZA0hszEBsA3BbICipIfF0ejYKwZAdpn05mZBc69twUyTQzkiv8A3UJ0Kl25GwBtXDGRDyNAOFIdZB6HOFiQOCN7QuXIhwZAxIIJz4nZAZAq3ZBZBV7OoSDTXxC83apmEXIrbAZD'
 
         listestado=[]
         listtpubl_ms=[]
@@ -495,10 +495,10 @@ if social_network in network_list:
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/pinterest-timeline/demo/PinterestRefresco.html" + "?" + image_url)
-                sleep(3)
+                sleep(5)
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestRefrescoLatency.html" + "?" + image_url)
-                sleep(3)
+                sleep(5)
             # elif(version=="accuracy"):
             #     webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestRefrescoAccuracy.html" + "?" + image_url)
             #     sleep(3)
@@ -543,7 +543,7 @@ if social_network in network_list:
         #----------------------------------------DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
         ##########################################################################################################################################
         #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
-        sleep(70)
+        sleep(100)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
         x=mixpanel_api.Mixpanel("c6a5d1682613e89df94c6eceb3859be6","17a38edfdff693b56b50f332ae8f8e9e")
         lista=[]
@@ -611,7 +611,7 @@ if social_network in network_list:
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)
+                            valuesP=dictPython.get(key,None)    
                             final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
                             mpPinterest.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
@@ -1017,14 +1017,14 @@ if social_network in network_list:
         data_text = data_text + "&id=%d" % random_id
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/finance-search/demo/FinanceSearchRefresco.html?" + data_text)
+                webbrowser.open_new(url_base_local + "/Master/finance-search-stable/demo/FinanceSearchRefresco.html?" + data_text)
                 sleep(8)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/finance-search/demo/FinanceSearchRefrescoLatency.html?" + data_text)
+                webbrowser.open_new(url_base_local + "/Latency/finance-search-latency/demo/FinanceSearchRefrescoLatency.html?" + data_text)
                 sleep(8)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/finance-search/demo/FinanceSearchRefrescoAccuracy.html?" + data_text)
-                sleep(8)
+            # elif(version=="accuracy"):
+            #     webbrowser.open_new(url_base_local + "/Accuracy/finance-search/demo/FinanceSearchRefrescoAccuracy.html?" + data_text)
+            #     sleep(8)
 
         ##########################################################################################################################################
         #----------------------------------------DATOS STOCK COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
