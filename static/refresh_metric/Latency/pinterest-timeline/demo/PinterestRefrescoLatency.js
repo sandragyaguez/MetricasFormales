@@ -19,7 +19,7 @@ document.addEventListener('WebComponentsReady', function() {
         //espero a escuchar si hay algun cambio
         element.addEventListener('pins_cache-changed', function(event){
           //cojo tiempo en el momento que hay cambio
-          var time=(new Date().getTime())/1000;
+          var time=new Date().getTime()/1000;
           //if (event.detail && event.detail.path.indexOf('length') > -1) {
             var haymas=true;
             //voy a recorrer los nuevos cambios y comprobar si el event es el que queria
