@@ -611,7 +611,7 @@ if social_network in network_list:
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
                     if(dictPython.has_key(key)):
                         #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)    
+                            valuesP=dictPython.get(key,None)   
                             final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
                             mpPinterest.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
