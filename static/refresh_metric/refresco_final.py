@@ -495,10 +495,10 @@ if social_network in network_list:
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/pinterest-timeline/demo/PinterestRefresco.html" + "?" + image_url)
-                sleep(5)
+                sleep(10)
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestRefrescoLatency.html" + "?" + image_url)
-                sleep(5)
+                sleep(10)
             # elif(version=="accuracy"):
             #     webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestRefrescoAccuracy.html" + "?" + image_url)
             #     sleep(3)
