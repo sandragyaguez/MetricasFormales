@@ -1,0 +1,34 @@
+* 0.1.9
+    * Adds support for both of Mixpanel's authentication schemes:
+        - Signature auth ("deprecated", but still supported).
+        - Secret auth ("newer" and considered more secure).
+    * This change allows the user to specify the use of the newer authentication
+      scheme during MixpanelQueryClient instantiation. If the authentication
+      scheme is not specified, the library defaults to the older, signature
+      based scheme.
+* 0.1.8
+    * Updates 'get_export' functionality to bring it inline with mixpanel's current API
+* 0.1.7
+    * Adds support for customizing the timeout time of the client's connections.
+* 0.1.6
+    * Adds support for Python 2 and Python 3; thanks to @robin900 for upgrading the library.
+* 0.1.5
+    * Adds `get_segmentation_multiseg` method.
+* 0.1.4
+    * Removes unimplemented validation call in `get_segmentation_average` method.
+    * Passes `event_name` arg to `segmentation/vaverage` api call in `get_segmentation_average`.
+    * Thanks to `thesmallestduck` for the patches.
+* 0.1.3
+    * Adds support for `engage` API calls (Query People Data).
+    * Adds support for `export` API calls (Get a "raw dump" of tracked events over a time period).
+        - Note: Hits slightly different URI `data.mixpanel.com` and the `connection` class has been
+          changed accordingly.
+    * Adds `ConcurrentPaginator` which improves performance paginating through people in the `engage` API.
+    * Thanks to Harry Marr (hmarr) for these improvements.
+* 0.1.2
+    * Patches the `get_segmentation_numeric` api call (fixed `bucket` typo); thanks to Harry Marr (hmarr) for the patch.
+* 0.1.1
+    * Fixed both `funnel` api calls; thanks to Nejc Zupan for the patch.
+* 0.1.0
+    * Initial bare bones release which was added to PyPi.
+    * Thanks to Francis Genet and Patrick McNally for their contributions.
