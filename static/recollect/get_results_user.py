@@ -30,11 +30,11 @@ mp_user = Mixpanel("d3bef513d72a99cc1e8bd3ca133e0f69")
 query_client = MixpanelQueryClient("c2c6f5c021a293bf6e850746540a82ed", "cb2011ee8d19c4e6dcf68c1cca1b151a")
 
 # Boundary dates for retrieving data
-START_DATE = "2017-04-27"
+START_DATE = "2017-05-22"
 END_DATE = time.strftime("%Y-%m-%d")
 
 # Query to get data from Mixpanel
-query = 'properties["user"]=="testConwet4"'
+query = 'properties["user"]=="testConwet2"'
 event = ["initialQuestion", "question2", "question3", "question4", "question5", "question6", "advantage", "drawback"]
 resp = query_client.get_export(START_DATE, END_DATE, where=query, response_format='json')
 
