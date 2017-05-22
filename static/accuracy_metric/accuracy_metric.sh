@@ -5,6 +5,9 @@
 #-----------------------------------------PRUEBAS DE COMPLETITUD----------------------------------------------
 ##############################################################################################################
 
+python -m SimpleHTTPServer >> /dev/null &
+PID=`echo $!`
+
 # Ejecutamos scripts para medir y recolectar los datos
 
 #---------#
@@ -190,6 +193,7 @@ sleep 10
 # python completitud_final.py traffic-incidents accuracy
 # sleep 10
 
+kill -9 $PID
 echo "##################################################################"
 echo "##################################################################"
 echo "Valores calculados para la metrica de completitud"
