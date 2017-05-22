@@ -73,8 +73,8 @@ if social_network in network_list:
         ##########################################################################################################################################
 
         #Las credenciales no cambian, a no ser que se quieran hacer peticiones con un usuarios que no sea Deus
-        CONSUMER_KEY = 'J4bjMZmJ6hh7r0wlG9H90cgEe' #Consumer key
-        CONSUMER_SECRET = '8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf' #Consumer secret
+        CONSUMER_KEY = 'BOySBn8XHlyYDQiGiqZ1tzllx' #Consumer key
+        CONSUMER_SECRET = 'xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE' #Consumer secret
         ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
         ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
 
@@ -82,13 +82,13 @@ if social_network in network_list:
         #Lanzamos una pestana por cada version del componente
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new( url_base_remote + "/Master/twitter-timeline/static/TwitterCompletitud.html")
+                webbrowser.open_new( url_base_remote + "/Master/twitter-timeline-stable/static/TwitterCompletitud.html")
                 sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new( url_base_remote + "/Latency/twitter-timeline/static/TwitterCompletitudLatency.html")
-                sleep(3)
+            # elif(version=="latency"):
+            #     webbrowser.open_new( url_base_remote + "/Latency/twitter-timeline/static/TwitterCompletitudLatency.html")
+            #     sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new( url_base_remote + "/Accuracy/twitter-timeline/static/TwitterCompletitudAccuracy.html")
+                webbrowser.open_new( url_base_remote + "/Accuracy/twitter-timeline-accuracy/static/TwitterCompletitudAccuracy.html")
                 sleep(3)
 
         #objeto oauth con credenciales de usuario Deus
@@ -465,13 +465,13 @@ if social_network in network_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_remote + "/Master/facebook-wall/FacebookCompletitud.html")
                 sleep(5)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_remote + "/Latency/facebook-wall/FacebookCompletitudLatency.html")
-                sleep(5)
+            # elif(version=="latency"):
+            #     webbrowser.open_new(url_base_remote + "/Latency/facebook-wall/FacebookCompletitudLatency.html")
+            #     sleep(5)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_remote + "/Accuracy/facebook-wall/FacebookCompletitudAccuracy.html")
                 sleep(5)
-
+        # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
         access_token="EAANMUmJPs2UBADlumZA4z9ZBJPAFczLhPliTS0SepEXUGd9DsPEl6bVsM953ja4WfXRj10ouLT3OuhZBltXR5yBjLB82DLYA1SQmYiNPeSEnsZAvO1cV2KcWiw6J040OO6ImHE0worFkJIt841HVsCvWRDgU6gy8wos0gMCZB8AZDZD"
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
@@ -861,17 +861,19 @@ if social_network in network_list:
         ##########################################################################################################################################
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_remote + "/Master/googleplus-timeline/demo/GooglePlusCompletitud.html")
+                webbrowser.open_new(url_base_remote + "/Master/googleplus-timeline-stable/demo/GooglePlusCompletitud.html")
                 sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_remote + "/Latency/googleplus-timeline/demo/GooglePlusCompletitudLatency.html")
-                sleep(3)
+            # elif(version=="latency"):
+            #     webbrowser.open_new(url_base_remote + "/Latency/googleplus-timeline/demo/GooglePlusCompletitudLatency.html")
+            #     sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_remote + "/Accuracy/googleplus-timeline/demo/GooglePlusCompletitudAccuracy.html")
+                webbrowser.open_new(url_base_remote + "/Accuracy/googleplus-timeline-accuracy/demo/GooglePlusCompletitudAccuracy.html")
                 sleep(3)
 
         sleep(5)
-        
+        # Url para obtener nuevo token google: https://developers.google.com/+/web/api/rest/latest/activities/list#try-it
+        # (Para el caso de Google, haces una peticion a la API con el explorer API, vas a networks, y coges el token que
+        # viene en el header Authorization: 'Bearer TOKEN')
         #cambiar token cada hora y media: https://developers.google.com/+/web/api/rest/latest/activities/list?authuser=1
         access_token=" ya29.CjlYA4BhZvIJllOAI0BJHEQ2dbmX-CTolwmV1OrqGq30pfdKhu1fZKr288pBAZMPBaWzisCONy5fKeM"
         google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
@@ -1194,9 +1196,9 @@ if social_network in network_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/pinterest-timeline/demo/PinterestCompletitud.html")
                 sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
-                sleep(3)
+            # elif(version=="latency"):
+            #     webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
+            #     sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
                 sleep(3)
@@ -1375,9 +1377,9 @@ if social_network in network_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/traffic-incidents/demo/TrafficCompletitud.html")
                 sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/traffic-incidents/demo/TrafficCompletitudLatency.html")
-                sleep(3)
+            # elif(version=="latency"):
+            #     webbrowser.open_new(url_base_local + "/Latency/traffic-incidents/demo/TrafficCompletitudLatency.html")
+            #     sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficCompletitudAccuracy.html")
                 sleep(3)
@@ -1736,13 +1738,13 @@ if social_network in network_list:
         ##########################################################################################################################################
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/finance-search/demo/FinanceSearchMaster.html")
+                webbrowser.open_new(url_base_local + "/Master/finance-search-stable/demo/FinanceSearchMaster.html")
                 sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/finance-search/demo/FinanceSearchLatency.html")
-                sleep(3)
+            # elif(version=="latency"):
+            #     webbrowser.open_new(url_base_local + "/Latency/finance-search/demo/FinanceSearchLatency.html")
+            #     sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/finance-search/demo/FinanceSearchAccuracy.html")
+                webbrowser.open_new(url_base_local + "/Accuracy/finance-search-accuracy/demo/FinanceSearchAccuracy.html")
                 sleep(3)
                
         symbol = "GOOGL"
@@ -1798,13 +1800,13 @@ if social_network in network_list:
         ##########################################################################################################################################
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/open-weather/demo/WeatherCompletitud.html")
+                webbrowser.open_new(url_base_local + "/Master/open-weather-stable/demo/WeatherCompletitud.html")
                 sleep(3)
             # elif(version=="latency"):
             #     webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherCompletitudLatency.html")
             #     sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherCompletitudAccuracy.html")
+                webbrowser.open_new(url_base_local + "/Accuracy/open-weather-accuracy/demo/WeatherCompletitudAccuracy.html")
                 sleep(3)
         
         #pasar parametros de weather   
