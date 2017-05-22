@@ -40,8 +40,8 @@ mpStock = Mixpanel("f2703d11ce4b2e6fed5d95f400306e48")
 #---------------------------------------------------------------------------------------------------------------------
 network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search"]
 version_list = ["master","latency", "accuracy"]
-url_base_remote= "http://metricas-formales.appspot.com/app/accuracy_metric"
-url_base_local= "http://localhost:8080/accuracy_metric"
+# url_base_remote= "http://metricas-formales.appspot.com/app/accuracy_metric"
+url_base_local= "http://localhost:8000"
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),
 #consola: python completitud.py twitter coge la "variable" twitter
@@ -82,13 +82,13 @@ if social_network in network_list:
         #Lanzamos una pestana por cada version del componente
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new( url_base_remote + "/Master/twitter-timeline-stable/static/TwitterCompletitud.html")
+                webbrowser.open_new( url_base_local + "/Master/twitter-timeline-stable/static/TwitterCompletitud.html")
                 sleep(3)
             # elif(version=="latency"):
             #     webbrowser.open_new( url_base_remote + "/Latency/twitter-timeline/static/TwitterCompletitudLatency.html")
             #     sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new( url_base_remote + "/Accuracy/twitter-timeline-accuracy/static/TwitterCompletitudAccuracy.html")
+                webbrowser.open_new( url_base_local + "/Accuracy/twitter-timeline-accuracy/static/TwitterCompletitudAccuracy.html")
                 sleep(3)
 
         #objeto oauth con credenciales de usuario Deus
@@ -2291,7 +2291,7 @@ if social_network in network_list:
                 #ordeno la lista de diccionarios por la posicion (va de 0 a x)
                 # newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
-                # No deberías recorrer newlist? Recorriendo resultados de Mixpanel
+                # No deberias recorrer newlist? Recorriendo resultados de Mixpanel
                 for y in lista:
                     timecomp=y.items()[0][1] #es la hora
                     citycomp=y.items()[1][1]
@@ -2334,93 +2334,98 @@ if social_network in network_list:
                 dictCompIcon=dict(zipCompIcon)
 
                 for response in res:
-                    
+                    dictPythonCity = response[0]
+                    dictPythonDate = response[1]
+                    dictPythonIcon = response[2]
+                    dictPythonTemp = response[3]
+                    dictPythonTemp_Max = response[4]
+                    dictPythonTemp_min = response[5]
 
-                for k,v in dictCompCity.iteritems():
-                    if(dictPythonCity.has_key(k)):
-                        vPythonCity=dictPythonCity.get(k,None)
-                        if cmp(vPythonCity,v)==0:
-                            True
+                    for k,v in dictCompCity.iteritems():
+                        if(dictPythonCity.has_key(k)):
+                            vPythonCity=dictPythonCity.get(k,None)
+                            if cmp(vPythonCity,v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "la city que falla es : " + v
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosCity=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1
                         else:
-                            print "falla en posicion: " + str(k) 
-                            print "la city que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosCity=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
-                    else:
-                        print "la city que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
+                            print "la city que no esta es: " + v
+                            print "corresponde a la posicion: " + str(k)
 
 
-                for k,v in dictCompDate.iteritems():
-                    if(dictPythonDate.has_key(k)):
-                        vPythonDate=dictPythonDate.get(k,None)
-                        if cmp(vPythonDate,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "la fecha que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosDate=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
+                    for k,v in dictCompDate.iteritems():
+                        if(dictPythonDate.has_key(k)):
+                            vPythonDate=dictPythonDate.get(k,None)
+                            if cmp(vPythonDate,v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "la fecha que falla es : " + v
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosDate=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1
 
 
-                for k,v in dictCompTemp.iteritems():
-                    if(dictPythonTemp.has_key(k)):
-                        vPythonTemp=dictPythonTemp.get(k,None)
-                        if cmp(vPythonTemp,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el temp que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosTemp=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
+                    for k,v in dictCompTemp.iteritems():
+                        if(dictPythonTemp.has_key(k)):
+                            vPythonTemp=dictPythonTemp.get(k,None)
+                            if cmp(vPythonTemp,v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "el temp que falla es : " + str(v)
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosTemp=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1
                    
 
-                for k,v in dictCompTemp_Max.iteritems():
-                    if(dictPythonTemp_Max.has_key(k)):
-                        vPythonTemp_Max=dictPythonTemp_Max.get(k,None)
-                        if cmp(vPythonTemp_Max,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el tiempo max que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosTemp_Max=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
+                    for k,v in dictCompTemp_Max.iteritems():
+                        if(dictPythonTemp_Max.has_key(k)):
+                            vPythonTemp_Max=dictPythonTemp_Max.get(k,None)
+                            if cmp(vPythonTemp_Max,v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "el tiempo max que falla es : " + str(v)
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosTemp_Max=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1
 
 
-                for k,v in dictCompTemp_Min.iteritems():
-                    if(dictPythonTemp_Min.has_key(k)):
-                        vPythonTemp_Min=dictPythonTemp_Min.get(k,None)
-                        if cmp(vPythonTemp_Min,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el tiempo min que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosTemp_Min=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
+                    for k,v in dictCompTemp_Min.iteritems():
+                        if(dictPythonTemp_Min.has_key(k)):
+                            vPythonTemp_Min=dictPythonTemp_Min.get(k,None)
+                            if cmp(vPythonTemp_Min,v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "el tiempo min que falla es : " + str(v)
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosTemp_Min=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1
 
 
-                for k,v in dictCompIcon.iteritems():
-                    if(dictPythonIcon.has_key(k)):
-                        vPythonIcon=dictPythonIcon.get(k,None)
-                        if cmp(iconMapping[vPythonIcon],v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el icon que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosIcon=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1                
+                    for k,v in dictCompIcon.iteritems():
+                        if(dictPythonIcon.has_key(k)):
+                            vPythonIcon=dictPythonIcon.get(k,None)
+                            if cmp(iconMapping[vPythonIcon],v)==0:
+                                True
+                            else:
+                                print "falla en posicion: " + str(k) 
+                                print "el icon que falla es : " + str(v)
+                                liskey.append(k)
+                                lisvalue.append(v)
+                                listaFallosIcon=zip(liskey,lisvalue)
+                                contadorFallos=contadorFallos+1                
 
 
                 contadorFallos=contadorFallos/float(contador)
