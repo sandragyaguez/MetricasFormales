@@ -14,16 +14,16 @@ PID=`echo $!`
 #TWITTER
 #---------#
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version master"
-# python completitud_final.py twitter master
-# sleep 10
-# # pkill chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version master"
+python completitud_final.py twitter master
+sleep 10
+# pkill chrome
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version accuracy"
-# python completitud_final.py twitter accuracy
-# sleep 10
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version accuracy"
+python completitud_final.py twitter accuracy
+sleep 10
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version latency"
@@ -169,15 +169,15 @@ PID=`echo $!`
 ######## WEATHER ############
 #############################
 
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente open-weather: metrica completitud version master"
-python completitud_final.py open-weather master
-sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente open-weather: metrica completitud version master"
+# python completitud_final.py open-weather master
+# sleep 10
 
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente open-weather: metrica completitud version accuracy"
-python completitud_final.py open-weather accuracy
-sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente open-weather: metrica completitud version accuracy"
+# python completitud_final.py open-weather accuracy
+# sleep 10
 
 #############################
 ######## TRAFFIC ############
