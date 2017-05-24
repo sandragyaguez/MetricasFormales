@@ -122,7 +122,7 @@ if social_network in network_list:
         zipPython=zip(ids,lis)
         zipPythonUser=zip(ids,users)
         #diccionario de tweets e ids
-        dictPytho = dict(zipPython)
+        dictPython = dict(zipPython)
         #diccionario de users e ids
         dictPythonUser=dict(zipPythonUser)
 
@@ -1810,15 +1810,14 @@ if social_network in network_list:
                 sleep(3)
         
         #pasar parametros de weather   
-
+        contador = 0
         request_uri= "https://centauro.ls.fi.upm.es:4444/weather?lat=40.4336199&lon=-3.8134707000000003&units=metric&lang=es&appId=655f716c02b3f0aceac9e3567cfb46a8"
         
         headers= {"content-type":"application/x-www-form-urlencoded"}
         #verify=False para que no me de errores de SSL
         s= requests.get(request_uri, verify=False, headers=headers)
-        print s
-
         timeline=s.json()
+        print timeline
 
         # BORRAR!!!
         #b = [a['main']['temp_min'] for a in timeline['list']]
@@ -1827,16 +1826,7 @@ if social_network in network_list:
         #PROBLEMA: ESTOY COGIENDO SIEMPRE LA ULTIMA TEMP
         
 
-        lista_city=[]
-        lista_date=[]
-        lista_temp=[]
-        lista_temp_max=[]
-        lista_temp_min=[]
-        lista_icon=[]
-        listacont=[]
-        lista_values5=[]
-        lista_values7=[]
-        contador=0     
+        lista_city=[]    
  
         for k,v in timeline.iteritems():
            if(timeline.has_key('city')):
@@ -1855,11 +1845,36 @@ if social_network in network_list:
         values_next_day = []
         for i in range(4): 
             nextdate += datetime.timedelta(days=1)
+            print nextdate
             values_next_day1=filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == nextdate.strftime("%d/%m/%Y"), timeline['list'])
+            # print values_next_day1[0]['dt']
+            # print values_next_day1[0]['weather'][0]['icon']
+            # print values_next_day1[0]['main']['temp']
+            # print values_next_day1[0]['main']['temp_max']
+            # print values_next_day1[0]['main']['temp_min']
+            # print "====================================================================="
+            # print ""
+            # print ""
+            # print values_next_day1
             values_next_day.append(values_next_day1)
+
+        # print "Longitud lista"
+        # print len(values_next_day)
+
+
 
         def recorrer_timeline(lista_timeline):
             
+            lista_date=[]
+            lista_temp=[]
+            lista_temp_max=[]
+            lista_temp_min=[]
+            lista_icon=[]
+            listacont=[]
+            lista_values5=[]
+            lista_values7=[]
+            global contador
+            contador = 0
             for v in lista_timeline:
                 #print v
                 if(v.has_key('dt')):
@@ -1932,6 +1947,8 @@ if social_network in network_list:
         for day in values_next_day:
             res.append(recorrer_timeline(day))
 
+        # print res
+
 
         iconMapping={
             "01d": "wi-day-sunny",
@@ -1989,6 +2006,8 @@ if social_network in network_list:
                 #ordeno la lista de diccionarios por la posicion (va de 0 a x)
                 # newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
+                print "Longitud de lista mixpanel: " + str(len(lista))
+
                 for y in lista:
                     timecomp=y.items()[0][1] #es la hora
                     citycomp=y.items()[1][1]
@@ -2037,11 +2056,36 @@ if social_network in network_list:
 
                 for response in res:
                     dictPythonCity = response[0]
+                    print len(dictPythonCity)
+                    print "City"
+                    print "Host: ", dictPythonCity
+                    print "Mixpanel: ", dictCompCity
+                    print "========================"
                     dictPythonDate = response[1]
+                    print "Date"
+                    print "Host: ", dictPythonDate
+                    print "Mixpanel", dictCompDate
+                    print "========================"
                     dictPythonIcon = response[2]
+                    print "Icon"
+                    print "Host: ", dictPythonIcon
+                    print "Mixpanel: ", dictCompIcon
+                    print "========================"
                     dictPythonTemp = response[3]
+                    print "Temp"
+                    print "Host: ", dictPythonTemp
+                    print "Mixpanel", dictCompTemp
+                    print "========================"
                     dictPythonTemp_Max = response[4]
-                    dictPythonTemp_min = response[5]
+                    print "Max"
+                    print "Host: ", dictPythonTemp_Max
+                    print "Mixpanel: ", dictCompTemp_Max
+                    print "========================"
+                    dictPythonTemp_Min = response[5]
+                    print "Min"
+                    print "Host: ", dictPythonTemp_Min
+                    print "Mixpanel: ", dictCompTemp_Min
+                    print "========================"
                     #Recorro el diccionario del componente, k es la posicion y v el date
                     for k,v in dictCompCity.iteritems():
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
@@ -2112,7 +2156,6 @@ if social_network in network_list:
                                 listaFallosTemp_Min=zip(liskey,lisvalue)
                                 contadorFallos=contadorFallos+1
 
-
                     for k,v in dictCompIcon.iteritems():
                         if(dictPythonIcon.has_key(k)):
                             vPythonIcon=dictPythonIcon.get(k,None)
@@ -2126,10 +2169,9 @@ if social_network in network_list:
                                 listaFallosIcon=zip(liskey,lisvalue)
                                 contadorFallos=contadorFallos+1                
 
-
-                contadorFallos=contadorFallos/float(contador)
-                print contadorFallos
-                mpWeather.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
+                    contadorFallos=contadorFallos/float(contador)
+                    print contadorFallos
+                    mpWeather.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
 
 
             elif version=="latency":
@@ -2339,7 +2381,7 @@ if social_network in network_list:
                     dictPythonIcon = response[2]
                     dictPythonTemp = response[3]
                     dictPythonTemp_Max = response[4]
-                    dictPythonTemp_min = response[5]
+                    dictPythonTemp_Min = response[5]
 
                     for k,v in dictCompCity.iteritems():
                         if(dictPythonCity.has_key(k)):
