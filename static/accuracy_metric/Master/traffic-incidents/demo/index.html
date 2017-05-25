@@ -9,22 +9,23 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <title>traffic-incidents Demo</title>
-    <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
-    <link rel="import" href="../traffic-incidents.html">
-  </head>
-  <body unresolved>
-    <template is="dom-bind" id="bind">
-      <traffic-incidents api_key_geocoding="AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM"
-        app_key_traffic="AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-" refresh_time="60000"
-        traffic_info="{{traffic}}">
-      </traffic-incidents>
 
-    </template>
-    <!--<script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>traffic-incidents Demo</title>
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="../traffic-incidents.html">
+</head>
+
+<body unresolved>
+  <template is="dom-bind" id="bind">
+    <traffic-incidents api_key_geocoding="AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM" app_key_traffic="AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"
+      refresh_time="60000" traffic_info="{{traffic}}">
+    </traffic-incidents>
+
+  </template>
+  <!--<script>
       window.addEventListener('WebComponentsReady',function(){
         var bind = document.querySelector('#bind');
         bind.test = 'no recibidos';
@@ -42,5 +43,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       })
     </script>-->
-  </body>
+</body>
+
 </html>
