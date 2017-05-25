@@ -177,6 +177,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     id="requesttimeline"
     url="{{ endpoint }}"
     method="GET"
+    headers="{'Timing-Allow-origin': '*'}"
     params="{{timeline_params}}"
     handleAs='json'
     on-response="_response"
@@ -185,17 +186,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </iron-ajax>
 
   <iron-ajax
-  id="requestLanguage"
-  url="{{language_url}}"
-  method="GET"
-  handleAs="json"
-  on-response="_language_response"
+    id="requestLanguage"
+    url="{{language_url}}"
+    method="GET"
+    headers="{'Timing-Allow-origin': '*'}"
+    handleAs="json"
+    on-response="_language_response"
   >
 </iron-ajax>
   <iron-ajax
   id="requestMock"
   url="{{mockUrl}}"
   method="GET"
+  headers="{'Timing-Allow-origin': '*'}"
   handleAs="json"
   on-response="_response"
   >
