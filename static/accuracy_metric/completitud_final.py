@@ -463,17 +463,17 @@ if social_network in network_list:
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_remote + "/Master/facebook-wall/FacebookCompletitud.html")
+                webbrowser.open_new(url_base_local + "/Master/facebook-wall-stable/FacebookCompletitud.html")
                 sleep(5)
             # elif(version=="latency"):
             #     webbrowser.open_new(url_base_remote + "/Latency/facebook-wall/FacebookCompletitudLatency.html")
             #     sleep(5)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_remote + "/Accuracy/facebook-wall/FacebookCompletitudAccuracy.html")
+                webbrowser.open_new(url_base_local + "/Accuracy/facebook-wall-accuracy/FacebookCompletitudAccuracy.html")
                 sleep(5)
         # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
-        access_token="EAANMUmJPs2UBADlumZA4z9ZBJPAFczLhPliTS0SepEXUGd9DsPEl6bVsM953ja4WfXRj10ouLT3OuhZBltXR5yBjLB82DLYA1SQmYiNPeSEnsZAvO1cV2KcWiw6J040OO6ImHE0worFkJIt841HVsCvWRDgU6gy8wos0gMCZB8AZDZD"
+        access_token="EAANMUmJPs2UBAO7EbLg4xR3R3Pqt7q0a1ZCHBLVxNFwjmXTYZAxiTDToJPsS4AhYFm67zn0xCZBg59dtCgZCqd05sIpDS6Px856RE6bTiONWagUlpzYwt1mirG0VcER6eI0GdyojRlGFSKXKq0lqh6Nl22xKQuVJAq5f4aRaZAw3QVnLp1eKhqLrnycHuGb4ZD"
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
         #Request timeline home
@@ -861,13 +861,13 @@ if social_network in network_list:
         ##########################################################################################################################################
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_remote + "/Master/googleplus-timeline-stable/demo/GooglePlusCompletitud.html")
+                webbrowser.open_new(url_base_local + "/Master/googleplus-timeline-stable/demo/GooglePlusCompletitud.html")
                 sleep(3)
             # elif(version=="latency"):
             #     webbrowser.open_new(url_base_remote + "/Latency/googleplus-timeline/demo/GooglePlusCompletitudLatency.html")
             #     sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_remote + "/Accuracy/googleplus-timeline-accuracy/demo/GooglePlusCompletitudAccuracy.html")
+                webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline-accuracy/demo/GooglePlusCompletitudAccuracy.html")
                 sleep(3)
 
         sleep(5)
@@ -875,7 +875,7 @@ if social_network in network_list:
         # (Para el caso de Google, haces una peticion a la API con el explorer API, vas a networks, y coges el token que
         # viene en el header Authorization: 'Bearer TOKEN')
         #cambiar token cada hora y media: https://developers.google.com/+/web/api/rest/latest/activities/list?authuser=1
-        access_token=" ya29.CjlYA4BhZvIJllOAI0BJHEQ2dbmX-CTolwmV1OrqGq30pfdKhu1fZKr288pBAZMPBaWzisCONy5fKeM"
+        access_token="ya29.GmBVBFIMvIJHPGcv9qF60JTl2bvl79AjvHXigNaQhYRsLvfnZjofVkL9IbaEVR-BaPz79CqclBo-DuTfRebhqzk3EQ5H7e7CWZzoB8gv95UKWLkvF9F0usz3_6Qv1NurXY4"
         google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
         headers = {"Authorization": "Bearer " + access_token}
         
