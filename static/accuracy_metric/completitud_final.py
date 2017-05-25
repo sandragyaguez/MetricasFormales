@@ -1480,13 +1480,7 @@ if social_network in network_list:
             lisvalue.append(v)
             listaFallosDate=zip(liskey,lisvalue)
             contadorFallos=contadorFallos+1
-          # if str(dictPythonDate[index]) != str(entry['fecha']):
-          #   print "falla en posicion: ", entry['i'] 
-          #   print "el date que falla es : date"  
-          #   liskey.append(k)
-          #   lisvalue.append(v)
-          #   listaFallosDate=zip(liskey,lisvalue)
-          #   contadorFallos=contadorFallos+1
+
         contadorFallos=contadorFallos/(contador*2.0)
         print contadorFallos
         
@@ -1561,13 +1555,11 @@ if social_network in network_list:
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/open-weather-stable/demo/WeatherCompletitud.html")
-                sleep(3)
             # elif(version=="latency"):
             #     webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherCompletitudLatency.html")
             #     sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/open-weather-accuracy/demo/WeatherCompletitudAccuracy.html")
-                sleep(3)
         
         #pasar parametros de weather   
         contador = 0
@@ -1577,138 +1569,16 @@ if social_network in network_list:
         #verify=False para que no me de errores de SSL
         s= requests.get(request_uri, verify=False, headers=headers)
         timeline=s.json()
-        print timeline
 
-        # BORRAR!!!
-        #b = [a['main']['temp_min'] for a in timeline['list']]
-        #print b
+        #PROBLEMA: ESTOY COGIENDO SIEMPRE LA ULTIMA TEMP    
 
-        #PROBLEMA: ESTOY COGIENDO SIEMPRE LA ULTIMA TEMP
-        
-
-        lista_city=[]    
- 
-        for k,v in timeline.iteritems():
-           if(timeline.has_key('city')):
-               values1=timeline.get('city',None)
-           if (timeline.has_key('list')):
-               values3=timeline.get('list',None)
+        if(timeline.has_key('city')):
+            city=timeline['city']
+        if (timeline.has_key('list')):
+            values3=timeline['list']
                
-        for m,n in values1.iteritems():
-           if(values1.has_key('name')):
-               values2=values1.get('name',None)
-           lista_city.append(values2)
-        # Current day
-        values3 = filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == time.strftime("%d/%m/%Y"), timeline['list'])
-        
-        nextdate=datetime.datetime.now().date()
-        values_next_day = []
-        for i in range(4): 
-            nextdate += datetime.timedelta(days=1)
-            print nextdate
-            values_next_day1=filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == nextdate.strftime("%d/%m/%Y"), timeline['list'])
-            # print values_next_day1[0]['dt']
-            # print values_next_day1[0]['weather'][0]['icon']
-            # print values_next_day1[0]['main']['temp']
-            # print values_next_day1[0]['main']['temp_max']
-            # print values_next_day1[0]['main']['temp_min']
-            # print "====================================================================="
-            # print ""
-            # print ""
-            # print values_next_day1
-            values_next_day.append(values_next_day1)
-
-        # print "Longitud lista"
-        # print len(values_next_day)
-
-
-
-        def recorrer_timeline(lista_timeline):
-            
-            lista_date=[]
-            lista_temp=[]
-            lista_temp_max=[]
-            lista_temp_min=[]
-            lista_icon=[]
-            listacont=[]
-            lista_values5=[]
-            lista_values7=[]
-            global contador
-            contador = 0
-            for v in lista_timeline:
-                #print v
-                if(v.has_key('dt')):
-                    values4=v.get('dt',None)
-                    date=datetime.datetime.fromtimestamp(values4).strftime('%d/%m/%Y')
-                    #if (date==time.strftime("%d/%m/%Y")):
-                    lista_date.append(date)
-                if(v.has_key('weather')):
-                    values5=v.get('weather',None)
-                    lista_values5.append(values5[0])
-
-                if(v.has_key('main')):
-                    values7=v.get('main',None)
-                    lista_values7.append(values7)
-
-            for r in lista_values5:
-                if(r.has_key('icon')):
-                    values6=r.get('icon',None)
-                lista_icon.append(values6)
-
-            for t in lista_values7:
-                #print t, p
-                if (t.has_key('temp')):
-                    values8=int(round(t['temp']))
-                lista_temp.append(values8)
-                if(t.has_key('temp_max')):
-                    values9=int(round(t['temp_max']))
-                lista_temp_max.append(values9)
-                if (t.has_key('temp_min')):
-                    values10=int(round(t['temp_min']))
-                lista_temp_min.append(values10)
-                #la lista de contador la hago para poder identificar cada descripcion con su type de imagen y su date
-                listacont.append(contador)
-                contador=contador+1
-
-            zipPythonCity=zip(listacont,lista_city)
-            dictPythonCity=dict(zipPythonCity)
-
-            if not lista_date == []:
-                zipPythonDate=zip(listacont,lista_date)
-                dictPythonDate=dict(zipPythonDate)
-            else:
-                dictPythonDate = {}
-
-            zipPythonIcon=zip(listacont,lista_icon)
-            dictPythonIcon=dict(zipPythonIcon)
-
-            if not lista_temp == []:
-                zipPythonTemp=zip(listacont,lista_temp)
-                dictPythonTemp=dict(zipPythonTemp)
-                #print "Datos de la api. Actual", dictPythonTemp
-            else:
-                dictPythonTemp = {}
-            
-            lista_temp_max = [max(lista_temp_max)]*len(lista_temp_max)
-            zipPythonTemp_Max=zip(listacont,lista_temp_max)
-            dictPythonTemp_Max=dict(zipPythonTemp_Max)
-            #print "Datos de la api.Maxima", dictPythonTemp_Max
-
-            lista_temp_min = [min(lista_temp_min)]*len(lista_temp_min)
-            zipPythonTemp_Min=zip(listacont,lista_temp_min)
-            dictPythonTemp_Min=dict(zipPythonTemp_Min)
-            #print "Datos de la api. Minima", dictPythonTemp_Min
-
-            return [dictPythonCity,dictPythonDate,dictPythonIcon,dictPythonTemp, dictPythonTemp_Max,dictPythonTemp_Min]
-
-        res = []
-        res.append(recorrer_timeline(values3))
-
-        for day in values_next_day:
-            res.append(recorrer_timeline(day))
-
-        # print res
-
+        if(city.has_key('name')):
+          lista_city=city['name']
 
         iconMapping={
             "01d": "wi-day-sunny",
@@ -1730,6 +1600,50 @@ if social_network in network_list:
             "50d": "wi-fog",
             "50n": "wi-fog"
         }
+
+
+        def list_temp_min_max(lista_timeline):
+          days = []
+          days.append(filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == time.strftime("%d/%m/%Y"), lista_timeline))
+          nextdate=datetime.datetime.now().date()
+          
+          for i in range(4): 
+            nextdate += datetime.timedelta(days=1)
+            values_next_day1=filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == nextdate.strftime("%d/%m/%Y"), lista_timeline)
+            days.append(values_next_day1)
+          
+          mins = []
+          maxs = []
+          for day in days:
+            min_day = min([weather['temp_min'] for weather in day])
+            max_day = max([weather['temp_min'] for weather in day])
+            mins += [min_day]*len(day)
+            maxs += [max_day]*len(day)
+          
+          for index, weather in enumerate(lista_timeline):
+            weather['temp_min'] = mins[index]
+            weather['temp_max'] = maxs[index]
+          
+          return lista_timeline
+        def recorrer_timeline(lista_timeline):
+          pretty = []          
+          for entry in lista_timeline:
+            information = {}
+            information['dt'] = entry['dt']
+            information["city"] = str(lista_city)
+            information["icon"] = iconMapping[entry['weather'][0]['icon']]
+            information["temp"] = int(round(entry['main']['temp']))
+            information["temp_max"] = int(round(entry['main']['temp_max']))
+            information["temp_min"] = int(round(entry['main']['temp_min']))
+
+            pretty.append(information)
+          return pretty
+       
+        api_response = recorrer_timeline(timeline['list'])
+        api_response = list_temp_min_max(api_response)
+
+
+
 
         ##########################################################################################################################################
         #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
@@ -1753,486 +1667,35 @@ if social_network in network_list:
         lisvalue=[]
 
         if version in version_list:
-            if version=="master":
-            #defino los parametros necesarios para la peticion
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-                
-                #ordeno la lista de diccionarios por la posicion (va de 0 a x)
-                # newlist = sorted(lista, key=lambda posicion: posicion['i'])
-
-                print "Longitud de lista mixpanel: " + str(len(lista))
-
-                for y in lista:
-                    timecomp=y.items()[0][1] #es la hora
-                    citycomp=y.items()[1][1]
-                    tempcomp=y.items()[2][1]
-                    poscomp=y.items()[3][1]
-                    tempMaxcomp=y.items()[4][1]
-                    fechacomp=y.items()[5][1]
-                    fechacomp=datetime.datetime.strptime(fechacomp,'%d/%m/%Y').strftime('%d/%m/%Y')
-                    diacomp=y.items()[6][1]
-                    tempMincomp=y.items()[7][1]
-                    iconcomp=y.items()[8][1]
-
-
-                    listime.append(timecomp)
-                    listacity.append(citycomp)
-                    listemp.append(tempcomp)
-                    listpos.append(poscomp)
-                    listemp_max.append(tempMaxcomp)
-                    listadate.append(fechacomp)
-                    lisdia.append(diacomp)
-                    listemp_min.append(tempMincomp)
-                    listaicon.append(iconcomp)
-
-                    
-                zipCompTime=zip(listpos,listime)
-                zipCompCity=zip(listpos,listacity)
-                zipCompTemp=zip(listpos,listemp)
-                zipCompTemp_Max=zip(listpos,listemp_max)
-                zipCompDate=zip(listpos,listadate)
-                zipCompDay=zip(listpos,lisdia)
-                zipCompTemp_Min=zip(listpos,listemp_min)
-                zipCompIcon=zip(listpos,listaicon)
-
-                dictCompTime=dict(zipCompTime) #la api no me devuelve la hora,por lo que de momento no se va a comparar
-                dictCompCity=dict(zipCompCity)
-                dictCompTemp=dict(zipCompTemp)
-                dictCompTemp_Max=dict(zipCompTemp_Max)
-                dictCompDate=dict(zipCompDate)
-                dictCompDay=dict(zipCompDay)
-                dictCompTemp_Min=dict(zipCompTemp_Min)
-                dictCompIcon=dict(zipCompIcon)
-
-                #print "Componente. Temp actual", dictCompTemp
-                #print "Componente. Temp max", dictCompTemp_Max
-                #print "Componente. Temp min",dictCompTemp_Min
-
-                for response in res:
-                    dictPythonCity = response[0]
-                    print len(dictPythonCity)
-                    print "City"
-                    print "Host: ", dictPythonCity
-                    print "Mixpanel: ", dictCompCity
-                    print "========================"
-                    dictPythonDate = response[1]
-                    print "Date"
-                    print "Host: ", dictPythonDate
-                    print "Mixpanel", dictCompDate
-                    print "========================"
-                    dictPythonIcon = response[2]
-                    print "Icon"
-                    print "Host: ", dictPythonIcon
-                    print "Mixpanel: ", dictCompIcon
-                    print "========================"
-                    dictPythonTemp = response[3]
-                    print "Temp"
-                    print "Host: ", dictPythonTemp
-                    print "Mixpanel", dictCompTemp
-                    print "========================"
-                    dictPythonTemp_Max = response[4]
-                    print "Max"
-                    print "Host: ", dictPythonTemp_Max
-                    print "Mixpanel: ", dictCompTemp_Max
-                    print "========================"
-                    dictPythonTemp_Min = response[5]
-                    print "Min"
-                    print "Host: ", dictPythonTemp_Min
-                    print "Mixpanel: ", dictCompTemp_Min
-                    print "========================"
-                    #Recorro el diccionario del componente, k es la posicion y v el date
-                    for k,v in dictCompCity.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                        if(dictPythonCity.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                            vPythonCity=dictPythonCity.get(k,None)
-                            if cmp(vPythonCity,v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "la city que falla es : " + v
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosCity=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1
+          params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
+          respuesta=x.request(['events/properties/values'], params, format='json')
           
+          #pasar de unicode a dict
+          for x in respuesta:
+            resp = ast.literal_eval(x)
+            lista.append(resp)                   
+          
+          #ordeno la lista de diccionarios por la posicion (va de 0 a x)
+          newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
-                    for k,v in dictCompDate.iteritems():
-                        if(dictPythonDate.has_key(k)):
-                            vPythonDate=dictPythonDate.get(k,None)
-                            if cmp(vPythonDate,v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "la fecha que falla es : " + v
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosDate=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1
-
-                    for k,v in dictCompTemp.iteritems():
-                        if(dictPythonTemp.has_key(k)):
-                            vPythonTemp=dictPythonTemp.get(k,None)
-                            if cmp(vPythonTemp,v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "el temp que falla es : " + str(v)
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosTemp=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1
-                    
-
-                    for k,v in dictCompTemp_Max.iteritems():
-                        if(dictPythonTemp_Max.has_key(k)):
-                            vPythonTemp_Max=dictPythonTemp_Max.get(k,None)
-                            if cmp(vPythonTemp_Max,v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "el tiempo max que falla es : " + str(v)
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosTemp_Max=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1
-
-                    for k,v in dictCompTemp_Min.iteritems():
-                        if(dictPythonTemp_Min.has_key(k)):
-                            vPythonTemp_Min=dictPythonTemp_Min.get(k,None)
-                            if cmp(vPythonTemp_Min,v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "el tiempo min que falla es : " + str(v)
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosTemp_Min=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1
-
-                    for k,v in dictCompIcon.iteritems():
-                        if(dictPythonIcon.has_key(k)):
-                            vPythonIcon=dictPythonIcon.get(k,None)
-                            if cmp(iconMapping[vPythonIcon],v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "el icon que falla es : " + str(v)
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosIcon=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1                
-
-                    contadorFallos=contadorFallos/float(contador)
-                    print contadorFallos
-                    mpWeather.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
-
-
-            elif version=="latency":
-            #defino los parametros necesarios para la peticion
-                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-                
-                #ordeno la lista de diccionarios por la posicion (va de 0 a x)
-                newlist = sorted(lista, key=lambda posicion: posicion['i'])
-
-                for y in lista:
-                    timecomp=y.items()[0][1] #es la hora
-                    citycomp=y.items()[1][1]
-                    tempcomp=y.items()[2][1]
-                    poscomp=y.items()[3][1]
-                    tempMaxcomp=y.items()[4][1]
-                    fechacomp=y.items()[5][1]
-                    fechacomp=datetime.datetime.strptime(fechacomp,'%d/%m/%Y').strftime('%d/%m/%Y')
-                    diacomp=y.items()[6][1]
-                    tempMincomp=y.items()[7][1]
-                    iconcomp=y.items()[8][1]
-
-                    listime.append(timecomp)
-                    listacity.append(citycomp)
-                    listemp.append(tempcomp)
-                    listpos.append(poscomp)
-                    listemp_max.append(tempMaxcomp)
-                    listadate.append(fechacomp)
-                    lisdia.append(diacomp)
-                    listemp_min.append(tempMincomp)
-                    listaicon.append(iconcomp)
-
-                    
-                zipCompTime=zip(listpos,listime)
-                zipCompCity=zip(listpos,listacity)
-                zipCompTemp=zip(listpos,listemp)
-                zipCompTemp_Max=zip(listpos,listemp_max)
-                zipCompDate=zip(listpos,listadate)
-                zipCompDay=zip(listpos,lisdia)
-                zipCompTemp_Min=zip(listpos,listemp_min)
-                zipCompIcon=zip(listpos,listaicon)
-
-                dictCompTime=dict(zipCompTime) #la api no me devuelve la hora,por lo que de momento no se va a comparar
-                dictCompCity=dict(zipCompCity)
-                dictCompTemp=dict(zipCompTemp)
-                dictCompTemp_Max=dict(zipCompTemp_Max)
-                dictCompDate=dict(zipCompDate)
-                dictCompDay=dict(zipCompDay)
-                dictCompTemp_Min=dict(zipCompTemp_Min)
-                dictCompIcon=dict(zipCompIcon)
-
-
-                for k,v in dictCompCity.iteritems():
-                    if(dictPythonCity.has_key(k)):
-                        vPythonCity=dictPythonCity.get(k,None)
-                        if cmp(vPythonCity,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "la city que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosCity=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
-                    else:
-                        print "la city que no esta es: " + v
-                        print "corresponde a la posicion: " + str(k)
-
-
-                for k,v in dictCompDate.iteritems():
-                    if(dictPythonDate.has_key(k)):
-                        vPythonDate=dictPythonDate.get(k,None)
-                        if cmp(vPythonDate,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "la fecha que falla es : " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosDate=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
-
-
-                for k,v in dictCompTemp.iteritems():
-                    if(dictPythonTemp.has_key(k)):
-                        vPythonTemp=dictPythonTemp.get(k,None)
-                        if cmp(vPythonTemp,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el temp que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosTemp=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
-   
-
-                for k,v in dictCompTemp_Max.iteritems():
-                    if(dictPythonTemp_Max.has_key(k)):
-                        vPythonTemp_Max=dictPythonTemp_Max.get(k,None)
-                        if cmp(vPythonTemp_Max,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el tiempo max que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosTemp_Max=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
-
-
-                for k,v in dictCompTemp_Min.iteritems():
-                    if(dictPythonTemp_Min.has_key(k)):
-                        vPythonTemp_Min=dictPythonTemp_Min.get(k,None)
-                        if cmp(vPythonTemp_Min,v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el tiempo min que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosTemp_Min=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1
-
-
-                for k,v in dictCompIcon.iteritems():
-                    if(dictPythonIcon.has_key(k)):
-                        vPythonIcon=dictPythonIcon.get(k,None)
-                        if cmp(iconMapping[vPythonIcon],v)==0:
-                            True
-                        else:
-                            print "falla en posicion: " + str(k) 
-                            print "el icon que falla es : " + str(v)
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            listaFallosIcon=zip(liskey,lisvalue)
-                            contadorFallos=contadorFallos+1                
-
-
-                contadorFallos=contadorFallos/float(contador)
-                print contadorFallos
-                mpWeather.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
-
-            elif version=="accuracy":
-            #defino los parametros necesarios para la peticion
-                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-                
-                #ordeno la lista de diccionarios por la posicion (va de 0 a x)
-                # newlist = sorted(lista, key=lambda posicion: posicion['i'])
-
-                # No deberias recorrer newlist? Recorriendo resultados de Mixpanel
-                for y in lista:
-                    timecomp=y.items()[0][1] #es la hora
-                    citycomp=y.items()[1][1]
-                    tempcomp=y.items()[2][1]
-                    poscomp=y.items()[3][1]
-                    tempMaxcomp=y.items()[4][1]
-                    fechacomp=y.items()[5][1]
-                    fechacomp=datetime.datetime.strptime(fechacomp,'%d/%m/%Y').strftime('%d/%m/%Y')
-                    diacomp=y.items()[6][1]
-                    tempMincomp=y.items()[7][1]
-                    iconcomp=y.items()[8][1]
-
-                    listime.append(timecomp)
-                    listacity.append(citycomp)
-                    listemp.append(tempcomp)
-                    listpos.append(poscomp)
-                    listemp_max.append(tempMaxcomp)
-                    listadate.append(fechacomp)
-                    lisdia.append(diacomp)
-                    listemp_min.append(tempMincomp)
-                    listaicon.append(iconcomp)
-
-                    
-                zipCompTime=zip(listpos,listime)
-                zipCompCity=zip(listpos,listacity)
-                zipCompTemp=zip(listpos,listemp)
-                zipCompTemp_Max=zip(listpos,listemp_max)
-                zipCompDate=zip(listpos,listadate)
-                zipCompDay=zip(listpos,lisdia)
-                zipCompTemp_Min=zip(listpos,listemp_min)
-                zipCompIcon=zip(listpos,listaicon)
-
-                dictCompTime=dict(zipCompTime) #la api no me devuelve la hora,por lo que de momento no se va a comparar
-                dictCompCity=dict(zipCompCity)
-                dictCompTemp=dict(zipCompTemp)
-                dictCompTemp_Max=dict(zipCompTemp_Max)
-                dictCompDate=dict(zipCompDate)
-                dictCompDay=dict(zipCompDay)
-                dictCompTemp_Min=dict(zipCompTemp_Min)
-                dictCompIcon=dict(zipCompIcon)
-
-                for response in res:
-                    dictPythonCity = response[0]
-                    dictPythonDate = response[1]
-                    dictPythonIcon = response[2]
-                    dictPythonTemp = response[3]
-                    dictPythonTemp_Max = response[4]
-                    dictPythonTemp_Min = response[5]
-
-                    for k,v in dictCompCity.iteritems():
-                        if(dictPythonCity.has_key(k)):
-                            vPythonCity=dictPythonCity.get(k,None)
-                            if cmp(vPythonCity,v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "la city que falla es : " + v
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosCity=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1
-                        else:
-                            print "la city que no esta es: " + v
-                            print "corresponde a la posicion: " + str(k)
-
-
-                    for k,v in dictCompDate.iteritems():
-                        if(dictPythonDate.has_key(k)):
-                            vPythonDate=dictPythonDate.get(k,None)
-                            if cmp(vPythonDate,v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "la fecha que falla es : " + v
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosDate=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1
-
-
-                    for k,v in dictCompTemp.iteritems():
-                        if(dictPythonTemp.has_key(k)):
-                            vPythonTemp=dictPythonTemp.get(k,None)
-                            if cmp(vPythonTemp,v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "el temp que falla es : " + str(v)
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosTemp=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1
-                   
-
-                    for k,v in dictCompTemp_Max.iteritems():
-                        if(dictPythonTemp_Max.has_key(k)):
-                            vPythonTemp_Max=dictPythonTemp_Max.get(k,None)
-                            if cmp(vPythonTemp_Max,v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "el tiempo max que falla es : " + str(v)
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosTemp_Max=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1
-
-
-                    for k,v in dictCompTemp_Min.iteritems():
-                        if(dictPythonTemp_Min.has_key(k)):
-                            vPythonTemp_Min=dictPythonTemp_Min.get(k,None)
-                            if cmp(vPythonTemp_Min,v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "el tiempo min que falla es : " + str(v)
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosTemp_Min=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1
-
-
-                    for k,v in dictCompIcon.iteritems():
-                        if(dictPythonIcon.has_key(k)):
-                            vPythonIcon=dictPythonIcon.get(k,None)
-                            if cmp(iconMapping[vPythonIcon],v)==0:
-                                True
-                            else:
-                                print "falla en posicion: " + str(k) 
-                                print "el icon que falla es : " + str(v)
-                                liskey.append(k)
-                                lisvalue.append(v)
-                                listaFallosIcon=zip(liskey,lisvalue)
-                                contadorFallos=contadorFallos+1                
-
-
-                contadorFallos=contadorFallos/float(contador)
-                print contadorFallos
-                mpWeather.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
+          for index, weather in enumerate(newlist):
+            if api_response[index]['icon'] != weather['icon']:
+              print index, " falla en posicion icon: ", api_response[index]['icon'], weather['icon']
+              contadorFallos+=1
+            if api_response[index]['temp'] != weather['temp']:
+              print index, " falla en posicion temp: ", api_response[index]['temp'], weather['temp']
+              contadorFallos+=1
+            if api_response[index]['temp_min'] != weather['temp_min']:
+              print index, " falla en posicion temp_min: ", api_response[index]['temp_min'], weather['temp_min']
+              contadorFallos+=1
+            if api_response[index]['temp_max'] != weather['temp_max']:
+              print index, " falla en posicion temp_max: ", api_response[index]['temp_max'], weather['temp_max']
+              contadorFallos+=1                            
+          
+  
+          contadorFallos=contadorFallos / (len(newlist)*4.0)
+          print contadorFallos
+          mpWeather.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})
 
     else:
         print "Wrong social network or missing param"
