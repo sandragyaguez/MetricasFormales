@@ -15,7 +15,7 @@ document.addEventListener('WebComponentsReady', function() {
               url=element.pins_cache[j].url;
               console.log(url)
               contador++;
-              mixpanel.track("accuracy",{'value':url});
+              mixpanel.track("accuracy",{'value':{'url':url,'contador':contador}});
             }
             console.log(contador) 
           },1500);

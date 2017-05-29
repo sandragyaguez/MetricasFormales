@@ -8,12 +8,12 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/finance-chart/finance-chart.html">
-<link rel="import" href="../../bower_components/search-company/search-company.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
-<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/finance-chart/finance-chart.html">
+<link rel="import" href="bower_components/search-company/search-company.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -109,7 +109,7 @@ Example:
                 <p>No hay datos sobre {{fullname}}</p>
             </div>
             <template is="dom-if" if="{{company_symbol}}">
-                <finance-chart symbol="[[company_symbol]]" current="{{company}}" historical="{{data}}" on-finance-chart-ready="checkEmpty" on-finance-chart-error="_errorHandler" accuracy=15 start="2016-9-31">
+                <finance-chart symbol="[[company_symbol]]" current="{{company}}" historical="{{data}}" on-finance-chart-ready="checkEmpty" on-finance-chart-error="_errorHandler" accuracy=50 start="2016-9-31">
             </template>
             <template is="dom-if" if="{{!company_symbol}}">
                 <div class="horizontal layout center-center post">

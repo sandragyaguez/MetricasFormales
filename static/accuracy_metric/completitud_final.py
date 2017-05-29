@@ -1263,7 +1263,6 @@ if social_network in network_list:
                     url=urls.get('url', None)
                     imagAPI.append(url)
                  
-
                 # hacer las siguiente 60 peticiones          
                 # siguiente=request.get('page',None).get('next',None)
                 # while(siguiente):
@@ -1274,8 +1273,8 @@ if social_network in network_list:
                 #     siguiente=request.get('page',None).get('next',None)
                     
         getData(pets)
-        print len(imagAPI)
-        print imagAPI
+        #print len(imagAPI)
+        #print imagAPI
        
         
         ##########################################################################################################################################
@@ -1295,11 +1294,11 @@ if social_network in network_list:
             # variable global para que no me de el fallo "referenciado antes de asignado"
             global contadorFallos
             fallos=[]
-            if len(list1) != len(list2):
-                print "no tienen la misma longitud"
-                return False
-            for val in list1:
-                if not (val in list2):
+            # if len(list1) != len(list2):
+            #     print "no tienen la misma longitud"
+            #     return False
+            for val in list2:
+                if not (val in list1):
                     fallos.append(val)
                     contadorFallos=contadorFallos+1        
             return fallos
@@ -1309,11 +1308,7 @@ if social_network in network_list:
             #defino los parametros necesarios para la peticion
                 params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    resp=str(x)
-                    imagComp.append(resp)
-                print len(imagComp)
+                imagComp = [str(json.loads(res)['url']) for res in respuesta]        
 
                 fallos=comp(imagAPI,imagComp)
 
@@ -1328,10 +1323,8 @@ if social_network in network_list:
                 params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
 
-                for x in respuesta:
-                    resp=str(x)
-                    imagComp.append(resp)
-                print len(imagComp)
+                imagComp = [str(json.loads(res)['url']) for res in respuesta]        
+                #print len(imagComp)
          
                 fallos=comp(imagAPI,imagComp)
 
@@ -1344,22 +1337,11 @@ if social_network in network_list:
                 #defino los parametros necesarios para la peticion
                 params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
-                print len(respuesta)
-                print respuesta
-
-                for x in respuesta:
-                    resp=str(x)
-                    #me devuelve todo bien, pero ademas anade al principio de la respuesta un string vacio (u''). Es problema de la api
-                    #para descartarlo hago el siguiente if. Si resp (si resp es true) entra por el if teniendo en cuenta que algo vacio es false
-                    # string vacio, 0, undefined, none: siempre son falsos, con comprobar si resp es true porque no viene vacio es suficiente
-                    if resp:
-                        imagComp.append(resp)
-                print len(imagComp)
-            
+                imagComp = [str(json.loads(res)['url']) for res in respuesta]         
                 fallos=comp(imagAPI,imagComp)
 
                 mpPinterest.track(fallos,"Fallos accuracy imagenes",{"imagen":fallos, "version":"accuracy"})
-                contadorFallos=contadorFallos/float(len(imagAPI))
+                contadorFallos=contadorFallos/float(len(imagComp))
                 print contadorFallos
                 mpPinterest.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
 
