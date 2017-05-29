@@ -877,21 +877,15 @@ if social_network in network_list:
         # (Para el caso de Google, haces una peticion a la API con el explorer API, vas a networks, y coges el token que
         # viene en el header Authorization: 'Bearer TOKEN')
         #cambiar token cada hora y media: https://developers.google.com/+/web/api/rest/latest/activities/list?authuser=1
-        access_token="ya29.GmBVBFIMvIJHPGcv9qF60JTl2bvl79AjvHXigNaQhYRsLvfnZjofVkL9IbaEVR-BaPz79CqclBo-DuTfRebhqzk3EQ5H7e7CWZzoB8gv95UKWLkvF9F0usz3_6Qv1NurXY4"
-        google_url_followers="https://www.googleapis.com/plus/v1/people/me/people/visible"
+        access_token="ya29.Gl1ZBMxTV2hkCvan8BPh3EC1j8y-1a10tJ_q7Wo3axA4R2dFd6GYybzEw-ygWpo_23BXl2DoBxbmUjZQED-ohPRp2KsiQOPmMce4f1u1WE3FxyJ7oM2ddaFpEKNXQco"
+        key = "AIzaSyAArT6pflqm1-rj9Nwppuj_4z15FFh4Kis"
+        google_url_followers="https://people.googleapis.com/v1/people/me/connections?key=%s&access_token=%s" % (key,access_token)
         headers = {"Authorization": "Bearer " + access_token}
         
         #Request a followers de Deus
         s= requests.get(google_url_followers,headers=headers)
         muro=s.json()
-        followers=[]
-        if(muro.has_key('items')):
-            values1=muro.get('items',None)
-            for n in values1:
-                #guardo el id del follower
-                id_followers=n['id']
-                id_followers=int(id_followers)
-                followers.append(id_followers)
+        followers=[str(follower['metadata']['sources'][1]['id']) for follower in muro['connections']]
 
         texto=[]
         users=[]
@@ -914,7 +908,6 @@ if social_network in network_list:
             #hay que poner str(i) porque sino no se puede concatenar string con un long (int)
             google_url="https://www.googleapis.com/plus/v1/people/" + str(i) + "/activities/public"
             pet= requests.get(google_url,headers=headers)
-            print pet
 
             timeline=pet.json()
             if(timeline.has_key('items')):
@@ -943,8 +936,8 @@ if social_network in network_list:
                 publicado.append(publish)
 
         time_pub=zip(publicado,users)
-        for time in time_pub:
-            zipPythonUser=sorted(time_pub, reverse=True)
+        zipPythonuser= []
+        zipPythonUser=sorted(time_pub, reverse=True)
         zipPythonUser1=zipPythonUser[0:16]
         #diccionario de Python de usuarios ordenado por tiempo de publicacion
         dictPythonUser=dict(zipPythonUser1)
