@@ -1616,7 +1616,7 @@ if social_network in network_list:
           maxs = []
           for day in days:
             min_day = min([weather['temp_min'] for weather in day])
-            max_day = max([weather['temp_min'] for weather in day])
+            max_day = max([weather['temp_max'] for weather in day])
             mins += [min_day]*len(day)
             maxs += [max_day]*len(day)
           
@@ -1648,7 +1648,7 @@ if social_network in network_list:
         ##########################################################################################################################################
         #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
-        sleep(10)
+        sleep(30)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("aab0e30bdb1ec923fe2d85fb95e051ec","a019aa23c38827f307f0d5eff0d0d6f5")
         contadorFallos=0
