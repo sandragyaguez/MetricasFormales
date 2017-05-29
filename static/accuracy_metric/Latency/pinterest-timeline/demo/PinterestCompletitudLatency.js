@@ -14,7 +14,7 @@ document.addEventListener('WebComponentsReady', function() {
             for(var j=0;j<element.pins_cache.length;j++){
               url=element.pins_cache[j].url;
               contador++;
-              mixpanel.track("accuracy",{'value':{'url':url,'contador':contador}});
+              mixpanel.track("latency",{'value':{'url':url,'contador':contador}});
             }
             console.log(contador) 
           },1500);
