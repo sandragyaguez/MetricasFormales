@@ -1356,7 +1356,6 @@ if social_network in network_list:
         headers= {"content-type":"application/x-www-form-urlencoded"}
         #verify=False para que no me de errores de SSL
         s= requests.get(request_uri, verify=False, headers=headers)
-        print s
         timeline=s.json()
         lista_descrip=[]
         lista_date=[]
@@ -1430,7 +1429,7 @@ if social_network in network_list:
         newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
         for index, entry in enumerate(newlist):
-          if len(dictPythonText) < index and dictPythonText[index] != entry['descripcion']:
+          if len(dictPythonText) < index or  dictPythonText[index] != entry['descripcion']:
             print "falla en posicion: ", entry['i'] 
             print "el date que falla es : descripcion"
             liskey.append(k)
@@ -1438,7 +1437,7 @@ if social_network in network_list:
             listaFallosDate=zip(liskey,lisvalue)
             contadorFallos=contadorFallos+1
           
-          if len(dictPythonText) < index and dictPythonType[index] != entry['tipo']:
+          if len(dictPythonText) < index or dictPythonType[index] != entry['tipo']:
             print "falla en posicion: ", entry['i'] 
             print "el date que falla es : type" 
             liskey.append(k)
