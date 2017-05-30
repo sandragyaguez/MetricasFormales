@@ -101,51 +101,25 @@ if social_network in network_list:
         s= requests.get(request_hometimeline, auth=oauth)
         timeline=s.json()
         contador=0
-        lis=[]
-        ids=[]
-        users=[]
-        for tweet in timeline:
-            #if para ver si el tweet es un retweet
-            if(tweet.has_key('retweeted_status')):
-                text = tweet['retweeted_status']['text']
-            else:
-                #guardo texto del tweet
-                text = tweet['text']
-            #guardo id del tweet
-            id_tweet1=tweet['id_str']
-            id_tweet1=int(id_tweet1)
-            #guardo el usuario que ha publicado el tweet
-            user=tweet['user']['name']
-            contador=contador+1
-            lis.append(text)
-            users.append(user)
-            ids.append(id_tweet1)
-        print contador
-        zipPython=zip(ids,lis)
-        zipPythonUser=zip(ids,users)
-        #diccionario de tweets e ids
-        dictPython = dict(zipPython)
-        #diccionario de users e ids
-        dictPythonUser=dict(zipPythonUser)
 
         ##########################################################################################################################################
         #-----------------------------------------DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
-        sleep(10)
+        sleep(30)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("70d459a2d5e96864f6eacdcb1a1fcd50","4dd2fff92abd81af8f06950f419f066a")
-        lista=[]
-        listacomp=[]
-        listaid=[]
-        listauser=[]
-        listapos=[]
-        liskey=[]
-        lisvalue=[]
-        listavalores=[]
-        listavalores1=[]
-        listaFallosText=[]
-        listaFallosUser=[]
-        contadorFallos=0
+        lista = []
+        listacomp = []
+        listaid = []
+        listauser = []
+        listapos = []
+        liskey = []
+        lisvalue = []
+        listavalores = []
+        listavalores1 = []
+        listaFallosText = []
+        listaFallosUser = []
+        contadorFallos = 0
 
         if version in version_list:
             if version=="master":
@@ -162,86 +136,41 @@ if social_network in network_list:
                 newlist = sorted(lista, key=lambda id_tweet: id_tweet['id'])
                 newlist.reverse()
 
-                for y in newlist:
-                    #la k son la i,text,id,user(en ese orden) y las v son los valores de cada uno. [0][1] del texto cojo su valor (posicion 0 que es el texto y posicion 1 que es el valor)
-                    poscomp=y.items()[0][1]
-                    textocomp=y.items()[1][1]
-                    idcomp=y.items()[2][1]
-                    idcomp=int(idcomp)
-                    usercomp=y.items()[3][1]
-                    listapos.append(poscomp)
-                    listacomp.append(textocomp)
-                    listaid.append(idcomp)
-                    listauser.append(usercomp)
-
-                zipComp=zip(listaid,listacomp)
-                zipCompUser=zip(listaid,listauser)
-                zipPos=zip(listaid,listapos)
-                #Diccionario id, text
-                dictComp=dict(zipComp)
-                #Diccionario id, user
-                dictCompUser=dict(zipCompUser)
-                #Diccionario id, posicion
-                dictCompPos=dict(zipPos)
-
                 #Recorro el diccionario del componente, key es el id del tweet y value es el texto del tweet
-                for key,value in dictComp.iteritems():
+                for index, element in enumerate(newlist):
                     #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        #si coinciden devuelvo true, sino muestro que tweet es el que ha fallado
-                        if cmp(valuesP,value)==0:
-                            True
-                        else:
-                            print "falla en: " + str(key)
-                            print "falla en: " + value
-                            liskey.append(key)
-                            lisvalue.append(value)
-                            contadorFallos=contadorFallos+1
-                            listaFallosText=zip(liskey,lisvalue)
-
-                    else:
-                        print "el tweet que no esta en API twitter es: " + value
-
-                #Recorro el diccionario del componente, k es el id del tweet y v es el user del tweet
-                for k,v in dictCompUser.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPythonUser.has_key(k)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        vPythonUser=dictPythonUser.get(k,None)
-                        if cmp(vPythonUser,v)==0:
-                            True
-                        else:
-                            print "falla en: " + str(k) 
-                            print "falla en: " + v
-                            liskey.append(k)
-                            lisvalue.append(v)
-                            contadorFallos=contadorFallos+1
-                            listaFallosUser=zip(liskey,lisvalue)
-
-                    else:
-                        print "el user que no esta es: " + v
+                    if element['text'] != timeline[index]['text']:
+                      print "Falla el texto con valor %s" % element['text']
+                      liskey.append('text')
+                      lisvalue.append(element['text'])
+                      contadorFallos=contadorFallos+1
+                      listaFallosText=zip(liskey,lisvalue)
+                    if element['user'] != str(timeline[index]['user']['name']):
+                      print "Falla el usuario con valor %s" % element['user']
+                      liskey.append('user')
+                      lisvalue.append(element['user'])
+                      contadorFallos=contadorFallos+1
+                      listaFallosUser=zip(liskey,lisvalue)
 
                 #diccionario de textos erroneos con su id
-                dictFallosText=dict(listaFallosText)
-                #diccionario de users erroneos con su id
-                dictFallosUser=dict(listaFallosUser)
+                # dictFallosText=dict(listaFallosText)
+                # #diccionario de users erroneos con su id
+                # dictFallosUser=dict(listaFallosUser)
 
                 #Cojo el diccionario de los tweets fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
-                for clave, valor in dictFallosText.iteritems():
-                    if(dictCompPos.has_key(clave)):
-                        valores=dictCompPos.get(clave,None)
-                        #mpTwitter.track(valores,"Fallos master text",{"posicion":valores ,"tweet": valor, "version":version})
-                    listavalores.append(valores)
-                listavalores.sort()
+                # for clave, valor in dictFallosText.iteritems():
+                #     if(dictCompPos.has_key(clave)):
+                #         valores=dictCompPos.get(clave,None)
+                #         #mpTwitter.track(valores,"Fallos master text",{"posicion":valores ,"tweet": valor, "version":version})
+                #     listavalores.append(valores)
+                # listavalores.sort()
 
-                for clave1, valor1 in dictFallosUser.iteritems():
-                    if(dictCompPos.has_key(clave1)):
-                        valores1=dictCompPos.get(clave1,None)
-                        #mpTwitter.track(valores1,"Fallos master user",{"posicion":valores1 ,"tweet": valor1, "version":version})
-                    listavalores1.append(valores1)
-                listavalores1.sort()
+                # for clave1, valor1 in dictFallosUser.iteritems():
+                #     if(dictCompPos.has_key(clave1)):
+                #         valores1=dictCompPos.get(clave1,None)
+                #         #mpTwitter.track(valores1,"Fallos master user",{"posicion":valores1 ,"tweet": valor1, "version":version})
+                #     listavalores1.append(valores1)
+                # listavalores1.sort()
 
                 contadorFallos=contadorFallos/float(contador)
                 mpTwitter.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})                           

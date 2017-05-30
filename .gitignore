@@ -1,5 +1,6 @@
 # AVOID COMMIT bower_component FOLDER
 bower_components
+#bower_components
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
