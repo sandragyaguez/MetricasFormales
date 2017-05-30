@@ -1255,26 +1255,15 @@ if social_network in network_list:
                 for urls in data:
                     url=urls.get('url', None)
                     imagAPI.append(url)
-                 
-                # hacer las siguiente 60 peticiones          
-                # siguiente=request.get('page',None).get('next',None)
-                # while(siguiente):
-                #     request=makeRequest(siguiente)
-                #     for urls in data:
-                #         url=urls.get('url', None)
-                #         imagAPI.append(url)
-                #     siguiente=request.get('page',None).get('next',None)
                     
         getData(pets)
-        #print len(imagAPI)
-        #print imagAPI
        
         
         ##########################################################################################################################################
         #------------------------------------------DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
         ##########################################################################################################################################
 
-        sleep(20)
+        sleep(30)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("55736dc621aade0a3e80ea2f7f28f42b","5d34c88bc7f29c166e56484966b1c85b")
 
@@ -1323,6 +1312,7 @@ if social_network in network_list:
 
                 mpPinterest.track(fallos,"Fallos latency imagenes",{"imagen":fallos, "version":"latency"})
                 contadorFallos=contadorFallos/float(len(imagAPI))
+                print contadorFallos
                 mpPinterest.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
  
 
@@ -1416,7 +1406,7 @@ if social_network in network_list:
         ##########################################################################################################################################
         #----------------------------------------DATOS TRAFFIC COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
-        sleep(20)
+        sleep(30)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("f9048e936929679df4e14859ebd1dd98","0795378c7f94b5b1f4170deb0221ec59")
         contadorFallos=0
@@ -1440,7 +1430,7 @@ if social_network in network_list:
         newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
         for index, entry in enumerate(newlist):
-          if dictPythonText[index] != entry['descripcion']:
+          if len(dictPythonText) < index and dictPythonText[index] != entry['descripcion']:
             print "falla en posicion: ", entry['i'] 
             print "el date que falla es : descripcion"
             liskey.append(k)
@@ -1448,7 +1438,7 @@ if social_network in network_list:
             listaFallosDate=zip(liskey,lisvalue)
             contadorFallos=contadorFallos+1
           
-          if dictPythonType[index] != entry['tipo']:
+          if len(dictPythonText) < index and dictPythonType[index] != entry['tipo']:
             print "falla en posicion: ", entry['i'] 
             print "el date que falla es : type" 
             liskey.append(k)
