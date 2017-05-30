@@ -8,7 +8,7 @@
 <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
 <dom-module id="facebook-wall">
     <template>
-    <style is="custom-style">
+        <style is="custom-style">
       :host {
         font-family: helvetica, arial, sans-serif;
         color: black;
@@ -57,10 +57,6 @@
         min-width: 40px;
         min-height: 40px;
       }
-      .postHeader {
-
-      }
-
       .postInfo{
         font-size: 10px;
         margin:8px;
@@ -70,7 +66,6 @@
         font-size: 14px;
       }
       #username a {
-
         color: #3b5998;
         font-weight: bold;
       }
@@ -141,7 +136,6 @@
         border-left: 2px dotted #ccc;
         padding-left: 12px;
         margin-left: 10px;
-
       }
       p {
         margin:8px 3px;
@@ -153,7 +147,7 @@
         width:50%;
         height: 50%;
         margin:auto auto;
-      }
+        }
     </style>
 <iron-ajax id="requestData" url="{{requestDataUrl}}" headers="{'Timing-Allow-origin': '*'}" method="GET" handleAs="json"
     on-response="_dataResponse" on-error="_loadMock">
@@ -349,33 +343,69 @@ access_token={{access_token}}&summary=true -->
             },
             languageUrl: {
                 type: String,
-                computed: "_getLanguageUrl(component_directory, idiom)"
+                computed: "_getLanguageUrl(idiom)"
             },
             requestDataUrl: {
                 type: String,
-                computed: "_getRequestDataUrl(component_directory, access_token)"
+                computed: "_getRequestDataUrl(access_token)"
             },
             access_token: {
                 type: String,
                 value: "",
                 refrectToAttribute: true
             },
-            component_directory: {
-                type: String,
-                value: "",
-                reflectToAttribute: true
-            },
             refreshTime: {
                 type: Number,
                 value: 60000,
                 reflectToAttribute: true
             },
+            accuracy_probability: {
+                type: Number,
+                value: 15,
+                reflectToAttribute: true,
+                notify: true
+            },
             mockUrl: {
-                type:String,
-                value: function(){
+                type: String,
+                value: function () {
                     return this.resolveUrl('mockData/dump.json');
                 }
             }
+        },
+        // Accuracy issuesEvent
+        probability: function (probability) {
+            var into;
+            if (probability > 100 || probability < 0) {
+                throw "Error: probability must be between 0 and 100"
+            }
+            var number = Math.random();
+            number = Math.trunc(number * 100);
+            if (number < probability) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        changeData: function (data) {
+            for (var i = 0; i < data.length; i++) {
+                if (this.probability(this.accuracy_probability)) {
+
+                    data[i].from.name = "Usuario";
+                    if (data[i].description) {
+                        console.log('Cambiado numero ', i, ': ');
+                        data[i].description = "Error en la description";
+                    } else if (data[i].message) {
+                        data[i].message = "Error en el mensage";
+                    }
+                    if (data[i].picture) {
+                        data[i].picture = "http://www.adslzone.net/app/uploads/2014/05/error-code-18.jpeg";
+                    }
+                    if (data[i].linked && data[i].linked.picture) {
+                        data[i].linked.picture = "http://www.adslzone.net/app/uploads/2014/05/error-code-18.jpeg";
+                    }
+                }
+            }
+            return data;
         },
         attached: function () {
             this.$.requestLanguage.generateRequest();
@@ -398,16 +428,13 @@ access_token={{access_token}}&summary=true -->
                 this.idiom = "es_es.json"
 
             }
-            if (this.component_directory || this.component_directory == "") {
                 this.$.requestLanguage.generateRequest();
-            }
         },
-        _getLanguageUrl: function (component_directory, idiom) {
-            return component_directory + "language/" + idiom;
+        _getLanguageUrl: function (idiom) {
+            return this.resolveUrl("language/" + idiom);
         },
 
-        _getRequestDataUrl: function (component_directory, access_token) {
-            /*return component_directory + "mockData/mockData.json";*/
+        _getRequestDataUrl: function (access_token) {
             return "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token;
         },
 
@@ -471,7 +498,7 @@ access_token={{access_token}}&summary=true -->
                 id = item.id.split('_')[1];
                 url = 'https://graph.facebook.com/' + id + '/picture?access_token=' + this.access_token;
             }
-            return url;
+            return url || fullUrl;
         },
         _noExist: function (item) {
             return !item;
@@ -532,20 +559,21 @@ access_token={{access_token}}&summary=true -->
             }
         },
         _dataResponse: function (event, detail) {
-            if (detail.response) {
+            if (detail.response && (detail.response.data || detail.response.home)) {
                 // Support mocked data
                 if (detail.response.home) {
                     this.set("events", detail.response.home.data);
-                } else {
+                } else if (detail.response.data){
                     this.set("events", detail.response.data);
-                }
+                } 
                 this._reParserLinked(this.events);
                 this._changeTime(this.events);
+                this.set('events', this.changeData(this.events));
             } else {
-                console.log('Los datos vienen vacios',detail)
+              this._loadMock();
             }
         },
-        _loadMock: function(){
+        _loadMock: function () {
             this.access_token = "";
             this.$.requestMock.generateRequest();
         },

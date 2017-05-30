@@ -475,7 +475,7 @@ if social_network in network_list:
                 sleep(5)
         # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
-        access_token="EAANMUmJPs2UBAO7EbLg4xR3R3Pqt7q0a1ZCHBLVxNFwjmXTYZAxiTDToJPsS4AhYFm67zn0xCZBg59dtCgZCqd05sIpDS6Px856RE6bTiONWagUlpzYwt1mirG0VcER6eI0GdyojRlGFSKXKq0lqh6Nl22xKQuVJAq5f4aRaZAw3QVnLp1eKhqLrnycHuGb4ZD"
+        access_token="EAANMUmJPs2UBALyfimgzsfUwBKYHyjUZBRVCKOGW36XVgmhCkguXE7rtCSVoSnwZB9bvGUFAfKGEVj4SUo4YC6CbIjPMzX2N5Rno8PQ9O3tdAWAcSZAu8xYfmxALrgIljC9Lo8A173S2pEZAp8IECqcuG9r0FnVxOtrW1M2UcWtpexs0w3Bh"
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
         #Request timeline home
@@ -652,7 +652,7 @@ if social_network in network_list:
                             contadorFallos=contadorFallos+1
                             #mpFacebook.track(listaFallosText,"Fallos master text",{"posicion":listaFallosText, "version":"master"})  
 
-                contadorFallos=contadorFallos/float(contador)
+                contadorFallos=contadorFallos/(contador*3.0)
                 print contadorFallos
                 mpFacebook.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
 
@@ -749,7 +749,7 @@ if social_network in network_list:
                             contadorFallos=contadorFallos+1
                             #mpFacebook.track(listaFallosText,"Fallos latency text",{"posicion":listaFallosText, "version":"latency"})  
 
-                contadorFallos=contadorFallos/float(contador)
+                contadorFallos=contadorFallos/(contador*3.0)
                 print contadorFallos
                 mpFacebook.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
             
@@ -846,7 +846,7 @@ if social_network in network_list:
                             contadorFallos=contadorFallos+1
                             #mpFacebook.track(listaFallosText,"Fallos accuracy text",{"posicion":listaFallosText, "version":"accuracy"})  
 
-                contadorFallos=contadorFallos/float(contador)
+                contadorFallos=contadorFallos/(contador*3.0)
                 print contadorFallos
                 mpFacebook.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
 
