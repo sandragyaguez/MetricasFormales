@@ -136,9 +136,9 @@ if social_network in network_list:
                 newlist = sorted(lista, key=lambda id_tweet: id_tweet['id'])
                 newlist.reverse()
 
-                #Recorro el diccionario del componente, key es el id del tweet y value es el texto del tweet
+                #Recorro el diccionario del componente
                 for index, element in enumerate(newlist):
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                    #Comparamos los valores
                     if element['text'] != timeline[index]['text']:
                       print "Falla el texto con valor %s" % element['text']
                       liskey.append('text')
@@ -151,26 +151,6 @@ if social_network in network_list:
                       lisvalue.append(element['user'])
                       contadorFallos=contadorFallos+1
                       listaFallosUser=zip(liskey,lisvalue)
-
-                #diccionario de textos erroneos con su id
-                # dictFallosText=dict(listaFallosText)
-                # #diccionario de users erroneos con su id
-                # dictFallosUser=dict(listaFallosUser)
-
-                #Cojo el diccionario de los tweets fallidos y el diccionario {ids:posiciones} y miro que ids que han fallado estan en el otro diccionario y saco su pos
-                # for clave, valor in dictFallosText.iteritems():
-                #     if(dictCompPos.has_key(clave)):
-                #         valores=dictCompPos.get(clave,None)
-                #         #mpTwitter.track(valores,"Fallos master text",{"posicion":valores ,"tweet": valor, "version":version})
-                #     listavalores.append(valores)
-                # listavalores.sort()
-
-                # for clave1, valor1 in dictFallosUser.iteritems():
-                #     if(dictCompPos.has_key(clave1)):
-                #         valores1=dictCompPos.get(clave1,None)
-                #         #mpTwitter.track(valores1,"Fallos master user",{"posicion":valores1 ,"tweet": valor1, "version":version})
-                #     listavalores1.append(valores1)
-                # listavalores1.sort()
 
                 contadorFallos=contadorFallos/float(contador)
                 mpTwitter.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})                           
