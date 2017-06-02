@@ -141,13 +141,13 @@ def main():
 					if latency_records == None:
 						# We calculate the differences and send it back to Mixpanel (component - host)
 						latency = experimentClient["requestDuration"] - experimentHost["requestDuration"]
-						sendResults(component, experimentHost["experiment"], experimentClient['experiment_timestamp'],experimentClient['request'],tag,latency,result_id)
+						sendResults(component, experimentHost["experiment"], experimentClient['experiment_timestamp'],tag,latency,result_id)
 					else:
 						# Check for duplicates
 						if not result_id in latency_records:
 							# We calculate the differences and send it back to Mixpanel
 							latency = experimentClient["requestDuration"] - experimentHost["requestDuration"]
-							sendResults(component, experimentHost["experiment"], experimentClient['experiment_timestamp'],experimentClient['request'],tag,latency,result_id)
+							sendResults(component, experimentHost["experiment"], experimentClient['experiment_timestamp'],tag,latency,result_id)
 						else:
 							print ">>> El experimento " + experimentClient["experiment_id"] + " con la comparacion " + tag + " ya se ha calculado previamente, por lo que no volvemos a enviar los calculos"
 	else:
