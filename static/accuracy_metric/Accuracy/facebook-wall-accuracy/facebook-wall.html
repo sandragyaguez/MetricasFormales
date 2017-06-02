@@ -561,14 +561,18 @@ access_token={{access_token}}&summary=true -->
         _dataResponse: function (event, detail) {
             if (detail.response && (detail.response.data || detail.response.home)) {
                 // Support mocked data
+
                 if (detail.response.home) {
-                    this.set("events", detail.response.home.data);
+                  detail.response.home.data = this.changeData(detail.response.home.data);
+                  this.set("_accuracy_data", JSON.parse(JSON.stringify(detail.response.home.data)));
+                  this.set("events", detail.response.home.data);
                 } else if (detail.response.data){
-                    this.set("events", detail.response.data);
+                  detail.response.data = this.changeData(detail.response.data);
+                  this.set("_accuracy_data", JSON.parse(JSON.stringify(detail.response.data)));
+                  this.set("events", detail.response.data);
                 } 
                 this._reParserLinked(this.events);
                 this._changeTime(this.events);
-                this.set('events', this.changeData(this.events));
             } else {
               this._loadMock();
             }
