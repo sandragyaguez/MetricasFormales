@@ -40,7 +40,7 @@
           return decodeURIComponent(results[2].replace(/\+/g, " "));
       }
 
-      trackEvents = function(componentName, version, endpoint, component){
+      trackEvents = function(componentName, version, endpoint, target){
         var timestamp = Date.now();
         var resourceList = performance.getEntriesByType("resource");
         console.log(resourceList);
