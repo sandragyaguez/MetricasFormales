@@ -80,7 +80,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       window.setTimeout(function() {
         var componentName = document.getElementById("componentTested");
         var endpoint = document.querySelector('#componentTested').getAttribute("endpoint");
-        trackEvents(componentName.componentName, "latency_defects", endpoint, componentName);
+        trackEvents(componentName.tagName, "latency_defects", endpoint, componentName);
       },5000);
     </script>
   </body>
