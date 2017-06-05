@@ -38,7 +38,7 @@
           return decodeURIComponent(results[2].replace(/\+/g, " "));
       }
 
-      trackEvents = function(componentName, version, endpoint){
+      trackEvents = function(componentName, version, endpoint, target){
         var timestamp = Date.now();
         var resourceList = performance.getEntriesByType("resource");
         console.log(resourceList);
@@ -74,8 +74,8 @@
               "experiment_id": getParameterByName('experiment'),
               "request": key,
               // Computed attributes based on the request
-              "requestDuration": google_resources[request]["requestDuration"],
-              "responseEndTime": google_resources[key]["responseEndTime"],
+              "requestDuration": google_resources[request]["requestDuration"] + (target.latencyTime || 0),
+              "responseEndTime": google_resources[key]["responseEndTime"] + (target.latencyTime || 0),
               "fetchStartTime": google_resources[request]["fetchStartTime"],
               "requestCount": google_resources[request]["requestCount"],
               "event_id": getParameterByName('experiment') + key
@@ -87,9 +87,10 @@
 
       //We send the desired time events after a fixed period of time
       window.setTimeout(function() {
-        var componentName = document.getElementById("componentTested").tagName;
+        var component = document.getElementById("componentTested");
+        var componentName = component.tagName;
         var endpoint = "https://www.googleapis.com/plus/v1/";
-        trackEvents(componentName, "latency_defects",endpoint);
+        trackEvents(componentName, "latency_defects",endpoint, component);
       },5000);
     </script>
   </body>

@@ -40,7 +40,7 @@
           return decodeURIComponent(results[2].replace(/\+/g, " "));
       }
 
-      trackEvents = function(componentName, version, endpoint){
+      trackEvents = function(componentName, version, endpoint, component){
         var timestamp = Date.now();
         var resourceList = performance.getEntriesByType("resource");
         console.log(resourceList);
@@ -53,8 +53,8 @@
               "component": componentName.toLowerCase(),
               "version": version,
               "experiment_timestamp": timestamp,
-              "requestDuration": resourceList[i].duration,
-              "responseEndTime": resourceList[i].responseEnd,
+              "requestDuration": resourceList[i].duration + (target.latency_time || 0),
+              "responseEndTime": resourceList[i].responseEnd + (target.latency_time || 0),
               "fetchStartTime": resourceList[i].fetchStart,
               "experiment_id": getParameterByName('experiment'),
               "request": resourceList[i].name
@@ -66,9 +66,10 @@
 
       //We send the desired time events after a fixed period of time
       window.setTimeout(function() {
-        var componentName = document.getElementById("componentTested").tagName;
+        var component = document.getElementById("componentTested");
+        var componentName = component.tagName;
         var endpoint = "https://api.pinterest.com/v1/"
-        trackEvents(componentName, "latency", endpoint);
+        trackEvents(componentName, "latency", endpoint, component);
       },5000);
     </script>
   </body>
