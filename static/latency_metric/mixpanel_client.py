@@ -5,7 +5,6 @@ import six
 from mixpanel_query import exceptions
 from mixpanel_query.connection import Connection
 from mixpanel_query.utils import _totext
-from mixpanel_query.auth import SignatureAuth
 
 class MixpanelQueryClient(object):
     """
@@ -34,12 +33,11 @@ class MixpanelQueryClient(object):
     DATA_TYPE_UNIQUE = 'unique'
     VALID_DATA_TYPES = (DATA_TYPE_GENERAL, DATA_TYPE_AVERAGE, DATA_TYPE_UNIQUE)
 
-    def __init__(self, api_key, api_secret, timeout=None, auth_class=SignatureAuth):
+    def __init__(self, api_key, api_secret, timeout=None):
         self.api_key = _totext(api_key)
         self.api_secret = _totext(api_secret)
         self.timeout = timeout
         self.connection = Connection(self)
-        self.auth = auth_class(self)
 
     # Annotation methods ##############
     def annotations_list(self, start_date, end_date, response_format=FORMAT_JSON):
@@ -858,6 +856,7 @@ class MixpanelQueryClient(object):
                                [sample]: ["play song", "log in", "add playlist"]
             `where`: [str] An expression to filter events by.
             `bucket_id`: [str] The specific data bucket you would like to query.
+            'result_key': [str] The field in the event result that will act as key to compose the dict with the query results
 
         Event format:
             {"event":"Viewed report","properties":{"distinct_id":"foo","time":1329263748,"origin":"invite",
@@ -873,9 +872,7 @@ class MixpanelQueryClient(object):
         if start_date_obj > end_date_obj:
             raise exceptions.InvalidDateException('The `start_date` specified after the `end_date`; you will not receive any events.')
 
-        # the provided event should be an array even when a singleton
-        # if a singleton string/unicode is provided, put it into an array
-        if isinstance(event, six.string_types):
+        if isinstance(event, str):
             event = [event]
 
         response = self.connection.raw_request(
@@ -890,26 +887,18 @@ class MixpanelQueryClient(object):
             },
             response_format
         )
-        # per mixpanel documentation it is necessary to load
-        # the response in it's entirety before processing:
-        #     > This endpoint uses gzip to compress the transfer;
-        #     > as a result, raw exports should not be processed until
-        #     > the file is received in its entirety.
-        # https://mixpanel.com/docs/api-documentation/exporting-raw-data-you-inserted-into-mixpanel
-        response_data = response.read()
-        lines = _totext(response_data).split('\n')
-        
-        ##for line in lines:
-        #    if line:
-        #        yield json.loads(line)
         result = {}
-
-        for line in lines:
-          event = json.loads(_totext(line))
-          key = event['properties'][result_key]
-          result[key] = event['properties']
-
+        for line in response:
+            # print line
+            # result.append(json.loads(_totext(line)))
+            # NOTA: Este es un pequeno cambio enfocado al uso que se le da este modulo para la metrica de latencia
+            event = json.loads(_totext(line))
+            key = event['properties'][result_key]
+            # print key
+            result[key] = event['properties'] 
+            # print result[key]
         return result
+
     # Util methods ####################
     def _validate_unit(self, unit):
         " Utility method used to validate a `unit` param. "
