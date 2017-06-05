@@ -522,7 +522,8 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
         no_incidents: {
           type: String,
           computed: '_emptyIncidents(language, city)',
-          latency: {
+        },
+        latency: {
             type: Number,
             value: 2000,
           }

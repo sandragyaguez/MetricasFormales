@@ -334,7 +334,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
   <traffic-incidents-data id="traffic" city="{{city}}" api_key_geocoding="{{api_key_geocoding}}"
   app_key_traffic="{{app_key_traffic}}" auto_refresh="{{auto_refresh}}" refresh_time="{{refresh_time}}"
   traffic_info="{{traffic_info}}" radio="{{radio}}" on-traffic_info-ready="_data_ready"
-  on-traffic-request_iniciated="_loading_data" on-geocoding-request-error="_empty"></traffic-incidents-data>
+  on-traffic-request_iniciated="_loading_data" on-geocoding-request-error="_empty" latency="{{latency}}"></traffic-incidents-data>
 
   <paper-header-panel mode="waterfall-tall">
     <div class="paper-header horizontal layout center" active$="{{active}}">
@@ -456,6 +456,10 @@ Polymer({
     no_incidents: {
       type:String,
       computed: '_emptyIncidents(language, city)'
+    },
+    latency: {
+      type: Number,
+      value: 2000
     },
   /**
     * Set the language of the component to spanish (es) or english (en)

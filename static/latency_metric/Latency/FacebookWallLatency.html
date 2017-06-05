@@ -66,9 +66,9 @@
 
       //We send the desired time events after a fixed period of time
       window.setTimeout(function() {
-        var componentName = document.getElementById("componentTested");
+        var componentName = document.querySelector("facebook-wall");
         var endpoint = "https://graph.facebook.com/v2.3/"
-        trackEvents(componentName.tagName, "latency_defects",endpoint,component);
+        trackEvents(componentName.tagName, "latency_defects",endpoint,componentName);
       },5000);
     </script>
   </body>
