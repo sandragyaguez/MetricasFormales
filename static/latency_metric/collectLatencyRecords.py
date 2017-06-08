@@ -104,7 +104,6 @@ def main():
 							total_latency_latency += latency
 					else:
 						print ">>> El experimento " + eventClient["experiment_id"] + " con peticion " + eventClient["request"] + " con la comparacion " + tag + " ya se ha calculado previamente, por lo que no volvemos a enviar los calculos"
-				
 				general_time_stable += total_latency_stable
 				general_time_latency += total_latency_latency
 					
@@ -143,10 +142,11 @@ def main():
 						latency = experimentClient["requestDuration"] - experimentHost["requestDuration"]
 						sendResults(component, experimentHost["experiment"], experimentClient['experiment_timestamp'],tag,latency,result_id)
 					else:
-						# Check for duplicates
 						if not result_id in latency_records:
-							# We calculate the differences and send it back to Mixpanel
+            	# We calculate the differences and send it back to Mixpanel
 							latency = experimentClient["requestDuration"] - experimentHost["requestDuration"]
+							print "Tiempo de latencia del cliente ", experimentClient["requestDuration"]
+							print "Tiempo de latencia del host ", experimentHost["requestDuration"]
 							sendResults(component, experimentHost["experiment"], experimentClient['experiment_timestamp'],tag,latency,result_id)
 						else:
 							print ">>> El experimento " + experimentClient["experiment_id"] + " con la comparacion " + tag + " ya se ha calculado previamente, por lo que no volvemos a enviar los calculos"

@@ -33,15 +33,15 @@ PID=`echo $!`
 # python measureLatency.py facebook $FACEBOOK_TOKEN
 
 # lo tengo en latency_metric_ana por falta de espacion al desplegar en app engine
-sleep 10
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente googleplus-timeline..."
-python measureLatency.py googleplus $GOOGLE_TOKEN
+#sleep 10
+#echo "##################################################################"
+#echo "Realizando pruebas sobre el componente googleplus-timeline..."
+#python measureLatency.py googleplus $GOOGLE_TOKEN
 
 # sleep 10
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente pinterest-timeline..."
-# python measureLatency.py pinterest
+ python measureLatency.py pinterest
 
 # sleep 10
 # echo "#################################################################"
@@ -64,8 +64,8 @@ echo "Recolectando y calculando métrica de latencia sobre los componentes proba
 # python collectLatencyRecords.py instagram-timeline
 # python collectLatencyRecords.py github-events
 # python collectLatencyRecords.py facebook-wall
-python collectLatencyRecords.py googleplus-timeline
-# python collectLatencyRecords.py pinterest-timeline
+#python collectLatencyRecords.py googleplus-timeline
+ python collectLatencyRecords.py pinterest-timeline
 # python collectLatencyRecords.py finance-search
 # python collectLatencyRecords.py open-weather
 # python collectLatencyRecords.py traffic-incidents

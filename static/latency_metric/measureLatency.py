@@ -265,6 +265,7 @@ def main():
 			# We set end time
 			endTime = time.time()
 			time1 = (endTime - startTime)*1000
+			print "Peticion %s: %f" % (user_url_complete, time1)
 			response = data.read()
 			resp = json.loads(response)
 
@@ -281,6 +282,7 @@ def main():
 			# We stop measuring
 			endTime = time.time()
 			time2 = (endTime - startTime) * 1000
+			print "Peticion %s: %f" % (userboards_url_complete, time2)
 			response = data.read()
 			resp = json.loads(response)
 
@@ -302,6 +304,7 @@ def main():
 			endTime = time.time()
 			# We obtain the value for this request
 			time3 = (endTime - startTime) * 1000
+			print "Peticion %s: %f" % (followingboards_url_complete, time3)
 			response = data.read()
 			resp = json.loads(response)
 
@@ -326,11 +329,12 @@ def main():
 				startTime = time.time()
 				data = urllib2.urlopen(req4)
 				endTime = time.time()
+				print "Peticion %s: %f" % (pin_url_complete, (endTime - startTime) * 1000)
 				response = data.read()
 
 				time_pins += (endTime - startTime) * 1000
-
 			total_request_time = time1 + time2 + time3 + time_pins
+			print "Tiempo total: %f" % (total_request_time)
 			mp.track("1111", 'latencyMetric', {
 			    'component': 'pinterest-timeline',
 			    'version': 'host',
