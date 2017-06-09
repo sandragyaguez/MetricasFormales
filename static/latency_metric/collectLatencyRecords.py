@@ -70,45 +70,20 @@ def main():
 			# The method will return a dict, where the field experiment_id will be the key
 			# Then we'll obtain the events generated from the components
 			query = 'properties["component"]==\"' + component + '\" and properties["version"]=="host"'
-			# It returns a dict with all the experiments done today, sorted by event_id (concatenation of experiment_id and request to the API)
-			experiments_events_dict = query_client.get_export(START_DATE,END_DATE, 'latencyMetric', where=query, result_key='event_id')
-
+			
 			# We obtain the events related to the results of the latency metric calculated (we'll check for duplicates later)
 			query = 'properties["component"]==\"' + component + '\"'
-			latency_records = query_client.get_export(START_STUDY_DATE,END_DATE, 'latencyResult', where=query, result_key='result_id')
+			metrics = query_client.get_export(START_STUDY_DATE,END_DATE, 'latencyMetric', where=query, result_key='version')
 
-			# We iterate over the experiments results (obtained from host version), and obtain each group of events related to a specific API request
-			for event_id,eventHost in experiments_events_dict.iteritems():
-				request = eventHost["request"]
-				# We obtain the group of events related to an especific request to the API, as part of one specific experiment
-				query = 'properties["component"]==\"' + component + '\" and properties["version"]!="host" and properties["request"]==\"' + request + '\"'
-				event_request_dict = query_client.get_export(START_DATE,END_DATE, 'latencyMetric', where=query, result_key='version')
-				# We iterate over the results, a dict that contains an event for each client version (stable, accuracy_defects, latency_defects)
-				# For each experiment result obtained in host (a certain request to the G+ API), we obtain the results in the different versions
-				for event_version, eventClient in event_request_dict.iteritems():
+			for version, values in metrics.iteritems():
+				if version != "host":
+					metric_value = values['requestDuration'] - metrics['host']['requestDuration']
 					print "----------------------------------"
-					tag = eventClient["version"] + " vs host"
-					experiment_id = eventHost["experiment_id"]
-					experiment_timestamp = eventClient['experiment_timestamp']
-					request = eventClient["request"]
-					print "Request del cliente: ", request
-					print "Request del servidor: ", eventHost["request"]
-					# We check for duplicate in latency results
-					result_id = eventClient["event_id"] + tag
-					if not result_id in latency_records:
-						# We calculate the differences and send it back to Mixpanel
-						latency = eventClient["requestDuration"] - eventHost["requestDuration"]
-						if eventClient["version"] == "stable":
-							total_latency_stable += latency
-						elif eventClient["version"] == "latency_defects":
-							total_latency_latency += latency
-					else:
-						print ">>> El experimento " + eventClient["experiment_id"] + " con peticion " + eventClient["request"] + " con la comparacion " + tag + " ya se ha calculado previamente, por lo que no volvemos a enviar los calculos"
-				general_time_stable += total_latency_stable
-				general_time_latency += total_latency_latency
-					
-			sendResults(component, experiment_id, experiment_timestamp, "stable vs host", general_time_stable, result_id)
-			sendResults(component, experiment_id, experiment_timestamp, "latency_defects vs host", general_time_latency, result_id)
+					print "Tiempo del cliente: %f" % values['requestDuration']
+					print "Tiempo del host: %f" % metrics['host']['requestDuration']
+					tag = version + " vs host"
+					result_id = values["experiment_id"] + tag
+					sendResults(component, values['experiment_id'], values['experiment_timestamp'], tag, metric_value, result_id)
 		else:
 			print ">>> Calculando métricas de latencia de experimentos realizados desde " + START_DATE + " hasta " + END_DATE
 			# Obtain data from mixpanel

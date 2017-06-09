@@ -3,6 +3,7 @@
 
 import urllib2
 import sys
+import requests
 import httplib
 import urllib
 import json
@@ -16,61 +17,43 @@ mp = Mixpanel("53da31965c3d047fa72de756aae43db1")
 # Instantiates the Query Client
 query_client = MixpanelQueryClient('582d4b303bf22dd746b5bb1b9acbff63', '8b2d351133ac2a5d4df0700afc595fb6')
 
-def replicate_googleplus_requests(access_token, experiment_id, experiment_list):
+def replicate_googleplus_requests(access_token, experiment_id):
 	google_requests = {}
 	# Endpoint where it is deployed the different versions of twitter-timeline (with the script tracker that sends events to Mixpanel!)
 	# remote_base_url = "TWITTER_ENDPOINT"
-	for key, experiment in experiment_list.iteritems():
-		google_url = experiment['request']
-		# print "------------------------------------------"
-		# print "El objeto experimento contiene lo siguiente: "
-		# print experiment
-		# print "------------------------------------------"
-		# print ">>> Endpoint: " + google_url
-		if experiment['requestCount'] >= 2:
-		# if experiment['request'].find("me") >= 0:
-			options_requestTime = 0
-			# Si replicamos un experimento cliente en el que se han realizado dos llamadas,
-			# haremos primero una petición de tipo OPTIONS y luego una de tipo GET
-			# if experiment['requestCount'] == 2:
-			# 	# Hacemos una petición options
-			# 	req = urllib2.Request(google_url)
-			# 	req.add_header('authorization', 'Bearer ' + access_token)
-			# 	req.get_method = lambda: 'OPTIONS'
-			# 	# We set the start time
-			# 	startTime = time.time()
-			# 	data = urllib2.urlopen(req)
-			# 	# We set end time
-			# 	endTime = time.time()
-				
-			# 	# Mandamos los tiempos recogidos a Mixpanel de la petición realizada desde el host
-			# 	options_requestTime = (endTime - startTime)*1000
+	total_time = 0
+	people_url = "https://people.googleapis.com/v1/people/me/connections"
+	people_data = {"key":"AIzaSyAArT6pflqm1-rj9Nwppuj_4z15FFh4Kis", "access_token":access_token}
+	people_data = urllib.urlencode(people_data)
+	people_url += "?" + people_data
 
-			# Hacemos una petición GET
-			req = urllib2.Request(google_url)
-			req.add_header('authorization', 'Bearer ' + access_token)
-			# We set the start time
+	startTime = time.time()
+	resp = requests.get(people_url)
+	endTime = time.time()
+	response = resp.json()
+	time_req = (endTime - startTime) * 1000
+	print "Peticion %s: %f" % (people_url, time_req)
+
+	total_time += time_req
+
+	for user in response['connections']:
+		if user.has_key('urls'):
+			user_id = user['urls'][0]['metadata']['source']['id']
+			url = "https://www.googleapis.com/plus/v1/people/" + user_id + "/activities/public"
 			startTime = time.time()
-			data = urllib2.urlopen(req)
-			# We set end time
+			resp = requests.get(people_url)
 			endTime = time.time()
-			get_requestTime =  (endTime - startTime)*1000
-			# Calculamos el tiempo total
-			total_request_time = options_requestTime + get_requestTime 
-			requestCount = 2 if not options_requestTime == 0 else 1
-			print ">>> Request time: ", total_request_time
-			print ">>> Request count: ", requestCount
-			
-			# Mandamos el evento a mixpanel		
-			mp.track("1111", 'latencyMetric', {
-			    'component': 'googleplus-timeline',
-			    'version': 'host',
-			    'requestDuration': total_request_time,
-			    'experiment_id': experiment_id,
-				'request': google_url,
-				'requestCount': requestCount,
-				'event_id': experiment_id + google_url
-			})
+			time_req = (endTime - startTime) * 1000
+			print "Peticion %s: %f" % (url, time_req)
+			total_time += time_req
+
+	# Mandamos el evento a mixpanel		
+	mp.track("1111", 'latencyMetric', {
+			'component': 'googleplus-timeline',
+			'version': 'host',
+			'requestDuration': total_time,
+			'experiment_id': experiment_id,
+	})
 
 
 # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/145634995501895/
@@ -236,11 +219,9 @@ def main():
 			webbrowser.open_new(server_base_url + "/Latency/GoogleplusLatency.html?experiment=" + experiment_id)
 		
 			# First, we obtain data generated today from stable versions
-			query = 'properties["experiment_id"]==\"' + experiment_id + '\" and properties["version"]=="stable" and properties["component"]=="googleplus-timeline"'
-			experiment_dict = query_client.get_export(time.strftime("%Y-%m-%d"), time.strftime("%Y-%m-%d"), "latencyMetric", where=query, result_key='request')
 
 			# We replicate the request done from the client side and send the request times to Mixpanel
-			replicate_googleplus_requests(access_token, experiment_id, experiment_dict)
+			replicate_googleplus_requests(access_token, experiment_id)
 
 		elif social_network == 'pinterest':
 			board_names = []

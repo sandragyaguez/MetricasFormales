@@ -37,7 +37,7 @@
       if (!results[2]) return '';
       return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
-    trackEvents = function (componentName, version, endpoint,target) {
+    trackEvents = function (componentName, version, endpoint, target) {
       var timestamp = Date.now();
       var resourceList = performance.getEntriesByType("resource");
       var pinterest_events = resourceList.filter(function (el) {
@@ -68,8 +68,6 @@
         "experiment_id": getParameterByName('experiment')
       }
       mixpanel.track("latencyMetric", properties);
-
-<<<<<<< HEAD
     };
 
     document.addEventListener('WebComponentsReady', function () {
