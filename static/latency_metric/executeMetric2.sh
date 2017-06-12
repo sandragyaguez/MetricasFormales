@@ -9,10 +9,10 @@
 # - 	Hay que cambiar el token que está en FacebookWallLatency.html (carpeta Stable) y la variable FACEBOOK_TOKEN
 # En GoogleplusLatency.html (Carpetas Accuracy, Latency, Stable) cambiar el valor de la variable access_token y la variable GOOGLE_TOKEN
 FACEBOOK_TOKEN="EAACEdEose0cBAL4OrKLZAYbmCuEL7a0yHtVMFCKxYxRxoUZCAcpGCh5PUb8aCyVYKZB9ZBpK4UZBP2e6fjUGa14QFkJsLt8rzsD1uBphEVlCHkp0Bnvvkyq4MdZA6VJZCgRLhKoKI4erSimZA0tEswlrX9JbrHICWZBAcD0GxPPhiyZBVFYvrT5ZBCy5jUlIqO3hRYZD"
-GOOGLE_TOKEN="ya29.Gl1kBCr_dIUatRMac5XStAB-329GjRd3ZHnEBnhIWgMOs9EDZ1LwYr4brkO455S--CQF98K8I9PfUotjLR7YFVCxy1VdivdVZ39E_vfb-OQwnvn01C0Mqui4MzUH4q8"
+GOOGLE_TOKEN="ya29.Gl1nBEji9EdCEoYkEutrr21Nvopew9T_1RRQsP5fNpkq6507gWilrHxgSG9JqRDXJxBs4ZYptvUTNoGXOqTQwXty5yeWwJ_XoW2mEJ23D6OGvDgqCXv0GlG5JTymCgs"
 
 # Comentar esta línea si los componentes están deplegados en remoto
-python -m SimpleHTTPServer >> /dev/null &
+python -m SimpleHTTPServer 2> /dev/null &
 PID=`echo $!`
 # echo $PID
 # # Ejecutamos scripts para medir y recolectar los datos
@@ -33,15 +33,15 @@ PID=`echo $!`
 # python measureLatency.py facebook $FACEBOOK_TOKEN
 
 # lo tengo en latency_metric_ana por falta de espacion al desplegar en app engine
+#sleep 10
+#echo "##################################################################"
+#echo "Realizando pruebas sobre el componente googleplus-timeline..."
+#python measureLatency.py googleplus $GOOGLE_TOKEN
+
 sleep 10
 echo "##################################################################"
-echo "Realizando pruebas sobre el componente googleplus-timeline..."
-python measureLatency.py googleplus $GOOGLE_TOKEN
-
-# sleep 10
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente pinterest-timeline..."
-#python measureLatency.py pinterest
+echo "Realizando pruebas sobre el componente pinterest-timeline..."
+python measureLatency.py pinterest
 
 # sleep 10
 # echo "#################################################################"
@@ -64,8 +64,8 @@ echo "Recolectando y calculando métrica de latencia sobre los componentes proba
 # python collectLatencyRecords.py instagram-timeline
 # python collectLatencyRecords.py github-events
 # python collectLatencyRecords.py facebook-wall
-python collectLatencyRecords.py googleplus-timeline
-# python collectLatencyRecords.py pinterest-timeline
+# python collectLatencyRecords.py googleplus-timeline
+ python collectLatencyRecords.py pinterest-timeline
 # python collectLatencyRecords.py finance-search
 # python collectLatencyRecords.py open-weather
 # python collectLatencyRecords.py traffic-incidents

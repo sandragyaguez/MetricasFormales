@@ -92,7 +92,6 @@ def main():
 			# Then we'll obtain the events generated from the components
 			query = 'properties["component"]==\"' + component + '\" and properties["version"]=="host"'
 			experiments_dict = query_client.get_export(START_DATE,END_DATE, 'latencyMetric', where=query, result_key='experiment')
-			print experiments_dict
 			# We obtain the calculated metrics on the same range of time data to check if there is any latency records
 			#(and to check later for duplicates)
 			query = 'properties["component"]==\"' + component + '\"'
