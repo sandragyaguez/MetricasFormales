@@ -184,7 +184,7 @@ if social_network in network_list:
                 sleep(5)
         # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
-        access_token="EAANMUmJPs2UBAEzmJj9tHxXwMNTzzJ3k6tcsBVsSZAoIQZAe261vMH1dCUd1QC3BF19vrqrRuN0SzkRxa4JKQR0BRXkirMKDU0YtmzjfHZAgbZCbF5EjNlQLEpM97NF3Eed4bRXj5axRohfls1NbOp3pKvmVYxELeyOGZB4CZC40AcyO0ksBpZCRlJkpiLabY0ZD"
+        access_token="EAANMUmJPs2UBAHQGTF7m8XnJWBw7wjuVVZCh7isrZARoXU5sZCkOrv2wqytW66urZALhjujJX8GZBIBbQJbLBaNqMAod89avZBqG71LgI0CBU1yUjrg4UaTHzuVRZA2M5EDhUA2ZBIf4FUdz8BXiTm9sUIvHzWZBl5CwTlJUeabqfQIorqkOsDOws5r7xpUPhLo8ZD"
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
         #Request timeline home
@@ -228,7 +228,7 @@ if social_network in network_list:
         contadorFallos=0
 
         #defino los parametros necesarios para la peticion
-        params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
+        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
         respuesta=x.request(['events/properties/values'], params, format='json')
         respuesta = [json.loads(str(post)) for post in respuesta]
         respuesta = sorted(respuesta, key=lambda posicion: posicion['i'])
@@ -240,7 +240,7 @@ if social_network in network_list:
             print "El usuario %s deberia ser %s" % (element['user'], muro[index]['from']['name'])
             contadorFallos+=1
           
-          if muro[index].hash_key('picture') and element.has_key('image') and str(element['image']) != str(muro[index]['_picture']):
+          if 'picture' in muro[index] and 'image' in element and str(element['image']) != str(muro[index]['_picture']):
             print "falla en la posicion %d" % index
             print "La imagen %s deberia ser %s" % (element['image'], muro[index]['_picture'])
             contadorFallos+=1
