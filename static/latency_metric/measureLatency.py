@@ -4,6 +4,7 @@
 import urllib2
 import sys
 import requests
+import grequests
 import httplib
 import urllib
 import json
@@ -27,35 +28,38 @@ def replicate_googleplus_requests(access_token, experiment_id):
 	people_data = urllib.urlencode(people_data)
 	people_url += "?" + people_data
 
-	startTime = time.time()
 	resp = requests.get(people_url)
-	endTime = time.time()
+	time_req = resp.elapsed.total_seconds()*1000
 	response = resp.json()
-	time_req = (endTime - startTime) * 1000
 	print "Peticion %s: %f" % (people_url, time_req)
 
 	total_time += time_req
 
+	async_requests = []
+	request_iniciated = []
+	callback_captured = 0
 	for user in response['connections']:
 		if user.has_key('urls'):
 			user_id = user['urls'][0]['metadata']['source']['id']
 			url = "https://www.googleapis.com/plus/v1/people/" + user_id + "/activities/public"
 			startTime = time.time()
-			resp = requests.get(people_url)
-			endTime = time.time()
-			time_req = (endTime - startTime) * 1000
-			print "Peticion %s: %f" % (url, time_req)
-			total_time += time_req
-
-	# Mandamos el evento a mixpanel		
+			async_requests.append(grequests.get(url))
+			request_iniciated.append(startTime)
+	responses = grequests.map(async_requests)
+	timesCalculated = [resp.elapsed.total_seconds()*1000 for resp in responses]
+	total_time += reduce((lambda x, y: x+y), timesCalculated)
+	async_time = ((max(timesCalculated)+request_iniciated[-1]) - request_iniciated[0])
+	print "Tiempo sumado: %f" % total_time
+	print "Tiempo asincrono: %f" % async_time
 	mp.track("1111", 'latencyMetric', {
 			'component': 'googleplus-timeline',
 			'version': 'host',
-			'requestDuration': total_time,
+			'requestDuration': async_time,
 			'experiment_id': experiment_id,
+		'request': google_url,
+		'requestCount': requestCount,
+		'event_id': experiment_id + google_url
 	})
-
-
 # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/145634995501895/
 def main():
 	network_list = ["instagram", "facebook", "github", "googleplus", "twitter", "pinterest", "traffic", "finance", "weather"]
