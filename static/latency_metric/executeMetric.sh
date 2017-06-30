@@ -5,13 +5,13 @@ PID=`echo $!`
 
 sleep 10
 echo "##################################################################"
-echo "Realizando pruebas sobre el componente twitter-timeline..."
-python measureLatency.py pinterest
+echo "Realizando pruebas sobre el componente reddit-timeline..."
+python measureLatency.py reddit
 
-sleep 10
+sleep 20
 echo "##################################################################"
 echo "Recolectando y calculando métrica de latencia sobre los componentes probados..."
-python collectLatencyRecords.py pinterest-timeline
+python collectLatencyRecords.py reddit-timeline
 echo "Métricas calculadas"
 
 kill -9 $PID

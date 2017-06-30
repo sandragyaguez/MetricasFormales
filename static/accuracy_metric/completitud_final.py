@@ -30,6 +30,7 @@ from random import randrange
 from mixpanel import Mixpanel
 import mixpanel_api
 import datetime
+import base64
 #objetos Mixpanel para las distintas redes sociales (token del project)
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
 mpFacebook = Mixpanel("04ae91408ffe85bf83628993704feb15")
@@ -40,7 +41,7 @@ mpWeather = Mixpanel("19ecdb19541d1e7b61dce3d4d5fa485b")
 mpStock = Mixpanel("f2703d11ce4b2e6fed5d95f400306e48")
 
 #---------------------------------------------------------------------------------------------------------------------
-network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search"]
+network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit"]
 version_list = ["master","latency", "accuracy"]
 # url_base_remote= "http://metricas-formales.appspot.com/app/accuracy_metric"
 url_base_local= "http://localhost:8000"
@@ -829,7 +830,98 @@ if social_network in network_list:
           contadorFallos=contadorFallos / (len(newlist)*4.0)
           print contadorFallos
           mpWeather.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})
+############################################
+############################################
+        #CASO6: REDDIT-TIMELINE
+############################################
+############################################
+    elif social_network == "reddit":
+        experiment_id = int(time.time())
+        print "ID. Experimento: %d" % experiment_id
+        print "===================================="
+        reddit_token = "bHluEetl5RSZIi7wH_NwnEu4YhI"
+        if(version=="master"):
+            webbrowser.open_new(url_base_local + "/Master/reddit-timeline/demo/RedditTimelineMaster.html?" + str(experiment_id))
+        # elif(version=="latency"):
+        #     webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherCompletitudLatency.html?" + str(experiment_id))
+        #     sleep(3)
+        elif(version=="accuracy"):
+            webbrowser.open_new(url_base_local + "/Accuracy/reddit-timeline/demo/RedditTimelineAccuracy.html?" + str(experiment_id))
 
+        # Coger un access token valido
+        
+
+        request_uri = "https://oauth.reddit.com/r/all/hot"
+        header = {
+            "authorization": "Bearer " + reddit_token,
+            'User-agent': 'Mozilla/5.0'
+        }
+        req = requests.get(request_uri, headers=header)
+
+        if (req.status_code != 200):
+            print "(%d) El token proporcionado no es valido o se ha superado el limite de peticiones" % req.status_code
+            print req.text
+            sys.exit(2)
+        timeline = req.json()['data']['children']
+        timeline = [element['data'] for element in timeline]
+        
+        sleep(15)
+
+        mixpanel_redit = mixpanel_api.Mixpanel("b3b33d92ce26bc2171dcd4efa907794e","7bc71232ea359bf84f9abe6c6e06726b")
+        params = {'event':version, 'name':'value','type':'general', 'unit':'day','interval':1}
+        mixpanel_data = mixpanel_redit.request(['events/properties/values'], params, format='json')
+
+        mixpanel_data = [json.loads(data) for data in mixpanel_data]
+        mixpanel_data = filter(lambda el: el['experiment'] == str(experiment_id), mixpanel_data)
+        mixpanel_data = sorted(mixpanel_data, key=lambda element: element['i'])
+
+
+
+        if len(mixpanel_data) != len(timeline):
+            print "Las longitudes de las dos listas recibidas no son iguales. Comprueba que se mandan todos los datos bien"
+            print "mixpanel: %d  vs  componente: %d" % (len(mixpanel_data), len(timeline))
+            sys.exit(3)
+        
+        errores_encontrados = 0
+        CAMPOS_COMPROBADOS = 4.0
+
+        errores_maximos = len(mixpanel_data) * CAMPOS_COMPROBADOS
+        for component_data, timeline_data  in zip(mixpanel_data, timeline):
+            if component_data['author'] != timeline_data['author']:
+                print "Error en el campo author"
+                print "%s != %s" % (component_data['author'], timeline_data['author'])
+                errores_encontrados += 1
+            
+            hashed_title = hashlib.sha1(timeline_data['title']).hexdigest()
+            if component_data['title'] != hashed_title:
+                print "Error en el campo title"
+                print "%s != %s" % (component_data['title'], hashed_title)
+                errores_encontrados += 1
+            
+            # if component_data['score'] != timeline_data['score']:
+            #     print "Error en el campo score"
+            #     print "%s != %s" % (component_data['score'], timeline_data['score'])
+            #     errores_encontrados += 1
+
+            # if component_data['num_comments'] != timeline_data['num_comments']:
+            #     print "Error en el campo num_comments"
+            #     print "%s != %s" % (component_data['num_comments'], timeline_data['num_comments'])
+            #     errores_encontrados += 1
+
+            if component_data['subreddit'] != timeline_data['subreddit']:
+                print "Error en el campo subreddit"
+                print "%s != %s" % (component_data['subreddit'], timeline_data['subreddit'])
+                errores_encontrados += 1
+            
+            hashed_text = hashed_title = hashlib.sha1(timeline_data['selftext']).hexdigest()
+            if component_data['text'] != hashed_text:
+                print "Error en el campo text"
+                print "%s != %s" % (component_data['text'], hashed_text)
+                errores_encontrados += 1
+            print "--------------------------------------"
+        completitud = errores_encontrados/errores_maximos
+        print "Completitud del experimento %d: %f" %(experiment_id, completitud)
+        mpFacebook.track(completitud, "Fallos totales " + version, {"numero fallos": completitud})
     else:
         print "Wrong social network or missing param"
         # {}: Obligatorio, []: opcional

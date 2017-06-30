@@ -43,8 +43,8 @@ mpTraffic=Mixpanel("d47fab64a1be9d41d8b1e8850df74754")
 mpWeather=Mixpanel("1a7d93449a9b07f9d00e86e03a1a7d6a")
 mpGoogleplus = Mixpanel('6751dd100b3e2547ac09c6ce4e5707ac')
 mpStock = Mixpanel("92f1f1dd586a4cad694bb8e8678456c2")
-
-network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search"]
+mpReddit = Mixpanel("5dc419ba21c54259cf5bad65954c62d0")
+network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit"]
 version_list = ["master","latency", "accuracy"]
 url_base_remote= "http://metricas-formales.appspot.com/app/refresh_metric"
 url_base_local= "http://localhost:8000"
@@ -1076,3 +1076,41 @@ if social_network in network_list:
         }
         url = "https://centauro.ls.fi.upm.es:4444/fakes/stock/clean"
         response = requests.get(url, verify=False, headers=headers)
+    
+    elif social_network == "reddit":
+        publish_text = str(time.time())
+        data = {"title":"Test post", "author":"test", "selftext":publish_text,"subreddit":"test" }
+
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/reddit-timeline/demo/RedditTimelineRefresh.html?" + publish_text)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/reddit-timeline/demo/RedditTimelineRefresh.html?" + publish_text)
+        
+        sleep(10)
+        print "Publicando datos"
+        headers= {
+          "content-type":"application/x-www-form-urlencoded"
+        }
+        url = "https://centauro.ls.fi.upm.es:4444/reddit"
+        response = requests.post(url, data=data, verify=False, headers=headers)
+        print "Respuesta de publicar: %d" % response.status_code
+        print "======================="
+        print "Esperando a encontrar modificaciones"
+        sleep(80)
+        print "Recolectando datos"
+        panel = mixpanel_api.Mixpanel("a9e682c78c1c951e7ebf76794223e850","ffe6ada8738ed520e54aaf7e8b7c0cec")
+        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
+        respuesta=panel.request(['events/properties/values'], params, format='json')
+
+        respuesta = [json.loads(resp) for resp in respuesta]
+        
+        data = filter(lambda el: el['published_text'] == publish_text, respuesta)
+        requests.get("https://centauro.ls.fi.upm.es:4444/fakes/reddit/clean", verify=False)
+        if len(data) == 0:
+            print "No se registraron datos en mixpanel. Espere mas tiempo o compruebe que se esta mandando correctamente"
+            sys.exit(2)
+        final_time = float(data[0]['time']) / 1000
+        print "(%s) Latencia de %s: %f" % (version,social_network, final_time)
+
+        mpReddit.track(final_time, "Final time "+ version,{"time final": final_time, "version":version})

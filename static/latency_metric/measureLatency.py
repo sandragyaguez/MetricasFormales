@@ -14,10 +14,14 @@ import mixpanel
 from mixpanel_client import MixpanelQueryClient
 from mixpanel import Mixpanel
 import time
+import base64
+
 mp = Mixpanel("53da31965c3d047fa72de756aae43db1")
 # Instantiates the Query Client
 query_client = MixpanelQueryClient('582d4b303bf22dd746b5bb1b9acbff63', '8b2d351133ac2a5d4df0700afc595fb6')
-
+CLIENT_ID_REDDIT = "RxkV7Oo-8Zid5Q"
+CLIENT_SECRECT_REDDIT = "eF-kiWrj12VmIV62m-NR4YiZgJ8"
+REFRESH_TOKEN_REDDIT = "65263530-S9mkAkp7M4pGHhxFPRs30qOY3fo"
 def replicate_googleplus_requests(access_token, experiment_id):
 	google_requests = {}
 	# Endpoint where it is deployed the different versions of twitter-timeline (with the script tracker that sends events to Mixpanel!)
@@ -62,7 +66,7 @@ def replicate_googleplus_requests(access_token, experiment_id):
 	})
 # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/145634995501895/
 def main():
-	network_list = ["instagram", "facebook", "github", "googleplus", "twitter", "pinterest", "traffic", "finance", "weather"]
+	network_list = ["instagram", "facebook", "github", "googleplus", "twitter", "pinterest", "traffic", "finance", "weather", "reddit"]
 	server_base_url = "http://localhost:8000"
 	if len(sys.argv) >= 2:
 		social_network = sys.argv[1]
@@ -421,7 +425,7 @@ def main():
 				'component': 'traffic-incidents',
 				'version': 'host',
 				'requestDuration': time_req,
-				'experiment': experiment_id,
+				'experiment_id': experiment_id,
 				'request': "All requests"
 				})
 
@@ -431,10 +435,51 @@ def main():
 			# webbrowser.open_new(server_base_url + "/Accuracy/TrafficIncidentsLatency.html?experiment=" + experiment_id)
 			# time.sleep(10)
 			webbrowser.open_new(server_base_url + "/Latency/TrafficIncidentsLatency.html?experiment=" + experiment_id)
-	
+		elif social_network == "reddit":
+			total_time = 0
+			reddit_token = "https://www.reddit.com/api/v1/access_token?grant_type=refresh_token&refresh_token=%s" % REFRESH_TOKEN_REDDIT
+			rq_token = base64.b64encode("%s:%s" % (CLIENT_ID_REDDIT, CLIENT_SECRECT_REDDIT) )
+			# Añadir authorization: Basic 
+			headers = {
+        "authorization":"Basic " + rq_token,
+        "User-agent": "Mozilla/5.0"
+      }
+			resp = requests.post(reddit_token, headers=headers)
+			total_time += resp.elapsed.total_seconds()*1000
+			data = resp.json()
+			access_token = data['access_token']
+
+			# Añadir authorization: Bearer token_obtenido
+			reddit_subscriber = "https://oauth.reddit.com/subreddits/mine/subscriber"
+			headers = {
+				"authorization":"Bearer %s" % access_token,
+				"User-agent": "Mozilla/5.0"
+				}
+
+			resp = requests.get(reddit_subscriber, headers=headers)
+			total_time += resp.elapsed.total_seconds()*1000
+			print resp.text
+			resp = resp.json()
+
+			reddit_hot= "https://oauth.reddit.com/r/all/hot"
+			req = requests.get(reddit_hot, headers=headers)
+			total_time += req.elapsed.total_seconds()*1000
+			print "Tiempo sumado: %f" % total_time
+			mp.track("1111", 'latencyMetric', {
+					'component': 'reddit-timeline',
+					'version': 'host',
+					'requestDuration': total_time,
+					'experiment_id': experiment_id,
+					'event_id': experiment_id 
+			})
+			webbrowser.open_new(server_base_url + "/Stable/RedditTimelineLatency.html?experiment=" + experiment_id)
+			time.sleep(10)
+			# webbrowser.open_new(server_base_url + "/Accuracy/TrafficIncidentsLatency.html?experiment=" + experiment_id)
+			# time.sleep(10)
+			webbrowser.open_new(server_base_url + "/Latency/RedditTimelineLatency.html?experiment=" + experiment_id)
 	else:
 		print "Wrong social network or missing param"
 		# {}: Obligatorio, []: opcional
-		print "Usage: measureLatency.py {facebook|instagram|github|googleplus|twitter|pinterest} [googleplus_access_token|facebook_access_token]"
+		print "Usage: measureLatency.py {facebook|instagram|github|googleplus|twitter|pinterest|reddit} [googleplus_access_token|facebook_access_token]"
 if __name__ == "__main__":
 	main()
