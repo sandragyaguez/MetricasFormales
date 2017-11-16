@@ -41,7 +41,7 @@ mpWeather = Mixpanel("19ecdb19541d1e7b61dce3d4d5fa485b")
 mpStock = Mixpanel("f2703d11ce4b2e6fed5d95f400306e48")
 
 #---------------------------------------------------------------------------------------------------------------------
-network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit"]
+network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit", "spotify"]
 version_list = ["master","latency", "accuracy"]
 # url_base_remote= "http://metricas-formales.appspot.com/app/accuracy_metric"
 url_base_local= "http://localhost:8000"
@@ -776,9 +776,6 @@ if social_network in network_list:
         api_response = recorrer_timeline(timeline['list'])
         api_response = list_temp_min_max(api_response)
 
-
-
-
         ##########################################################################################################################################
         #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
@@ -830,11 +827,13 @@ if social_network in network_list:
           contadorFallos=contadorFallos / (len(newlist)*4.0)
           print contadorFallos
           mpWeather.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})
+
 ############################################
 ############################################
         #CASO6: REDDIT-TIMELINE
 ############################################
 ############################################
+
     elif social_network == "reddit":
         experiment_id = int(time.time())
         print "ID. Experimento: %d" % experiment_id
@@ -849,8 +848,6 @@ if social_network in network_list:
             webbrowser.open_new(url_base_local + "/Accuracy/reddit-timeline/demo/RedditTimelineAccuracy.html?" + str(experiment_id))
 
         # Coger un access token valido
-        
-
         request_uri = "https://oauth.reddit.com/r/all/hot"
         header = {
             "authorization": "Bearer " + reddit_token,
@@ -874,8 +871,6 @@ if social_network in network_list:
         mixpanel_data = [json.loads(data) for data in mixpanel_data]
         mixpanel_data = filter(lambda el: el['experiment'] == str(experiment_id), mixpanel_data)
         mixpanel_data = sorted(mixpanel_data, key=lambda element: element['i'])
-
-
 
         if len(mixpanel_data) != len(timeline):
             print "Las longitudes de las dos listas recibidas no son iguales. Comprueba que se mandan todos los datos bien"
@@ -922,10 +917,46 @@ if social_network in network_list:
         completitud = errores_encontrados/errores_maximos
         print "Completitud del experimento %d: %f" %(experiment_id, completitud)
         mpFacebook.track(completitud, "Fallos totales " + version, {"numero fallos": completitud})
+
+
+############################################
+############################################
+        #CASO7: SPOTIFY
+############################################
+############################################
+
+    elif social_network == "spotify":
+
+        ##########################################################################################################################################
+        #-------------------------------------------------------DATOS SPOTIFY API---------------------------------------------------------------
+        ##########################################################################################################################################
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyCompletitudMaster.html")
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyCompletitudLatency.html")
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyCompletitudAccuracy.html")
+                sleep(3)
+               
+      
+
+
+
+
+
+
+
+
+
     else:
         print "Wrong social network or missing param"
         # {}: Obligatorio, []: opcional
         print "Usage: completitud.py {twitter|facebook|instagram|github [facebook_access_token]"
+
+
 
 
 #if __name__ == "__main__":
