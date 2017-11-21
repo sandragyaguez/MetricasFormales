@@ -940,9 +940,18 @@ if social_network in network_list:
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyCompletitudAccuracy.html")
                 sleep(3)
-               
-      
 
+
+
+
+        access_token= "BQDhNIPc2BvzL_4bf39yYewjN3U7tsBGELd6FD9ydlGkUJ3Vh6n4-YoNFDIqzyugw9qC2KU7aPTdltXVCfMtX_iUqehpgVbBkx7xQuscbS8RVTHqVcnbOy0JaU9UyyEyIyXRzSGh1xr9dmbtsD25WUzIjMiSA3FS"
+
+        spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
+        headers = {"Authorization": "Bearer " + access_token}
+        pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
+        timeline_spoti=pet_timeline_spoti.json()
+
+        print timeline_spoti
 
 
 
