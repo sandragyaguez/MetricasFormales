@@ -944,19 +944,36 @@ if social_network in network_list:
 
 
 
-        access_token= "BQDhNIPc2BvzL_4bf39yYewjN3U7tsBGELd6FD9ydlGkUJ3Vh6n4-YoNFDIqzyugw9qC2KU7aPTdltXVCfMtX_iUqehpgVbBkx7xQuscbS8RVTHqVcnbOy0JaU9UyyEyIyXRzSGh1xr9dmbtsD25WUzIjMiSA3FS"
-
+        access_token= "BQCD_ojxB_chjcyYpsJMj8PYd_UMrUcWM2HyTtCkiE9csAAOPBCEBKCmsVkD4ZV93lav_67L4Spo1YDp4mnfKi180053U4oiyNamhYxnwFlFkbLq3XIkZk0J59c9fI0R4Db_nntjlpQItPlEAHKKJXpydMhRi-uk"
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
         pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
+        print pet_timeline_spoti
         timeline_spoti=pet_timeline_spoti.json()
 
-        print timeline_spoti
+        imagesList=[]
+        namePlaylist=[]
+        createdByList=[]
+        songsList=[]
+        artistiList=[]
+    
+        #recorro el timeline y cojo de la clave data sus valores y dentro de sus valores la url de cada tablero
+        for k,v in timeline_spoti.iteritems():
+            if(timeline_spoti.has_key('items')):
+                itemsSpoti=timeline_spoti.get('items',None)
+        print type(itemsSpoti[0])
+        for playlist in itemsSpoti:
+            namePlaylist.append(playlist['name'])
+            createdByList.append(playlist['owner']['id'])
+            #me la juego a que siempre este en la pos 0? o recorro la lista?
+            imagesList.append(playlist['images'][0]['url'])
 
-
-
-
-
+         
+            
+       #for names in itemsSpoti:
+        #   if(names.has_key('name')):
+         #      nombre=m.get('url',None)
+          #  lista_img.append(values3)
 
 
 
