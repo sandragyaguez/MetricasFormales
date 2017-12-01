@@ -950,6 +950,7 @@ if social_network in network_list:
         pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
         print pet_timeline_spoti
         timeline_spoti=pet_timeline_spoti.json()
+        print timeline_spoti
 
         imagesList=[]
         namePlaylist=[]
@@ -968,6 +969,8 @@ if social_network in network_list:
             #me la juego a que siempre este en la pos 0? o recorro la lista?
             imagesList.append(playlist['images'][0]['url'])
 
+
+#las caciones se llaman tracks (get tracks del timeline)
          
             
        #for names in itemsSpoti:
