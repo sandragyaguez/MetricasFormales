@@ -942,15 +942,12 @@ if social_network in network_list:
                 sleep(3)
 
 
-
-
-        access_token= "BQCD_ojxB_chjcyYpsJMj8PYd_UMrUcWM2HyTtCkiE9csAAOPBCEBKCmsVkD4ZV93lav_67L4Spo1YDp4mnfKi180053U4oiyNamhYxnwFlFkbLq3XIkZk0J59c9fI0R4Db_nntjlpQItPlEAHKKJXpydMhRi-uk"
+        access_token= "BQBVIEzqsdLt1kS-U6PzhYczppu-zULmD8BZ6zS6Fe5qpdL04d5rB-icOhVSspNrlitahsMIA-Xb_M_bHzA3XTbP1lSjC0wMvlYXjrRoUoMMFW5mZDfs6RSM2lzDe49pmzMFbTuLJT8HwGv_Na0X034_JWZJYfoE"
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
         pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
         print pet_timeline_spoti
         timeline_spoti=pet_timeline_spoti.json()
-        print timeline_spoti
 
         imagesList=[]
         namePlaylist=[]
@@ -969,14 +966,19 @@ if social_network in network_list:
             #me la juego a que siempre este en la pos 0? o recorro la lista?
             imagesList.append(playlist['images'][0]['url'])
 
+        #peticion para obtener los tracks (lista de canciones)
 
-#las caciones se llaman tracks (get tracks del timeline)
-         
-            
-       #for names in itemsSpoti:
-        #   if(names.has_key('name')):
-         #      nombre=m.get('url',None)
-          #  lista_img.append(values3)
+
+#este solo es el tracks del primer elemento!! ver como coger el id de los tracks y hacer la peticion de todos
+        spotify_getTracks = "https://api.spotify.com/v1/users/deusconwet/playlists/40GWzZxsUBVltnvCvq6CNm/tracks"
+        headers = {"Authorization": "Bearer " + access_token}
+        pet_tracks= requests.get(spotify_getTracks,headers=headers)
+        print pet_tracks
+        tracks_spoti=pet_tracks.json()
+        print tracks_spoti
+
+
+       
 
 
 
