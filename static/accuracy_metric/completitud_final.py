@@ -969,7 +969,9 @@ if social_network in network_list:
         #peticion para obtener los tracks (lista de canciones)
 
 
-#este solo es el tracks del primer elemento!! ver como coger el id de los tracks y hacer la peticion de todos
+#este solo es el tracks del primer elemento!! ver como coger el id de los tracks y hacer la peticion de todos. Preguntar a Miguel si puedo
+#coger todos los tracks o si tengo que hacer un bucle con cada id. Sino hacer bucle que vaya recorriendo todos los ids y como se cogen los ids?
+#tengo que cogerlos a mano?
         spotify_getTracks = "https://api.spotify.com/v1/users/deusconwet/playlists/40GWzZxsUBVltnvCvq6CNm/tracks"
         headers = {"Authorization": "Bearer " + access_token}
         pet_tracks= requests.get(spotify_getTracks,headers=headers)
