@@ -941,12 +941,12 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyCompletitudAccuracy.html")
                 sleep(3)
 
-
-        access_token= "BQBVIEzqsdLt1kS-U6PzhYczppu-zULmD8BZ6zS6Fe5qpdL04d5rB-icOhVSspNrlitahsMIA-Xb_M_bHzA3XTbP1lSjC0wMvlYXjrRoUoMMFW5mZDfs6RSM2lzDe49pmzMFbTuLJT8HwGv_Na0X034_JWZJYfoE"
+        #token: Miguel o te vas al componente y haces polymer serve -o -p 8080 y coges token
+        access_token= "BQDfqeeXoirF5JS7u_DNiqIa_oig0K4IjHPmqne76Z8n-C3gBPaAKXPGDHHCgh2PgPZEq4L7nCubxwrHJBsSg6mqhOjB4KbzIpfWnBA4D7mZ31m3jLEIvubSGVbBHoBi5cGKjqu0Tz_UlOjU8EXcQopmiDpcX8Vw"
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
         pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
-        print pet_timeline_spoti
+        #aqui tengo todos los objetos de spotify (cada playlist)
         timeline_spoti=pet_timeline_spoti.json()
 
         imagesList=[]
@@ -954,34 +954,43 @@ if social_network in network_list:
         createdByList=[]
         songsList=[]
         artistiList=[]
+        listaCanciones=[]
+        tracks=[]
+        itemsListTrack=[]
     
-        #recorro el timeline y cojo de la clave data sus valores y dentro de sus valores la url de cada tablero
+        #recorro el timeline y cojo de la clave 'data' sus valores y dentro de sus valores la url de cada tablero
         for k,v in timeline_spoti.iteritems():
             if(timeline_spoti.has_key('items')):
                 itemsSpoti=timeline_spoti.get('items',None)
-        print type(itemsSpoti[0])
         for playlist in itemsSpoti:
             namePlaylist.append(playlist['name'])
             createdByList.append(playlist['owner']['id'])
-            #me la juego a que siempre este en la pos 0? o recorro la lista?
             imagesList.append(playlist['images'][0]['url'])
-
+            listaCanciones.append(playlist['tracks']['href'])
+        
         #peticion para obtener los tracks (lista de canciones)
+        for listaTracks in listaCanciones:
+            spotify_getTracks = listaTracks
+            headers = {"Authorization": "Bearer " + access_token}
+            pet_tracks= requests.get(spotify_getTracks,headers=headers)
+            tracks_spoti= pet_tracks.json()
+            tracks.append(tracks_spoti)
+            #print tracks_spoti['items']['track']['album']['artist']['name']
 
+        for canciones in tracks:
+            itemsListTrack.append(canciones['items'])
+            for songs in itemsListTrack:
+              
+                songsList.append(songs['track'])
+            
 
-#este solo es el tracks del primer elemento!! ver como coger el id de los tracks y hacer la peticion de todos. Preguntar a Miguel si puedo
-#coger todos los tracks o si tengo que hacer un bucle con cada id. Sino hacer bucle que vaya recorriendo todos los ids y como se cogen los ids?
-#tengo que cogerlos a mano?
-        spotify_getTracks = "https://api.spotify.com/v1/users/deusconwet/playlists/40GWzZxsUBVltnvCvq6CNm/tracks"
-        headers = {"Authorization": "Bearer " + access_token}
-        pet_tracks= requests.get(spotify_getTracks,headers=headers)
-        print pet_tracks
-        tracks_spoti=pet_tracks.json()
-        print tracks_spoti
-
-
-       
-
+        #for k,v in tracks_spoti.iteritems():
+         #   if(tracks_spoti.has_key('items')):
+          #      spotiTracks=tracks_spoti.get('items',None)
+        #for songs in spotiTracks:
+         #   print songs
+            #songsList.append(y['track']['album']['artist']['name'])
+            
 
 
     else:
