@@ -941,8 +941,8 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyCompletitudAccuracy.html")
                 sleep(3)
 
-        #token: Miguel o te vas al componente y haces polymer serve -o -p 8080 y coges token
-        access_token= "BQDfqeeXoirF5JS7u_DNiqIa_oig0K4IjHPmqne76Z8n-C3gBPaAKXPGDHHCgh2PgPZEq4L7nCubxwrHJBsSg6mqhOjB4KbzIpfWnBA4D7mZ31m3jLEIvubSGVbBHoBi5cGKjqu0Tz_UlOjU8EXcQopmiDpcX8Vw"
+        #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
+        access_token= "BQC15UUGxWP6RZlsBfFqLpIu7X7nu-LfonqypVAMYTEa16JnRdTCAlmj8eGj_ggJzCaW0TTcqKBBFRrVx9PjDFEiqrAgnw1_l7vz6XCHBUJCi60D-9ijHeEaPM8Wz7DLc6VY0crUyJ9Yn3IrZk7xBC02BpJVtPGJ"
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
         pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
@@ -953,10 +953,9 @@ if social_network in network_list:
         namePlaylist=[]
         createdByList=[]
         songsList=[]
-        artistiList=[]
+        artistList=[]
         listaCanciones=[]
         tracks=[]
-        itemsListTrack=[]
     
         #recorro el timeline y cojo de la clave 'data' sus valores y dentro de sus valores la url de cada tablero
         for k,v in timeline_spoti.iteritems():
@@ -975,22 +974,27 @@ if social_network in network_list:
             pet_tracks= requests.get(spotify_getTracks,headers=headers)
             tracks_spoti= pet_tracks.json()
             tracks.append(tracks_spoti)
-            #print tracks_spoti['items']['track']['album']['artist']['name']
 
+        #recorro para cogert el nombre del artista y el nombre de la cancion
         for canciones in tracks:
-            itemsListTrack.append(canciones['items'])
-            for songs in itemsListTrack:
-              
-                songsList.append(songs['track'])
-            
+            songsArray = canciones['items']
+            for songs in songsArray:
+                track= songs['track']['artists']
+                songsList.append(songs['track']['name'])
+                for artist in track:
+                    artistList.append(artist['name'])
+                    artSongs=zip(artistList,songsList)
+                    #PROBLEMA: HAY VARIAS CANCIONES QUE TIENEN VARIOS ARTISTAS. VER COMO COGER TODOS LOS ARTISTAS DE UNA CANCION. JSON PARSE ONLINE
+                    print artSongs
 
-        #for k,v in tracks_spoti.iteritems():
-         #   if(tracks_spoti.has_key('items')):
-          #      spotiTracks=tracks_spoti.get('items',None)
-        #for songs in spotiTracks:
-         #   print songs
-            #songsList.append(y['track']['album']['artist']['name'])
-            
+
+
+# Two iterables are passed
+#result = zip(numberList, strList)
+
+# Converting itertor to set
+#resultSet = set(result)
+#print(resultSet)
 
 
     else:
