@@ -932,7 +932,7 @@ if social_network in network_list:
         ##########################################################################################################################################
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyCompletitudMaster.html")
+                #webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyCompletitudMaster.html")
                 sleep(3)
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyCompletitudLatency.html")
@@ -942,7 +942,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQC15UUGxWP6RZlsBfFqLpIu7X7nu-LfonqypVAMYTEa16JnRdTCAlmj8eGj_ggJzCaW0TTcqKBBFRrVx9PjDFEiqrAgnw1_l7vz6XCHBUJCi60D-9ijHeEaPM8Wz7DLc6VY0crUyJ9Yn3IrZk7xBC02BpJVtPGJ"
+        access_token= "BQCU7DIDTxbm4lxcFtllBfR_WY_1EUd-qgnF2lnRiZwo4tlBSDff1hAfKoodbvbA0lQy7cI5ALpep8eMFKgG0eGoT1szqkaVEBFHWpSROW9soL1I7CtBp1nwjx8gdwFZ-z5WEkKBCwWkOwRIbAwnoAdWY3OW2RaG"
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
         pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
@@ -979,23 +979,14 @@ if social_network in network_list:
         for canciones in tracks:
             songsArray = canciones['items']
             for songs in songsArray:
-                track= songs['track']['artists']
                 songsList.append(songs['track']['name'])
+                #lista de los artistas de una cancion
+                track= songs['track']['artists']
                 for artist in track:
                     artistList.append(artist['name'])
+                    #if (dos artistas pertenecen a la misma cancion): zip (todoslosartirtas, cancionquecomparten)
                     artSongs=zip(artistList,songsList)
                     #PROBLEMA: HAY VARIAS CANCIONES QUE TIENEN VARIOS ARTISTAS. VER COMO COGER TODOS LOS ARTISTAS DE UNA CANCION. JSON PARSE ONLINE
-                    print artSongs
-
-
-
-# Two iterables are passed
-#result = zip(numberList, strList)
-
-# Converting itertor to set
-#resultSet = set(result)
-#print(resultSet)
-
 
     else:
         print "Wrong social network or missing param"
