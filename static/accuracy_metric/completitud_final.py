@@ -108,17 +108,7 @@ if social_network in network_list:
         sleep(30)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("70d459a2d5e96864f6eacdcb1a1fcd50","4dd2fff92abd81af8f06950f419f066a")
-        lista = []
-        listacomp = []
-        listaid = []
-        listauser = []
-        listapos = []
-        liskey = []
-        lisvalue = []
-        listavalores = []
-        listavalores1 = []
-        listaFallosText = []
-        listaFallosUser = []
+        lista = []; listaid = []; liskey = []; lisvalue = []; listaFallosText = []; listaFallosUser = []
         contadorFallos = 0
 
 
@@ -345,7 +335,6 @@ if social_network in network_list:
             mpGoogle.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
 
             
-
 ############################################
 ############################################
             #CASO4: PINTEREST
@@ -376,11 +365,7 @@ if social_network in network_list:
         s= requests.get(request_others)
         timeline=s.json()
 
-        lista_img=[]
-        username=[]
-        board=[]
-        pets=[]
-        imagAPI=[]
+        lista_img=[]; username=[]; board=[]; pets=[]; imagAPI=[]
     
         #recorro el timeline y cojo de la clave data sus valores y dentro de sus valores la url de cada tablero
         for k,v in timeline.iteritems():
@@ -428,7 +413,6 @@ if social_network in network_list:
                     
         getData(pets)
        
-        
         ##########################################################################################################################################
         #------------------------------------------DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
         ##########################################################################################################################################
@@ -439,7 +423,6 @@ if social_network in network_list:
 
         imagComp=[]
         contadorFallos=0
-
 
        #metodo que me compara la lista de imagenes obtenidas por la API con la lista de imagenes cogidas en el componente
         def comp(list1, list2):
@@ -527,10 +510,7 @@ if social_network in network_list:
         #verify=False para que no me de errores de SSL
         s= requests.get(request_uri, verify=False, headers=headers)
         timeline=s.json()
-        lista_descrip=[]
-        lista_date=[]
-        lista_type=[]
-        listacont=[]
+        lista_descrip=[]; lista_date=[]; lista_type=[]; listacont=[]
         contador=0
 
         #los tres for que hago a continuacion es para conseguir llegar al dato 'description'. La api devuelve los datos en diccionarios dentro de listas dentro de diccionarios
@@ -579,14 +559,7 @@ if social_network in network_list:
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("f9048e936929679df4e14859ebd1dd98","0795378c7f94b5b1f4170deb0221ec59")
         contadorFallos=0
-        lista=[]
-        images=[]
-        listapos=[]
-        listadate=[]
-        listatext=[]
-        listatype=[]
-        liskey=[]
-        lisvalue=[]
+        lista=[]; images=[]; listapos=[]; listadate=[]; listatext=[]; listatype=[]; liskey=[]; lisvalue=[]
         params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
         respuesta=x.request(['events/properties/values'], params, format='json')
 
@@ -704,8 +677,6 @@ if social_network in network_list:
         s= requests.get(request_uri, verify=False, headers=headers)
         timeline=s.json()
 
-        #PROBLEMA: ESTOY COGIENDO SIEMPRE LA ULTIMA TEMP    
-
         if(timeline.has_key('city')):
             city=timeline['city']
         if (timeline.has_key('list')):
@@ -734,7 +705,6 @@ if social_network in network_list:
             "50d": "wi-fog",
             "50n": "wi-fog"
         }
-
 
         def list_temp_min_max(lista_timeline):
           days = []
@@ -784,18 +754,6 @@ if social_network in network_list:
         x=mixpanel_api.Mixpanel("aab0e30bdb1ec923fe2d85fb95e051ec","a019aa23c38827f307f0d5eff0d0d6f5")
         contadorFallos=0
         lista=[]
-        # listapos=[]
-        listadate=[]
-        listacity=[]
-        listaicon=[]
-        listemp=[]
-        listemp_max=[]
-        listemp_min=[]
-        listime=[]
-        lisdia=[]
-        listpos=[]
-        liskey=[]
-        lisvalue=[]
 
         if version in version_list:
           params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
@@ -949,15 +907,7 @@ if social_network in network_list:
         #aqui tengo todos los objetos de spotify (cada playlist)
         timeline_spoti=pet_timeline_spoti.json()
 
-        imagesList=[]
-        namePlaylist=[]
-        createdByList=[]
-        songsList=[]
-        artistList=[]
-        listaCanciones=[]
-        tracks=[]
-        idList=[]
-        songArtistList=[]
+        imagesList=[]; namePlaylist=[]; createdByList=[]; songsList=[]; artistList=[]; listaCanciones=[]; tracks=[]; idList=[]; songArtistList=[]
     
         #recorro el timeline y cojo de la clave 'data' sus valores y dentro de sus valores la url de cada tablero
         for k,v in timeline_spoti.iteritems():
@@ -990,8 +940,19 @@ if social_network in network_list:
                 artistIdZip=zip(idList,artistList)
                 dictSongs = dict(songsIdZip)
                 dictArtists = dict(artistIdZip)
-                songArtistList = [(k, dict1[k], dict2[k]) for k in sorted(dict1)]
-                songArtistList = [(k, v, dict2[k]) for k, v in songsIdZip]
+                songArtistList = [(k, dictSongs[k], dictArtists[k]) for k in sorted(dictSongs)]
+                songArtistList = [(k, v, dictArtists[k]) for k, v in songsIdZip]
+        print songArtistList
+
+
+        ##########################################################################################################################################
+        #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
+        ##########################################################################################################################################
+        sleep(30)
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
+        x=mixpanel_api.Mixpanel("","")
+        contadorFallos=0
+       
 
 
     
