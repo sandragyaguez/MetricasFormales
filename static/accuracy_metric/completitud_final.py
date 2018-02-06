@@ -890,7 +890,7 @@ if social_network in network_list:
         ##########################################################################################################################################
         if version in version_list:
             if(version=="master"):
-                #webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyCompletitudMaster.html")
+                webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyCompletitudMaster.html")
                 sleep(3)
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyCompletitudLatency.html")
@@ -900,7 +900,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQDwNXzNj2VI9o1PeGAq7FcqbLj4TkSIpv8vRrS16__0nFwZ9yOEVfChZqeHsgsZ1xOSPhaX9zcrQq4IcFmGKuVlz2X7ZpDMBDBCNMTTMXEKLYx4R1_08LyaL4jHZjujMGbzL3VxWUKOvdY6fyCubwyjFyuheKBM"
+        access_token= "BQACTOFQ0bR9K_5nBAp5B8NlqWlUyfIMnNs8asQ4RODRzTlXp_v_UUnqlbZ4QOoajRoZ17FlXOqUJ7TuSthMAXQ2Db6nEPQhQnEePn08kfBeBk3Clraf_btlYGiI2lXhp7pEUw-XBrFlbDFPGUDBnSBSAwO3bCT2"
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
         pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
@@ -942,17 +942,28 @@ if social_network in network_list:
                 dictArtists = dict(artistIdZip)
                 songArtistList = [(k, dictSongs[k], dictArtists[k]) for k in sorted(dictSongs)]
                 songArtistList = [(k, v, dictArtists[k]) for k, v in songsIdZip]
-        print songArtistList
-
 
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
         sleep(30)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("","")
+        x=mixpanel_api.Mixpanel("bab1fc9e4af4e9e0fb7d5992fc35ab73","c21511e177f3b64c983228d922e0d1f6")
         contadorFallos=0
-       
+        lista=[]
+
+        if version in version_list:
+          params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
+          respuesta=x.request(['events/properties/values'], params, format='json')
+          
+          #pasar de unicode a dict
+          for x in respuesta:
+            resp = ast.literal_eval(x)
+            lista.append(resp)                   
+          
+          print lista
+          #ordeno la lista de diccionarios por la posicion (va de 0 a x)
+          #newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
 
     
