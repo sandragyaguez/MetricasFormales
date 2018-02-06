@@ -942,7 +942,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQCU7DIDTxbm4lxcFtllBfR_WY_1EUd-qgnF2lnRiZwo4tlBSDff1hAfKoodbvbA0lQy7cI5ALpep8eMFKgG0eGoT1szqkaVEBFHWpSROW9soL1I7CtBp1nwjx8gdwFZ-z5WEkKBCwWkOwRIbAwnoAdWY3OW2RaG"
+        access_token= "BQCCS2vWcBTgDSEuLzj-QAdU6hYMSK0lbp109s_L413Dlva0R0teZBF1bNYVKNpBLBUsV36he4y_uwlxDXKw80_YTXMdta5TBSIYQCRIfR2rOPSYo1KjOB0jyRhXY0u8ZqChhQZGTyKmSWvTWyGk9EQ3-2R-RqV5"
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
         pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
@@ -956,6 +956,9 @@ if social_network in network_list:
         artistList=[]
         listaCanciones=[]
         tracks=[]
+        idList=[]
+        idList2=[]
+        lst3=[]
     
         #recorro el timeline y cojo de la clave 'data' sus valores y dentro de sus valores la url de cada tablero
         for k,v in timeline_spoti.iteritems():
@@ -975,18 +978,30 @@ if social_network in network_list:
             tracks_spoti= pet_tracks.json()
             tracks.append(tracks_spoti)
 
-        #recorro para cogert el nombre del artista y el nombre de la cancion
+        #recorro para coger el nombre del artista y el nombre de la cancion
+        #tracks son los 6 albumes que tiene esta cuenta
         for canciones in tracks:
             songsArray = canciones['items']
             for songs in songsArray:
                 songsList.append(songs['track']['name'])
+                idList.append(songs['track']['id'])
+                songsIdZip=zip (idList,songsList)
                 #lista de los artistas de una cancion
-                track= songs['track']['artists']
+                track=songs['track']['artists']
                 for artist in track:
                     artistList.append(artist['name'])
-                    #if (dos artistas pertenecen a la misma cancion): zip (todoslosartirtas, cancionquecomparten)
-                    artSongs=zip(artistList,songsList)
-                    #PROBLEMA: HAY VARIAS CANCIONES QUE TIENEN VARIOS ARTISTAS. VER COMO COGER TODOS LOS ARTISTAS DE UNA CANCION. JSON PARSE ONLINE
+                    idList2.append(songs['track']['id'])
+                    artistIdZip=zip(idList2,artistList)
+                    #[(songs, artist) for (idArtist, artist) in artistIdZip for (idSong, songs) in songsIdZip if idArtist==idSong]
+                    dict1 = dict(songsIdZip)
+                    dict2 = dict(artistIdZip)
+                    #SOLO ME COGE EL ULTIMO ARTISTAAA!!!!!!!
+                    lst3 = [(k, dict1[k], dict2[k]) for k in sorted(dict1)]
+                    lst3 = [(k, v, dict2[k]) for k, v in songsIdZip]
+
+        print lst3
+        #print songsIdZip
+        #print tracks
 
     else:
         print "Wrong social network or missing param"
