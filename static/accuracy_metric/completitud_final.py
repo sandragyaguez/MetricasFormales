@@ -942,7 +942,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQCCS2vWcBTgDSEuLzj-QAdU6hYMSK0lbp109s_L413Dlva0R0teZBF1bNYVKNpBLBUsV36he4y_uwlxDXKw80_YTXMdta5TBSIYQCRIfR2rOPSYo1KjOB0jyRhXY0u8ZqChhQZGTyKmSWvTWyGk9EQ3-2R-RqV5"
+        access_token= "BQDwNXzNj2VI9o1PeGAq7FcqbLj4TkSIpv8vRrS16__0nFwZ9yOEVfChZqeHsgsZ1xOSPhaX9zcrQq4IcFmGKuVlz2X7ZpDMBDBCNMTTMXEKLYx4R1_08LyaL4jHZjujMGbzL3VxWUKOvdY6fyCubwyjFyuheKBM"
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
         pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
@@ -957,8 +957,7 @@ if social_network in network_list:
         listaCanciones=[]
         tracks=[]
         idList=[]
-        idList2=[]
-        lst3=[]
+        songArtistList=[]
     
         #recorro el timeline y cojo de la clave 'data' sus valores y dentro de sus valores la url de cada tablero
         for k,v in timeline_spoti.iteritems():
@@ -986,22 +985,16 @@ if social_network in network_list:
                 songsList.append(songs['track']['name'])
                 idList.append(songs['track']['id'])
                 songsIdZip=zip (idList,songsList)
-                #lista de los artistas de una cancion
-                track=songs['track']['artists']
-                for artist in track:
-                    artistList.append(artist['name'])
-                    idList2.append(songs['track']['id'])
-                    artistIdZip=zip(idList2,artistList)
-                    #[(songs, artist) for (idArtist, artist) in artistIdZip for (idSong, songs) in songsIdZip if idArtist==idSong]
-                    dict1 = dict(songsIdZip)
-                    dict2 = dict(artistIdZip)
-                    #SOLO ME COGE EL ULTIMO ARTISTAAA!!!!!!!
-                    lst3 = [(k, dict1[k], dict2[k]) for k in sorted(dict1)]
-                    lst3 = [(k, v, dict2[k]) for k, v in songsIdZip]
+                #lista de los nombres de los artistas de una cancion
+                artistList.append(songs['track']['artists'][0].get('name'))
+                artistIdZip=zip(idList,artistList)
+                dictSongs = dict(songsIdZip)
+                dictArtists = dict(artistIdZip)
+                songArtistList = [(k, dict1[k], dict2[k]) for k in sorted(dict1)]
+                songArtistList = [(k, v, dict2[k]) for k, v in songsIdZip]
 
-        print lst3
-        #print songsIdZip
-        #print tracks
+
+    
 
     else:
         print "Wrong social network or missing param"
