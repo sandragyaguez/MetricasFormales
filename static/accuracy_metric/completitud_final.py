@@ -900,7 +900,8 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQACTOFQ0bR9K_5nBAp5B8NlqWlUyfIMnNs8asQ4RODRzTlXp_v_UUnqlbZ4QOoajRoZ17FlXOqUJ7TuSthMAXQ2Db6nEPQhQnEePn08kfBeBk3Clraf_btlYGiI2lXhp7pEUw-XBrFlbDFPGUDBnSBSAwO3bCT2"
+        access_token= "BQDz3rTqpaTzqD0A-qz6-okvAjmVXAVVF_3OM5RBpR0oBlR4Sr9D5N8jq7h4qENj0q_yL8y1IwwpHT0gry2FLfw9SRJhiYXCeqnJi7E_Pm6xnbN3IjVv-H06JL-FQ05Tcyb3d66oM1grxIXu1kmMddmYwCYIgyiX"
+
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
         pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
@@ -947,21 +948,20 @@ if social_network in network_list:
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
         sleep(30)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("bab1fc9e4af4e9e0fb7d5992fc35ab73","c21511e177f3b64c983228d922e0d1f6")
+        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
+        x=mixpanel_api.Mixpanel("dfe97ec9423e91ce01a6f223288bfb91","c21511e177f3b64c983228d922e0d1f6")
         contadorFallos=0
         lista=[]
-
         if version in version_list:
-          params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-          respuesta=x.request(['events/properties/values'], params, format='json')
-          
+            params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
+            print type(params)
+            respuesta=x.request(['events/properties/values'], params, format='json')
+            print type(respuesta)
           #pasar de unicode a dict
-          for x in respuesta:
-            resp = ast.literal_eval(x)
-            lista.append(resp)                   
-          
-          print lista
+          #for x in respuesta:
+            #resp = ast.literal_eval(x)
+            #lista.append(resp)                   
+        
           #ordeno la lista de diccionarios por la posicion (va de 0 a x)
           #newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
