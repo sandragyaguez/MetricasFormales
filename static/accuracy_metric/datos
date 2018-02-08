@@ -1,0 +1,1 @@
+{"request": "/api/2.0/events/properties/values/?name=value&interval=1&expire=1518087531&sig=b07968186151e27db8abd1cddb7338b9&api_key=dfe97ec9423e91ce01a6f223288bfb91&type=general&event=master&unit=day", "error": "Unknown parameters: interval', 'type"}

@@ -3,8 +3,6 @@
 # -*- coding: UTF-8 -*
 
 import sys
-import pprint
-pp = pprint.PrettyPrinter(indent=2)
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
@@ -17,7 +15,6 @@ from requests_oauthlib import OAuth1
 import requests
 import webbrowser
 import urllib3
-import requests.packages.urllib3
 requests.packages.urllib3.disable_warnings()
 import datetime
 import re
@@ -31,6 +28,8 @@ from mixpanel import Mixpanel
 import mixpanel_api
 import datetime
 import base64
+from requests.auth import HTTPBasicAuth
+
 #objetos Mixpanel para las distintas redes sociales (token del project)
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
 mpFacebook = Mixpanel("04ae91408ffe85bf83628993704feb15")
@@ -61,13 +60,11 @@ else:
 #CASOS:
 if social_network in network_list:
 
-
 ############################################
 ############################################
             #CASO1: TWITTER
 ############################################
 ############################################
-
 
     if social_network == 'twitter':
 
@@ -80,7 +77,6 @@ if social_network in network_list:
         CONSUMER_SECRET = 'xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE' #Consumer secret
         ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
         ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
-
 
         #Lanzamos una pestana por cada version del componente
         if version in version_list:
@@ -110,7 +106,6 @@ if social_network in network_list:
         x=mixpanel_api.Mixpanel("70d459a2d5e96864f6eacdcb1a1fcd50","4dd2fff92abd81af8f06950f419f066a")
         lista = []; listaid = []; liskey = []; lisvalue = []; listaFallosText = []; listaFallosUser = []
         contadorFallos = 0
-
 
         #defino los parametros necesarios para la peticion
         params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
@@ -143,7 +138,6 @@ if social_network in network_list:
               listaFallosUser=zip(liskey,lisvalue)
 
         contadorFallos=contadorFallos/(contador * 2.0)
-        print contadorFallos
         mpTwitter.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
 
 ############################################
@@ -157,7 +151,6 @@ if social_network in network_list:
 #RECORDAR QUE FACE NO MUESTRA LOS POST SECUNCIALMENTE, SINO QUE LOS MUESTRA "COMO QUIERE". Por lo que, en la version de accuracy,
 #cuando se miren los datos que fallan no van a coincidir con las posiciones de fallo que se guardan en mixpanel
 #Facebook hace una ordenacion por ACTUALIZACION, no por creacion
-
 
         ##########################################################################################################################################
         #--------------------------------------------------------DATOS FACEBOOK API---------------------------------------------------------------
@@ -182,7 +175,6 @@ if social_network in network_list:
         s= requests.get(facebook_url)
         muro=s.json()
         
-
         #facebook devuelve un diccionario con 2 keys (home, id) y solo me quiero quedar con los values del home
         if not muro.has_key('home') or not muro['home'].has_key('data'):
           print "La api de facebook devuelve error. Comprobar token."
@@ -241,7 +233,6 @@ if social_network in network_list:
             contadorFallos+=1            
 
         contadorFallos=contadorFallos/(len(respuesta)*3.0)
-        print contadorFallos
         mpFacebook.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
 
 ############################################
@@ -331,9 +322,7 @@ if social_network in network_list:
 
        
             contadorFallos=contadorFallos / (len(newlist)*2.0)
-            print contadorFallos
             mpGoogle.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
-
             
 ############################################
 ############################################
@@ -449,7 +438,6 @@ if social_network in network_list:
 
                 mpPinterest.track(fallos,"Fallos master imagenes",{"imagen":fallos, "version":"master"})
                 contadorFallos=contadorFallos/float(len(imagAPI))
-                print contadorFallos
                 mpPinterest.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
  
 
@@ -465,10 +453,8 @@ if social_network in network_list:
 
                 mpPinterest.track(fallos,"Fallos latency imagenes",{"imagen":fallos, "version":"latency"})
                 contadorFallos=contadorFallos/float(len(imagAPI))
-                print contadorFallos
                 mpPinterest.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
  
-
             elif version=="accuracy":
                 #defino los parametros necesarios para la peticion
                 params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
@@ -478,7 +464,6 @@ if social_network in network_list:
 
                 mpPinterest.track(fallos,"Fallos accuracy imagenes",{"imagen":fallos, "version":"accuracy"})
                 contadorFallos=contadorFallos/float(len(imagComp))
-                print contadorFallos
                 mpPinterest.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
 
 
@@ -589,9 +574,8 @@ if social_network in network_list:
             contadorFallos=contadorFallos+1
 
         contadorFallos=contadorFallos/(contador*2.0)
-        print contadorFallos
-        
         mpTraffic.track(contadorFallos, "Fallos totales" + version, {"numero fallos": contadorFallos})
+   
     elif social_network == 'finance-search':
 
         ##########################################################################################################################################
@@ -646,7 +630,6 @@ if social_network in network_list:
         contadorFallos = errors/analyzed
         print "% fallos " + version, ' :', contadorFallos
         mpStock.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
-
 
 ############################################
 ############################################
@@ -780,10 +763,8 @@ if social_network in network_list:
             if api_response[index]['temp_max'] != weather['temp_max']:
               print index, " falla en posicion temp_max: ", api_response[index]['temp_max'], weather['temp_max']
               contadorFallos+=1                            
-          
-  
+        
           contadorFallos=contadorFallos / (len(newlist)*4.0)
-          print contadorFallos
           mpWeather.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})
 
 ############################################
@@ -795,7 +776,6 @@ if social_network in network_list:
     elif social_network == "reddit":
         experiment_id = int(time.time())
         print "ID. Experimento: %d" % experiment_id
-        print "===================================="
         reddit_token = "bHluEetl5RSZIi7wH_NwnEu4YhI"
         if(version=="master"):
             webbrowser.open_new(url_base_local + "/Master/reddit-timeline/demo/RedditTimelineMaster.html?" + str(experiment_id))
@@ -815,7 +795,6 @@ if social_network in network_list:
 
         if (req.status_code != 200):
             print "(%d) El token proporcionado no es valido o se ha superado el limite de peticiones" % req.status_code
-            print req.text
             sys.exit(2)
         timeline = req.json()['data']['children']
         timeline = [element['data'] for element in timeline]
@@ -885,9 +864,9 @@ if social_network in network_list:
 
     elif social_network == "spotify":
 
-        ##########################################################################################################################################
+        #########################################################################################################################################
         #-------------------------------------------------------DATOS SPOTIFY API---------------------------------------------------------------
-        ##########################################################################################################################################
+        #########################################################################################################################################
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyCompletitudMaster.html")
@@ -900,7 +879,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQDz3rTqpaTzqD0A-qz6-okvAjmVXAVVF_3OM5RBpR0oBlR4Sr9D5N8jq7h4qENj0q_yL8y1IwwpHT0gry2FLfw9SRJhiYXCeqnJi7E_Pm6xnbN3IjVv-H06JL-FQ05Tcyb3d66oM1grxIXu1kmMddmYwCYIgyiX"
+        access_token= "BQD4CbRoBBPKPSQgkpe1r-un_zvFDnYzdcrbf4shTe9Z6fwQrydsSleHYwvSSBYnfU7EXbL8vbaCYmgwYvLKljfwNSPtEcU63vTNCqdeZccCDjCx5VwV9OaiBlo-3IA8QE5nWyYtoML1Nky5B6W81SNlF4kLiofO"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -949,14 +928,12 @@ if social_network in network_list:
         ##########################################################################################################################################
         sleep(30)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
-        x=mixpanel_api.Mixpanel("dfe97ec9423e91ce01a6f223288bfb91","c21511e177f3b64c983228d922e0d1f6")
         contadorFallos=0
         lista=[]
         if version in version_list:
-            params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-            print type(params)
-            respuesta=x.request(['events/properties/values'], params, format='json')
-            print type(respuesta)
+            params={'event':version,'name':'value','unit':"hours"}
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', ''))
+            print respuesta.json()
           #pasar de unicode a dict
           #for x in respuesta:
             #resp = ast.literal_eval(x)
