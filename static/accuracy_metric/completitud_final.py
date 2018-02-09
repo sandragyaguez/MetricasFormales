@@ -94,7 +94,6 @@ if social_network in network_list:
         oauth = OAuth1(CONSUMER_KEY,client_secret=CONSUMER_SECRET,resource_owner_key=ACCESS_KEY,resource_owner_secret=ACCESS_SECRET)
         #url para hacer peticion al timeline de twitter
         request_hometimeline="https://api.twitter.com/1.1/statuses/home_timeline.json?count=200"
-        #Request timeline home
         s= requests.get(request_hometimeline, auth=oauth)
         timeline=s.json()
 
@@ -320,7 +319,6 @@ if social_network in network_list:
                     print "falla en el usuario: %s vs %s" % (component['text'], post_api['hashed_text'])
                     contadorFallos += 1
 
-       
             contadorFallos=contadorFallos / (len(newlist)*2.0)
             mpGoogle.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
             
@@ -405,10 +403,9 @@ if social_network in network_list:
         ##########################################################################################################################################
         #------------------------------------------DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
         ##########################################################################################################################################
-
         sleep(30)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("55736dc621aade0a3e80ea2f7f28f42b","5d34c88bc7f29c166e56484966b1c85b")
+        #x=mixpanel_api.Mixpanel("55736dc621aade0a3e80ea2f7f28f42b","5d34c88bc7f29c166e56484966b1c85b")
 
         imagComp=[]
         contadorFallos=0
@@ -418,9 +415,6 @@ if social_network in network_list:
             # variable global para que no me de el fallo "referenciado antes de asignado"
             global contadorFallos
             fallos=[]
-            # if len(list1) != len(list2):
-            #     print "no tienen la misma longitud"
-            #     return False
             for val in list2:
                 if not (val in list1):
                     fallos.append(val)
@@ -429,7 +423,6 @@ if social_network in network_list:
 
         if version in version_list:
             if version=="master":
-            #defino los parametros necesarios para la peticion
                 params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
                 imagComp = [str(json.loads(res)['url']) for res in respuesta]        
@@ -439,16 +432,12 @@ if social_network in network_list:
                 mpPinterest.track(fallos,"Fallos master imagenes",{"imagen":fallos, "version":"master"})
                 contadorFallos=contadorFallos/float(len(imagAPI))
                 mpPinterest.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
- 
 
             elif version=="latency":
-                #defino los parametros necesarios para la peticion
                 params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
 
-                imagComp = [str(json.loads(res)['url']) for res in respuesta]        
-                #print len(imagComp)
-         
+                imagComp = [str(json.loads(res)['url']) for res in respuesta]
                 fallos=comp(imagAPI,imagComp)
 
                 mpPinterest.track(fallos,"Fallos latency imagenes",{"imagen":fallos, "version":"latency"})
@@ -456,7 +445,6 @@ if social_network in network_list:
                 mpPinterest.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
  
             elif version=="accuracy":
-                #defino los parametros necesarios para la peticion
                 params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
                 imagComp = [str(json.loads(res)['url']) for res in respuesta]         
@@ -867,6 +855,7 @@ if social_network in network_list:
         #########################################################################################################################################
         #-------------------------------------------------------DATOS SPOTIFY API---------------------------------------------------------------
         #########################################################################################################################################
+
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyCompletitudMaster.html")
@@ -879,7 +868,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQD4CbRoBBPKPSQgkpe1r-un_zvFDnYzdcrbf4shTe9Z6fwQrydsSleHYwvSSBYnfU7EXbL8vbaCYmgwYvLKljfwNSPtEcU63vTNCqdeZccCDjCx5VwV9OaiBlo-3IA8QE5nWyYtoML1Nky5B6W81SNlF4kLiofO"
+        access_token= "BQCPba5tgScStYhdBjOU53ezYsU_fv_3AcOdJCdeJgiVKj3Rnq4Bq_Yz4SEULTYHmZqqJN6c8ERokMWfEilrbbzMJI4AgSsGvtLUCm-HCrjOmq_A53huJikIxwFa2PxLpEGEWnXSqtIQX2dAIn5VL2s5t-_6rdxJ"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -887,7 +876,7 @@ if social_network in network_list:
         #aqui tengo todos los objetos de spotify (cada playlist)
         timeline_spoti=pet_timeline_spoti.json()
 
-        imagesList=[]; namePlaylist=[]; createdByList=[]; songsList=[]; artistList=[]; listaCanciones=[]; tracks=[]; idList=[]; songArtistList=[]
+        imagesList=[]; namePlaylist=[]; createdByList=[]; songsList=[]; artistList=[]; listaCanciones=[]; tracks=[]; listSpotify=[];
     
         #recorro el timeline y cojo de la clave 'data' sus valores y dentro de sus valores la url de cada tablero
         for k,v in timeline_spoti.iteritems():
@@ -896,65 +885,46 @@ if social_network in network_list:
         for playlist in itemsSpoti:
             namePlaylist.append(playlist['name'])
             createdByList.append(playlist['owner']['id'])
-            imagesList.append(playlist['images'][0]['url'])
+            hashed_image= hashlib.sha1(playlist['images'][0]['url']).hexdigest()
+            imagesList.append(hashed_image)
             listaCanciones.append(playlist['tracks']['href'])
+            listSpotify.append({"owner": playlist['owner']['id'], "image": hashlib.sha1(playlist['images'][0]['url']).hexdigest(), "namePlayList": playlist['name'], "playlistSongs": []})
         
+        i=0
         #peticion para obtener los tracks (lista de canciones)
-        for listaTracks in listaCanciones:
+        for i, listaTracks in enumerate(listaCanciones):
             spotify_getTracks = listaTracks
             headers = {"Authorization": "Bearer " + access_token}
             pet_tracks= requests.get(spotify_getTracks,headers=headers)
             tracks_spoti= pet_tracks.json()
-            tracks.append(tracks_spoti)
-
-        #recorro para coger el nombre del artista y el nombre de la cancion
-        #tracks son los 6 albumes que tiene esta cuenta
-        for canciones in tracks:
-            songsArray = canciones['items']
-            for songs in songsArray:
-                songsList.append(songs['track']['name'])
-                idList.append(songs['track']['id'])
-                songsIdZip=zip (idList,songsList)
-                #lista de los nombres de los artistas de una cancion
-                artistList.append(songs['track']['artists'][0].get('name'))
-                artistIdZip=zip(idList,artistList)
-                dictSongs = dict(songsIdZip)
-                dictArtists = dict(artistIdZip)
-                songArtistList = [(k, dictSongs[k], dictArtists[k]) for k in sorted(dictSongs)]
-                songArtistList = [(k, v, dictArtists[k]) for k, v in songsIdZip]
+            for canciones in tracks_spoti['items']:
+                listSpotify[i]['playlistSongs'].append({canciones['track']['name']: canciones['track']['artists'][0].get('name')})
 
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
         sleep(30)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
         contadorFallos=0
         lista=[]
         if version in version_list:
-            params={'event':version,'name':'value','unit':"hours"}
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', ''))
-            print respuesta.json()
-          #pasar de unicode a dict
-          #for x in respuesta:
-            #resp = ast.literal_eval(x)
-            #lista.append(resp)                   
-        
-          #ordeno la lista de diccionarios por la posicion (va de 0 a x)
-          #newlist = sorted(lista, key=lambda posicion: posicion['i'])
+            params={'event':version,'name':'value'}
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
 
-
+        for x in respuesta:
+            resp = ast.literal_eval(x)
+            lista.append(resp)
     
+
+        ordeno la lista de diccionarios por la posicion (va de 0 a x)
+        newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
     else:
         print "Wrong social network or missing param"
         # {}: Obligatorio, []: opcional
         print "Usage: completitud.py {twitter|facebook|instagram|github [facebook_access_token]"
 
-
-
-
-#if __name__ == "__main__":
-    #main()
+# if __name__ == "__main__":
+#     app.run(port=9000)
 
 
 
