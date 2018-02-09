@@ -25,7 +25,6 @@ import os
 import hashlib
 from random import randrange
 from mixpanel import Mixpanel
-import mixpanel_api
 import datetime
 import base64
 from requests.auth import HTTPBasicAuth
@@ -102,7 +101,7 @@ if social_network in network_list:
         ##########################################################################################################################################
         sleep(30)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("70d459a2d5e96864f6eacdcb1a1fcd50","4dd2fff92abd81af8f06950f419f066a")
+        #x=mixpanel_api.Mixpanel("70d459a2d5e96864f6eacdcb1a1fcd50","4dd2fff92abd81af8f06950f419f066a")
         lista = []; listaid = []; liskey = []; lisvalue = []; listaFallosText = []; listaFallosUser = []
         contadorFallos = 0
 
@@ -206,7 +205,7 @@ if social_network in network_list:
 
         sleep(20)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("de21df1c2c63dff29ffce8a1a449494a","a7917928a9ba3dd88592fac7ac36e8a9")
+        #x=mixpanel_api.Mixpanel("de21df1c2c63dff29ffce8a1a449494a","a7917928a9ba3dd88592fac7ac36e8a9")
         contadorFallos=0
 
         #defino los parametros necesarios para la peticion
@@ -868,7 +867,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQCPba5tgScStYhdBjOU53ezYsU_fv_3AcOdJCdeJgiVKj3Rnq4Bq_Yz4SEULTYHmZqqJN6c8ERokMWfEilrbbzMJI4AgSsGvtLUCm-HCrjOmq_A53huJikIxwFa2PxLpEGEWnXSqtIQX2dAIn5VL2s5t-_6rdxJ"
+        access_token= "BQB2GUy_fog2w4Y--Wx5w4Kyupp9lXeoB30O20eIAaOFRnLC74oPB1o5tlJxT50rcEs3XEbQuq-a6INKxXQ6ycC8aEGpZGY1XGupqqNt1tlBGJLmAlht4K8DcruDWGfqUcQn00Sx0rb05wOgKJv8npfI5iLDq9cJ"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -876,7 +875,7 @@ if social_network in network_list:
         #aqui tengo todos los objetos de spotify (cada playlist)
         timeline_spoti=pet_timeline_spoti.json()
 
-        imagesList=[]; namePlaylist=[]; createdByList=[]; songsList=[]; artistList=[]; listaCanciones=[]; tracks=[]; listSpotify=[];
+        imagesList=[]; namePlaylist=[]; createdByList=[]; listaCanciones=[]; listSpotify=[];
     
         #recorro el timeline y cojo de la clave 'data' sus valores y dentro de sus valores la url de cada tablero
         for k,v in timeline_spoti.iteritems():
@@ -888,7 +887,7 @@ if social_network in network_list:
             hashed_image= hashlib.sha1(playlist['images'][0]['url']).hexdigest()
             imagesList.append(hashed_image)
             listaCanciones.append(playlist['tracks']['href'])
-            listSpotify.append({"owner": playlist['owner']['id'], "image": hashlib.sha1(playlist['images'][0]['url']).hexdigest(), "namePlayList": playlist['name'], "playlistSongs": []})
+            listSpotify.append({"owner": playlist['owner']['id'], "image": hashlib.sha1(playlist['images'][0]['url']).hexdigest(), "namePlayList": playlist['name'], "listSongs": []})
         
         i=0
         #peticion para obtener los tracks (lista de canciones)
@@ -898,8 +897,8 @@ if social_network in network_list:
             pet_tracks= requests.get(spotify_getTracks,headers=headers)
             tracks_spoti= pet_tracks.json()
             for canciones in tracks_spoti['items']:
-                listSpotify[i]['playlistSongs'].append({canciones['track']['name']: canciones['track']['artists'][0].get('name')})
-
+                listSpotify[i]['listSongs'].append({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0].get('name')]})
+        print listSpotify
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
@@ -912,11 +911,21 @@ if social_network in network_list:
 
         for x in respuesta:
             resp = ast.literal_eval(x)
-            lista.append(resp)
-    
+            #TODO: ordenar diccionario!!!!!!!!!!!!!!!!!!!!!!1
 
-        ordeno la lista de diccionarios por la posicion (va de 0 a x)
-        newlist = sorted(lista, key=lambda posicion: posicion['i'])
+            lista.append(resp)
+
+        #poner en mismo tipo de estructura que los datos de la api: [{owner, image, namePlayList, listSongs:[{id: [cancion,autor]},{}]}
+
+        # for datosAPI in listSpotify:
+        #     for datosComp in lista:
+        #         idsCom=datosComp.get('id',None)
+        #         #if 
+
+
+
+        #ordeno la lista de diccionarios por la posicion (va de 0 a x)
+        #newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
     else:
         print "Wrong social network or missing param"
