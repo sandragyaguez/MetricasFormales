@@ -50,7 +50,7 @@ def main():
 	query_client = MixpanelQueryClient('582d4b303bf22dd746b5bb1b9acbff63', '8b2d351133ac2a5d4df0700afc595fb6')
 
 	componentNames = ["instagram-timeline", "facebook-wall", "github-events", "googleplus-timeline", "twitter-timeline", "pinterest-timeline", 
-						"finance-search", "open-weather", "traffic-incidents", "reddit-timeline"]
+						"finance-search", "open-weather", "traffic-incidents", "reddit-timeline","spotify"]
 
 	if len(sys.argv) == 2 and sys.argv[1] in componentNames:
 		component = sys.argv[1]
