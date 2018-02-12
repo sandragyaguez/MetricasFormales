@@ -45,7 +45,6 @@ version_list = ["master","latency", "accuracy"]
 url_base_local= "http://localhost:8000"
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),
-#consola: python completitud.py twitter coge la "variable" twitter
 if len(sys.argv) >= 2:
     social_network = sys.argv[1]
 else:
@@ -867,7 +866,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQAm-l0EGPRXWBlcs23U37viER7ctm1jFkEIjgzpqJ-OG7MwfeJCkFtC7EJ9P1a1FtbheveRd_7Dbvg0wPlEiabVSeJrd1cUACSZIAkv47m_vhSlIqYXLY3gXXKNp2ZMRC32jNEyDiqI7QzncdgTjQOGM9WOSE6A"
+        access_token= "BQAjNFqSDJ1c8HNwuhJQV6dFpka0CXafwih-IVL_0sAIX0LHJlLHcMV0eRB6RtNGjrps8xkEUZxOOaqDjaBSAtZEdvgqBW1TSXvMq_A-jCjE-7b3071DnbSTabnObu5STCwEBPjayHKMbV1lXEUkVtIZFFO4TfK1"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -889,7 +888,6 @@ if social_network in network_list:
             listaCanciones.append(playlist['tracks']['href'])
             listSpotify.append({"owner": playlist['owner']['id'], "image": hashlib.sha1(playlist['images'][0]['url']).hexdigest(), "namePlayList": playlist['name'], "listSongs": []})
         
-        i=0
         #peticion para obtener los tracks (lista de canciones)
         for i, listaTracks in enumerate(listaCanciones):
             spotify_getTracks = listaTracks
@@ -899,12 +897,13 @@ if social_network in network_list:
             for canciones in tracks_spoti['items']:
                 listSpotify[i]['listSongs'].append({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0].get('name')]})
 
+        print listSpotify
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
         sleep(30)
         contadorFallos=0
-        listaComp=[]
+        listaComp=[]; liscompararAPI=[]; liscompararComp=[]
         if version in version_list:
             params={'event':version,'name':'value'}
             respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
@@ -913,23 +912,33 @@ if social_network in network_list:
             resp = ast.literal_eval(datosComp)
             listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs":[{resp["id"]:[resp["song"], resp["artist"]]}]})
 
-        
-        for i,datosAPI in enumerate(listSpotify):
-            idAPI=datosAPI["listSongs"][0].keys()
-            for i,datosComponente in enumerate(listaComp):
-                idComp=datosComponente["listSongs"][0].keys()
-                if idAPI==idComp:
-                    #saco todo ese elemento de la lista para comparar
-                    liscompararAPI.append(listSpotify[i])
-                    liscompararComp.append(listaComp[i])
+        #siguen sin tener la misma estructura!!!! los datos de la API lo guardo como owner, image, playList, listSongs: todas las canciones
+        #creo que lo prefiero como lo guardo en el componente
 
-                    #comparo todos los elemento de ese diccionario extraido
-                    #cmp de todo el resto de atributos!!
+        print len(listaComp)
+        def search(key, list):
+            return next((item for item in list if item.get(key, False)), False)
 
 
+        distintos = False
 
-        #ordeno la lista de diccionarios por la posicion (va de 0 a x)
-        #newlist = sorted(lista, key=lambda posicion: posicion['i'])
+        if len(listSpotify) != len(listaComp):
+            print "las longitudes de los diccionarios no son iguales"
+
+        for datosAPI in listSpotify:
+            idAPI=datosAPI["listSongs"][0].keys()[0]
+            found = False
+            datosComponente = search(idAPI, listaComp)
+            if datosComponente:
+                listaComp.remove(datosComponente)
+                found = True                        
+            else:
+                #poner que son distintos!!!!!!!!!!!!!!!
+                distintos = True
+                break
+
+        if not distintos:
+            print "son iguales"
 
     else:
         print "Wrong social network or missing param"
