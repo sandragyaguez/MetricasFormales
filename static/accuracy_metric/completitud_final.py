@@ -562,6 +562,14 @@ if social_network in network_list:
         contadorFallos=contadorFallos/(contador*2.0)
         mpTraffic.track(contadorFallos, "Fallos totales" + version, {"numero fallos": contadorFallos})
    
+
+############################################
+############################################
+        #CASO6: FINANCE-SEARCH
+############################################
+############################################
+
+
     elif social_network == 'finance-search':
 
         ##########################################################################################################################################
@@ -866,7 +874,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQAjNFqSDJ1c8HNwuhJQV6dFpka0CXafwih-IVL_0sAIX0LHJlLHcMV0eRB6RtNGjrps8xkEUZxOOaqDjaBSAtZEdvgqBW1TSXvMq_A-jCjE-7b3071DnbSTabnObu5STCwEBPjayHKMbV1lXEUkVtIZFFO4TfK1"
+        access_token= "BQBRw-BV-YREdPRR95lmGEhTHbxDbAo8yY98hFb9tbfC5kWiU_e6Bmc0yTfVPd7etexHTVimOmea9Q54IRKEiVqAmFvisGRa1nYFyHe2vCVASHVmdiSqzGtgyRJuhtVs8c4lGaRavzrjCwcPmhtgILmCDAieCQyE"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -897,7 +905,6 @@ if social_network in network_list:
             for canciones in tracks_spoti['items']:
                 listSpotify[i]['listSongs'].append({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0].get('name')]})
 
-        print listSpotify
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
@@ -910,15 +917,19 @@ if social_network in network_list:
 
         for datosComp in respuesta:
             resp = ast.literal_eval(datosComp)
-            listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs":[{resp["id"]:[resp["song"], resp["artist"]]}]})
+            
+            #siguen sin tener la misma estructura!!!! los datos de la API lo guardo como owner, image, playList, listSongs: todas las canciones
 
-        #siguen sin tener la misma estructura!!!! los datos de la API lo guardo como owner, image, playList, listSongs: todas las canciones
-        #creo que lo prefiero como lo guardo en el componente
+            #listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs":[{resp["id"]:[resp["song"], resp["artist"]]}]})
+            listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs":[]})
+            for song in resp:
+                song['listSongs']
+                listaComp[i]['listSongs'].append({resp["id"]:[resp["song"], resp["artist"]]})
 
-        print len(listaComp)
+
+
         def search(key, list):
             return next((item for item in list if item.get(key, False)), False)
-
 
         distintos = False
 
@@ -933,7 +944,7 @@ if social_network in network_list:
                 listaComp.remove(datosComponente)
                 found = True                        
             else:
-                #poner que son distintos!!!!!!!!!!!!!!!
+                mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
                 distintos = True
                 break
 
