@@ -867,7 +867,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQB2GUy_fog2w4Y--Wx5w4Kyupp9lXeoB30O20eIAaOFRnLC74oPB1o5tlJxT50rcEs3XEbQuq-a6INKxXQ6ycC8aEGpZGY1XGupqqNt1tlBGJLmAlht4K8DcruDWGfqUcQn00Sx0rb05wOgKJv8npfI5iLDq9cJ"
+        access_token= "BQAm-l0EGPRXWBlcs23U37viER7ctm1jFkEIjgzpqJ-OG7MwfeJCkFtC7EJ9P1a1FtbheveRd_7Dbvg0wPlEiabVSeJrd1cUACSZIAkv47m_vhSlIqYXLY3gXXKNp2ZMRC32jNEyDiqI7QzncdgTjQOGM9WOSE6A"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -898,29 +898,33 @@ if social_network in network_list:
             tracks_spoti= pet_tracks.json()
             for canciones in tracks_spoti['items']:
                 listSpotify[i]['listSongs'].append({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0].get('name')]})
-        print listSpotify
+
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
         sleep(30)
         contadorFallos=0
-        lista=[]
+        listaComp=[]
         if version in version_list:
             params={'event':version,'name':'value'}
             respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
 
-        for x in respuesta:
-            resp = ast.literal_eval(x)
-            #TODO: ordenar diccionario!!!!!!!!!!!!!!!!!!!!!!1
+        for datosComp in respuesta:
+            resp = ast.literal_eval(datosComp)
+            listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs":[{resp["id"]:[resp["song"], resp["artist"]]}]})
 
-            lista.append(resp)
+        
+        for i,datosAPI in enumerate(listSpotify):
+            idAPI=datosAPI["listSongs"][0].keys()
+            for i,datosComponente in enumerate(listaComp):
+                idComp=datosComponente["listSongs"][0].keys()
+                if idAPI==idComp:
+                    #saco todo ese elemento de la lista para comparar
+                    liscompararAPI.append(listSpotify[i])
+                    liscompararComp.append(listaComp[i])
 
-        #poner en mismo tipo de estructura que los datos de la api: [{owner, image, namePlayList, listSongs:[{id: [cancion,autor]},{}]}
-
-        # for datosAPI in listSpotify:
-        #     for datosComp in lista:
-        #         idsCom=datosComp.get('id',None)
-        #         #if 
+                    #comparo todos los elemento de ese diccionario extraido
+                    #cmp de todo el resto de atributos!!
 
 
 
