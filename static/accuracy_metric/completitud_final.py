@@ -887,7 +887,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQADxE8jw4KqQPewHUGpmsg6Kkpl5ZRxCzCSync1J3_wJtnXbhsIFVJRNM3WLwRzDLEMdPUvi9aH2Xa1K1CcXOeyo2lQqAKBvXbj028Qz9P2QK53C8oek6aRWgAuml5VWtxLG-RY3il0hTTMBmoLFGuQP8yln29D"
+        access_token= "BQAL_XZT53f9zdS2vas0LhTNVK6DNChbWLv1osgOxCU3O5qroT8zmWLeghXXxh-FnAnp1AGghKxJKJwjczJV-cxjhqkSn56J3aC10iNynf0xsxm9udzY_QJob-zv0qBXyTAPfDJ9phxLU3YFk5Jhyhr_WjHN4m22"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -915,13 +915,13 @@ if social_network in network_list:
             headers = {"Authorization": "Bearer " + access_token}
             pet_tracks= requests.get(spotify_getTracks,headers=headers)
             tracks_spoti= byteify(pet_tracks.json())
-            for canciones in tracks_spoti['items']:
-                listSpotify[i]['listSongs'].append({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0]['name']]})
+            for j,canciones in enumerate(tracks_spoti['items']):
+                listSpotify[i]['listSongs'].append({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0]['name'],j]})
 
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
-        sleep(10)
+        sleep(30)
         contadorFallos=0
         listaComp=[]; liscompararAPI=[]; liscompararComp=[]
         if version in version_list:
@@ -940,13 +940,15 @@ if social_network in network_list:
                     listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs": [{resp['id']: [resp['song'], resp['artist']]}]})
                     aux.append(key)
 
+    
+
         def search(key, list):
             return next((item for item in list if item.get(key, False)), False)
 
         distintos = False
         if len(listSpotify) != len(listaComp):
             print ("las longitudes de los diccionarios no son iguales")
-
+        
         for datosAPI in listSpotify:
             idAPI=datosAPI["listSongs"][0].keys()[0]
             found = False
