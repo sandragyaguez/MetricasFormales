@@ -44,7 +44,9 @@ mpWeather=Mixpanel("1a7d93449a9b07f9d00e86e03a1a7d6a")
 mpGoogleplus = Mixpanel('6751dd100b3e2547ac09c6ce4e5707ac')
 mpStock = Mixpanel("92f1f1dd586a4cad694bb8e8678456c2")
 mpReddit = Mixpanel("5dc419ba21c54259cf5bad65954c62d0")
-network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit"]
+
+
+network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit", "spotify"]
 version_list = ["master","latency", "accuracy"]
 url_base_remote= "http://metricas-formales.appspot.com/app/refresh_metric"
 url_base_local= "http://localhost:8000"
@@ -79,8 +81,7 @@ if social_network in network_list:
         ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
         ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
 
-        listestado=[]
-        listtpubl_ms=[]
+        listestado=[]; listtpubl_ms=[]
 
         #funcion random para crear tweets aleatorios
         def randomword(length):
@@ -108,7 +109,6 @@ if social_network in network_list:
         def publicar(estado):
             if estado == '':
                 return 1
-            print "--------------------------------------------------------------"
             #CODIGO DE ERROR SI EL TWEET YA ESTABA PUBLICADO (ERROR CODE STATUS 187). CUANDO RESPONSE ==403
             r = requests.post(url=url,data={"status":estado},auth=oauth)
             if r.status_code == 403:
@@ -129,7 +129,6 @@ if social_network in network_list:
                 text=tweet['text']
                 if text==estado:
                     break
-
         #Pruebas
         publicar(estado)
 
@@ -145,9 +144,7 @@ if social_network in network_list:
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         
         x=mixpanel_api.Mixpanel("c10939e3faf2e34b4abb4f0f1594deaa","4a3b46218b0d3865511bc546384b8928")
-        lista=[]
-        listacomp=[]
-        listatime=[]
+        lista=[]; listacomp=[]; listatime=[]
 
         if version in version_list:
             if version=="master":
@@ -175,7 +172,6 @@ if social_network in network_list:
                 zipComp=zip(listacomp,listatime)
                 #Diccionario tweet, time
                 dictComp=dict(zipComp)
-                print dictComp
 
                 #la key es el texto del tweet y el value son los times de refresco en el componente
                 #en la siguiente prueba, aunque en el dict de Python haya dos keys con sus values, dictComp solo tiene una key y un value porque
@@ -213,7 +209,6 @@ if social_network in network_list:
                 zipComp=zip(listacomp,listatime)
                 #Diccionario tweet, time
                 dictComp=dict(zipComp)
-                print dictComp
 
                 #la key es el texto del tweet y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
@@ -247,7 +242,6 @@ if social_network in network_list:
                 zipComp=zip(listacomp,listatime)
                 #Diccionario tweet, time
                 dictComp=dict(zipComp)
-                print dictComp
 
                 #la key es el texto del tweet y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
@@ -258,8 +252,6 @@ if social_network in network_list:
                         final_time=float(value)-float(valuesP)
                         print "final_time: " + str(final_time)
                         mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":"master"})
-
-
 
 #--------------------------------------------------
 #CASO2: FACEBOOK
@@ -287,13 +279,12 @@ if social_network in network_list:
             #     webbrowser.open_new(url_base_local + "/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html" + "?" + message)
             #     sleep(5)
 
-        # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
+        #Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
         
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
         access_token='EAANMUmJPs2UBAGO3kih5ywQREUbZAbYu3IEmLtKXoRWMw8BtIZA2AZAaaKCmYOZAKg7ZA0hszEBsA3BbICipIfF0ejYKwZAdpn05mZBc69twUyTQzkiv8A3UJ0Kl25GwBtXDGRDyNAOFIdZB6HOFiQOCN7QuXIhwZAxIIJz4nZAZAq3ZBZBV7OoSDTXxC83apmEXIrbAZD'
 
-        listestado=[]
-        listtpubl_ms=[]
+        listestado=[]; listtpubl_ms=[]
 
         #uso la API de facebook pasandole como parametro el access token y la version de la api que utilizamos
         graph = facebook.GraphAPI(access_token=access_token, version='2.3')
@@ -319,9 +310,7 @@ if social_network in network_list:
         sleep(70)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
         x=mixpanel_api.Mixpanel("1c480cfa1d4cbaaeadc5c102a9ff50ea","b1308de232be2c6edf329081831eba52")
-        lista=[]
-        listacomp=[]
-        listatime=[]
+        lista=[]; listacomp=[]; listatime=[]
 
         if version in version_list:
             if version=="master":
@@ -345,7 +334,6 @@ if social_network in network_list:
                 zipComp=zip(listacomp,listatime)
                 #Diccionario post, time
                 dictComp=dict(zipComp)
-                print dictComp
 
                 #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
@@ -379,7 +367,6 @@ if social_network in network_list:
                 zipComp=zip(listacomp,listatime)
                 #Diccionario post, time
                 dictComp=dict(zipComp)
-                print dictComp
 
                 #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
@@ -390,7 +377,6 @@ if social_network in network_list:
                             final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
                             mpFacebook.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
-
 
             elif version=="accuracy":
                 #Cuando lo tengas, defines los parametros necesarios para la peticion
@@ -413,7 +399,6 @@ if social_network in network_list:
                 zipComp=zip(listacomp,listatime)
                 #Diccionario post, time
                 dictComp=dict(zipComp)
-                print dictComp
 
                 #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
@@ -426,8 +411,6 @@ if social_network in network_list:
                             mpFacebook.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
 
    
-
-
 #--------------------------------------------------
 #CASO3: GOOGLEPLUS
 #--------------------------------------------------
@@ -509,8 +492,7 @@ if social_network in network_list:
         link="https://www.google.es/search?q=perros&espv=2&biw=1855&bih=966&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjchq_cz8vRAhXCzxQKHQ4DCWMQ_AUIBigB#imgrc=BqLqaxHeCHP0ZM%3A"
         board="829295787572730316"
 
-        listimags=[]
-        listtpubl_ms=[]
+        listimags=[]; listtpubl_ms=[]
 
         def post_pin(access_token, board, note, link, image_url):
             response = urllib.urlopen(
@@ -532,12 +514,9 @@ if social_network in network_list:
         sleep(2)
         post_pin(access_token, board, note, link, image_url)
 
-
         zipPython=zip(listimags,listtpubl_ms)
         #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
-        print dictPython
-
 
         ##########################################################################################################################################
         #----------------------------------------DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
@@ -546,9 +525,7 @@ if social_network in network_list:
         sleep(100)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
         x=mixpanel_api.Mixpanel("c6a5d1682613e89df94c6eceb3859be6","17a38edfdff693b56b50f332ae8f8e9e")
-        lista=[]
-        listacomp=[]
-        listatime=[]
+        lista=[]; listacomp=[]; listatime=[]
 
         if version in version_list:
             if version=="master":
@@ -617,7 +594,6 @@ if social_network in network_list:
                             mpPinterest.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
 
 
-            
             elif version=="accuracy":
                 #Cuando lo tengas, defines los parametros necesarios para la peticion
                 params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
@@ -649,9 +625,6 @@ if social_network in network_list:
                             final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
                             mpPinterest.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
-
-
-
 
 #--------------------------------------------------
 #CASO4: TRAFFIC INCIDENTS
@@ -692,8 +665,6 @@ if social_network in network_list:
         zipPython=zip(listpost,listtpubl_ms)
         #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
-        print dictPython
-
 
         ##########################################################################################################################################
         #----------------------------------------DATOS TRAFFIC COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
@@ -704,12 +675,9 @@ if social_network in network_list:
         url = "https://centauro.ls.fi.upm.es:4444/fakes/traffic/clean"
         response = requests.get(url, verify=False)
 
-
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
         x=mixpanel_api.Mixpanel("f84c5fe9d8cacb4271819b9e0f06f5e5","4b7abff36fb44e36332e12ff744d36c5")
-        lista=[]
-        listacomp=[]
-        listatime=[]
+        lista=[]; listacomp=[]; listatime=[]
 
         if version in version_list:
             if version=="master":
@@ -744,8 +712,6 @@ if social_network in network_list:
                             print "final_time: " + str(final_time)
                             mpTraffic.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
 
-
-
             elif version=="latency":
                 #Cuando lo tengas, defines los parametros necesarios para la peticion
                 params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
@@ -777,7 +743,6 @@ if social_network in network_list:
                             final_time=float(value)-float(valuesP)
                             print "final_time: " + str(final_time)
                             mpTraffic.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
-
 
             elif version=="accuracy":
                 #Cuando lo tengas, defines los parametros necesarios para la peticion
@@ -811,8 +776,6 @@ if social_network in network_list:
                             print "final_time: " + str(final_time)
                             mpTraffic.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
 
-
-
 #--------------------------------------------------
 #CASO5: OPEN WEATHER
 #--------------------------------------------------
@@ -839,10 +802,8 @@ if social_network in network_list:
         datos = [{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"}, {"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"}]
         
         datos1=datos[intervalo+1:]
-    
         datos1=str(datos1)
         datos2 = urllib.quote(datos1)
-
 
         if version in version_list:
             if(version=="master"):
@@ -855,8 +816,7 @@ if social_network in network_list:
             #     webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + datos2)
             #     sleep(3)
 
-        listpost=[]
-        listtpubl_ms=[]
+        listpost=[]; listtpubl_ms=[]
         
         #en la llamada tengo que mandar todos los datos, los este publicando en ese momento o no
         #codificar datos porque la peticion hay que hacerla en ese formato
@@ -867,12 +827,9 @@ if social_network in network_list:
             "content-type":"application/x-www-form-urlencoded"
         }
         url = "https://centauro.ls.fi.upm.es:4444/weather"
-        response = requests.post(url, data=datos, verify=False, headers=headers)
-        print response
-        
+        response = requests.post(url, data=datos, verify=False, headers=headers)        
 
         tpubl_ms=int(time.time())
-        print tpubl_ms
         
         #hasheo los datos para evitar problema de limitacion de mixpanel
         hash_object = hashlib.sha1(datos1)
@@ -883,8 +840,6 @@ if social_network in network_list:
         zipPython=zip(listpost,listtpubl_ms)
         #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
-        print dictPython
-        print "*********************************************"
 
         ##########################################################################################################################################
         #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
@@ -895,14 +850,9 @@ if social_network in network_list:
         url = "https://centauro.ls.fi.upm.es:4444/fakes/weather/clean"
         response = requests.get(url, verify=False)
 
-
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
         x=mixpanel_api.Mixpanel("c8fcf17a2d3201de0c409c902d8f4a08","60375710344595c8d8a05b18a9574adb")
-        lista=[]
-        listacomp=[]
-        listatime=[]
-        listacomp1=[]
-        listacomp2=[]
+        lista=[]; listacomp=[] listatime=[]; listacomp1=[]; listacomp2=[] 
 
         if version in version_list:
             if version=="master":
@@ -926,7 +876,6 @@ if social_network in network_list:
                 zipComp=zip(listacomp,listatime)
                 #Diccionario post, time
                 dictComp=dict(zipComp)
-                print dictComp
 
                 #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
@@ -959,7 +908,6 @@ if social_network in network_list:
                 zipComp=zip(listacomp,listatime)
                 #Diccionario post, time
                 dictComp=dict(zipComp)
-                print dictComp
 
                 #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
@@ -992,7 +940,6 @@ if social_network in network_list:
                 zipComp=zip(listacomp,listatime)
                 #Diccionario post, time
                 dictComp=dict(zipComp)
-                print dictComp
 
                 #la key es el texto de la publicacion y el value son los times de refresco en el componente
                 for key,value in dictComp.iteritems():
@@ -1010,7 +957,6 @@ if social_network in network_list:
         #-------------------------------------------------------DATOS STOCK API---------------------------------------------------------------
         ##########################################################################################################################################
         
-
         data = {"Symbol": "GOOGL", "Change": 10, "DaysLow": 10, "DaysHigh": 10, "YearLow": 10, "YearHigh": 10, "Volume": 10, "LastTradePriceOnly": 10, "Name":"Alphabet Inc."}
         data_text = urllib.urlencode(data)
         random_id = random.randint(0,1000000)
@@ -1030,7 +976,6 @@ if social_network in network_list:
         #----------------------------------------DATOS STOCK COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
         ##########################################################################################################################################
         datos = "data= " + urllib.quote(str(data))
-
         headers= {
             "content-type":"application/x-www-form-urlencoded"
         }
@@ -1114,3 +1059,78 @@ if social_network in network_list:
         print "(%s) Latencia de %s: %f" % (version,social_network, final_time)
 
         mpReddit.track(final_time, "Final time "+ version,{"time final": final_time, "version":version})
+
+
+#--------------------------------------------------
+#CASO: TRAFFIC INCIDENTS
+#--------------------------------------------------
+
+    elif social_network == 'traffic-incidents':
+
+        ##########################################################################################################################################
+        #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
+        ##########################################################################################################################################
+        
+        def randomword(length):
+            return ''.join(random.choice(string.lowercase) for i in range(length))
+
+        description=randomword(10)
+
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/traffic-incidents/demo/TrafficRefresco.html" + "?" + description)
+                sleep(3)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/traffic-incidents/demo/TrafficRefrescoLatency.html" + "?" + description)
+                sleep(3)
+            elif(version=="accuracy"):
+                webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficRefrescoAccuracy.html" + "?" + description)
+                sleep(3)
+
+        listpost=[]
+        listtpubl_ms=[]
+        
+        datos = {"description": description}
+        url = "https://centauro.ls.fi.upm.es:4444/traffic"
+        response = requests.post(url, data=datos, verify=False)
+        tpubl_ms=int(time.time())
+        listpost.append(description)
+        listtpubl_ms.append(tpubl_ms)
+
+        zipPython=zip(listpost,listtpubl_ms)
+        #diccionario con los mensajes publicados y su tiempo de publicacion
+        dictPython=dict(zipPython)
+
+
+ elif social_network == 'spotify':
+    
+        ##########################################################################################################################################
+        #---------------------------------------------------------DATOS SPOTIFY API--------------------------------------------------------------
+        ##########################################################################################################################################
+        
+
+        if version in version_list:
+            if(version=="master"):
+                webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyCompletitudMaster.html" + "?" + message)
+                sleep(5)
+            elif(version=="latency"):
+                webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyCompletitudLatency.html" + "?" + message)
+                sleep(5)
+            elif(version=="accuracy"):
+                webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyCompletitudAccuracy.html" + "?" + message)
+                sleep(5)
+
+        listestado=[]; listtpubl_ms=[]
+    
+        datos = {"description": description}
+        #create a playlist
+        url = "https://api.spotify.com/v1/users/me/playlists"
+        response = requests.post(url, data=datos, verify=False)
+        tpubl_ms=int(time.time())
+        listpost.append(description)
+        listtpubl_ms.append(tpubl_ms)
+
+        zipPython=zip(listestado,listtpubl_ms)
+        #diccionario con los mensajes publicados y su tiempo de publicacion
+        dictPython=dict(zipPython)
+        print dictPython

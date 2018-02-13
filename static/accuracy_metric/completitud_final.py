@@ -874,7 +874,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQBRw-BV-YREdPRR95lmGEhTHbxDbAo8yY98hFb9tbfC5kWiU_e6Bmc0yTfVPd7etexHTVimOmea9Q54IRKEiVqAmFvisGRa1nYFyHe2vCVASHVmdiSqzGtgyRJuhtVs8c4lGaRavzrjCwcPmhtgILmCDAieCQyE"
+        access_token= "BQCGJbMj4J69z8-jIibFJdlEnAZAET-RfrzKo8AtqRMmotxajn_Ho11KFZ7WvpzNgiO4whmgkYccmI-wuv9occbrZ3FW2-aQnCzPEpNlTSI_Kb4H0bBCyL6QVRkowOZtkrA3oPH51pORDSE6kzyipDCJAHgCbILl"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -886,7 +886,7 @@ if social_network in network_list:
     
         #recorro el timeline y cojo de la clave 'data' sus valores y dentro de sus valores la url de cada tablero
         for k,v in timeline_spoti.iteritems():
-            if(timeline_spoti.has_key('items')):
+            if 'items' in timeline_spoti:
                 itemsSpoti=timeline_spoti.get('items',None)
         for playlist in itemsSpoti:
             namePlaylist.append(playlist['name'])
@@ -908,25 +908,24 @@ if social_network in network_list:
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
-        sleep(30)
+        sleep(10)
         contadorFallos=0
         listaComp=[]; liscompararAPI=[]; liscompararComp=[]
         if version in version_list:
             params={'event':version,'name':'value'}
             respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
 
+        aux = []
+        #import pdb; pdb.set_trace()
         for datosComp in respuesta:
             resp = ast.literal_eval(datosComp)
-            
-            #siguen sin tener la misma estructura!!!! los datos de la API lo guardo como owner, image, playList, listSongs: todas las canciones
-
-            #listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs":[{resp["id"]:[resp["song"], resp["artist"]]}]})
-            listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs":[]})
-            for song in resp:
-                song['listSongs']
-                listaComp[i]['listSongs'].append({resp["id"]:[resp["song"], resp["artist"]]})
-
-
+            if "owner" in resp and "image" in resp and "playList" in resp and "song" in resp and "id" in resp and "artist" in resp: 
+                key = resp["owner"] + resp["image"] + resp["playList"] # Esto crashea si no tengo estas claves (comprobar)
+                if key in aux: # ya esta de antes
+                    listaComp[aux.index(key)]['listSongs'].append({resp["id"]: [resp["song"], resp["artist"]]})
+                else:
+                    listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs": [{resp["id"]: [resp["song"], resp["artist"]]}]})
+                    aux.append(key)
 
         def search(key, list):
             return next((item for item in list if item.get(key, False)), False)
@@ -944,7 +943,7 @@ if social_network in network_list:
                 listaComp.remove(datosComponente)
                 found = True                        
             else:
-                mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
+               # mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
                 distintos = True
                 break
 
