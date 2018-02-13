@@ -28,6 +28,8 @@ from mixpanel import Mixpanel
 import datetime
 import base64
 from requests.auth import HTTPBasicAuth
+import yaml
+
 
 #objetos Mixpanel para las distintas redes sociales (token del project)
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
@@ -37,6 +39,17 @@ mpPinterest = Mixpanel("6ceb3a37029277deb7f530ac7d65d7d4")
 mpTraffic = Mixpanel("85519859ef8995bfe213dfe822e72ab3")
 mpWeather = Mixpanel("19ecdb19541d1e7b61dce3d4d5fa485b")
 mpStock = Mixpanel("f2703d11ce4b2e6fed5d95f400306e48")
+
+def byteify(input):
+    if isinstance(input, dict):
+        return {byteify(key): byteify(value) for key, value in input.iteritems()}
+    elif isinstance(input, list):
+        return [byteify(element) for element in input]
+    elif isinstance(input, unicode):
+        return input.encode('utf-8')
+    else:
+        return input
+
 
 #---------------------------------------------------------------------------------------------------------------------
 network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit", "spotify"]
@@ -874,13 +887,13 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQCGJbMj4J69z8-jIibFJdlEnAZAET-RfrzKo8AtqRMmotxajn_Ho11KFZ7WvpzNgiO4whmgkYccmI-wuv9occbrZ3FW2-aQnCzPEpNlTSI_Kb4H0bBCyL6QVRkowOZtkrA3oPH51pORDSE6kzyipDCJAHgCbILl"
+        access_token= "BQADxE8jw4KqQPewHUGpmsg6Kkpl5ZRxCzCSync1J3_wJtnXbhsIFVJRNM3WLwRzDLEMdPUvi9aH2Xa1K1CcXOeyo2lQqAKBvXbj028Qz9P2QK53C8oek6aRWgAuml5VWtxLG-RY3il0hTTMBmoLFGuQP8yln29D"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
-        pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)
-        #aqui tengo todos los objetos de spotify (cada playlist)
-        timeline_spoti=pet_timeline_spoti.json()
+        pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)   
+
+        timeline_spoti = byteify(pet_timeline_spoti.json())
 
         imagesList=[]; namePlaylist=[]; createdByList=[]; listaCanciones=[]; listSpotify=[];
     
@@ -894,16 +907,16 @@ if social_network in network_list:
             hashed_image= hashlib.sha1(playlist['images'][0]['url']).hexdigest()
             imagesList.append(hashed_image)
             listaCanciones.append(playlist['tracks']['href'])
-            listSpotify.append({"owner": playlist['owner']['id'], "image": hashlib.sha1(playlist['images'][0]['url']).hexdigest(), "namePlayList": playlist['name'], "listSongs": []})
+            listSpotify.append({"owner": playlist['owner']['id'], "image": hashlib.sha1(playlist['images'][0]['url']).hexdigest(), "playList": playlist['name'], "listSongs": []})
         
         #peticion para obtener los tracks (lista de canciones)
         for i, listaTracks in enumerate(listaCanciones):
             spotify_getTracks = listaTracks
             headers = {"Authorization": "Bearer " + access_token}
             pet_tracks= requests.get(spotify_getTracks,headers=headers)
-            tracks_spoti= pet_tracks.json()
+            tracks_spoti= byteify(pet_tracks.json())
             for canciones in tracks_spoti['items']:
-                listSpotify[i]['listSongs'].append({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0].get('name')]})
+                listSpotify[i]['listSongs'].append({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0]['name']]})
 
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
@@ -914,7 +927,7 @@ if social_network in network_list:
         if version in version_list:
             params={'event':version,'name':'value'}
             respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
-
+ 
         aux = []
         #import pdb; pdb.set_trace()
         for datosComp in respuesta:
@@ -922,18 +935,17 @@ if social_network in network_list:
             if "owner" in resp and "image" in resp and "playList" in resp and "song" in resp and "id" in resp and "artist" in resp: 
                 key = resp["owner"] + resp["image"] + resp["playList"] # Esto crashea si no tengo estas claves (comprobar)
                 if key in aux: # ya esta de antes
-                    listaComp[aux.index(key)]['listSongs'].append({resp["id"]: [resp["song"], resp["artist"]]})
+                    listaComp[aux.index(key)]['listSongs'].append({resp['id']: [resp['song'], resp['artist']]})
                 else:
-                    listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs": [{resp["id"]: [resp["song"], resp["artist"]]}]})
+                    listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs": [{resp['id']: [resp['song'], resp['artist']]}]})
                     aux.append(key)
 
         def search(key, list):
             return next((item for item in list if item.get(key, False)), False)
 
         distintos = False
-
         if len(listSpotify) != len(listaComp):
-            print "las longitudes de los diccionarios no son iguales"
+            print ("las longitudes de los diccionarios no son iguales")
 
         for datosAPI in listSpotify:
             idAPI=datosAPI["listSongs"][0].keys()[0]
@@ -941,10 +953,12 @@ if social_network in network_list:
             datosComponente = search(idAPI, listaComp)
             if datosComponente:
                 listaComp.remove(datosComponente)
-                found = True                        
+                found = True
+                print "entra aqui"                        
             else:
                # mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
                 distintos = True
+                print "son distintos!"
                 break
 
         if not distintos:
