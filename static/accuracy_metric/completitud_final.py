@@ -887,7 +887,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQBmXJ8nWEFb-sHtGSQ-bp6pnaA2jZh6AEuj2qBGyqm81hvJzp2l53iFO32p3bhnYkpQR1ijbfLmzYqmkEMu4XahU2IbeqZkYs6znk_25Z-0PESaBVF6PYKOUV67XAbNbZkvSuEujv7ejaj0GVQFJ2MWaUe8d3Jt"
+        access_token= "BQATqAQNvtLfndYMOKODj35wqVUJQM9PFRN5OMmikBHP-kaOG4eUIMlPfXyuf0ITMGknwv7K-xOmhxckZwcuOkKwEjGXdYod53oYUfhK7PaLigc0UUk_P1SBKeKAOtUAfUIMRfnWA0xhOBicJHjgS8tqze9JhWL4"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -945,24 +945,27 @@ if social_network in network_list:
         
         if len(listSpotify) != len(listaComp):
             print ("las longitudes de los diccionarios no son iguales")
-        
-        for datosAPI in listSpotify:
-            idAPI=datosAPI["listSongs"].keys()
-            
-        for id in idAPI:
-            found = False
-            datosComponente = search(id, listaComp)
-            if datosComponente:
-                #comparar todos los campos de esos dos index
-                #listaComp.remove()
-                found = True
-                print "entra aqui"                        
-            else:
-                contadorFallos+=1
-               # mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
-                distintos = True
-                print "son distintos!"
-                break
+
+        import pdb; pdb.set_trace()
+
+        for j, componente in enumerate(listaComp):
+            for i,datosAPI in enumerate(listSpotify):
+                idAPI=datosAPI["listSongs"].keys()
+                for id in idAPI:
+                    found = False
+                    datosComponente = search(id, listaComp)
+                    if datosComponente:
+                        cmp(listaComp[j], listSpotify[i])
+                        #ver que esta pasando aqui porque creo que no avanzan los punteros por lo tanto no coge la siguiente lista de ninguno de los dos
+                        #comparar todos los campos de esos dos index
+                        #listaComp.remove()  
+                        found = True
+                    else:
+                        contadorFallos+=1
+                        #mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
+                        distintos = True
+                        print "son distintos!"
+                        break
 
         if not distintos:
             print "son iguales"
