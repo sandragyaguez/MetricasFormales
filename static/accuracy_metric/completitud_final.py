@@ -874,6 +874,16 @@ if social_network in network_list:
         #########################################################################################################################################
         #-------------------------------------------------------DATOS SPOTIFY API---------------------------------------------------------------
         #########################################################################################################################################
+         
+        #eliminar datos de mixpanel
+
+        #https://mixpanel.com/api/2.0/annotations/delete/
+        #params={'event':version,'name':'value'}
+            #respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
+ 
+
+
+
 
         if version in version_list:
             if(version=="master"):
@@ -887,7 +897,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQATqAQNvtLfndYMOKODj35wqVUJQM9PFRN5OMmikBHP-kaOG4eUIMlPfXyuf0ITMGknwv7K-xOmhxckZwcuOkKwEjGXdYod53oYUfhK7PaLigc0UUk_P1SBKeKAOtUAfUIMRfnWA0xhOBicJHjgS8tqze9JhWL4"
+        access_token= "BQDVuSu3nmp2klnUduWaggPoUwvXJLR6p1Agxibgj0OVKbmx-n2WZvL1VcpBUxkXuFEi4awQKw-mhkS2Yiq36ODUrWyEAHCl3XohwDpDAFeCtVnNX3-81Lb4W5qrFVnyRpniDaSiCRhyRAWxkyXfrVobRRth6fss"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -900,12 +910,13 @@ if social_network in network_list:
             if 'items' in timeline_spoti:
                 itemsSpoti=timeline_spoti.get('items',None)
         for playlist in itemsSpoti:
+            print playlist['id']
             namePlaylist.append(playlist['name'])
             createdByList.append(playlist['owner']['id'])
             hashed_image= hashlib.sha1(playlist['images'][0]['url']).hexdigest()
             imagesList.append(hashed_image)
             listaCanciones.append(playlist['tracks']['href'])
-            listSpotify.append({"owner": playlist['owner']['id'], "image": hashlib.sha1(playlist['images'][0]['url']).hexdigest(), "playList": playlist['name'], "listSongs": {}})
+            listSpotify.append({"id": playlist['id'],"owner": playlist['owner']['id'], "image": hashlib.sha1(playlist['images'][0]['url']).hexdigest(), "playList": playlist['name'], "songs": {}})
         
         #peticion para obtener los tracks (lista de canciones)
         for i, listaTracks in enumerate(listaCanciones):
@@ -914,12 +925,12 @@ if social_network in network_list:
             pet_tracks= requests.get(spotify_getTracks,headers=headers)
             tracks_spoti= byteify(pet_tracks.json())
             for canciones in tracks_spoti['items']:
-                listSpotify[i]['listSongs'].update({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0]['name']]})
-        
+                listSpotify[i]['songs'].update({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0]['name']]})
+                
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
-        sleep(30)
+        sleep(10)
         contadorFallos=0
         listaComp=[]; liscompararAPI=[]; liscompararComp=[]
         if version in version_list:
@@ -930,16 +941,16 @@ if social_network in network_list:
 
         for datosComp in respuesta:
             resp = ast.literal_eval(datosComp)
-            if "owner" in resp and "image" in resp and "playList" in resp and "song" in resp and "id" in resp and "artist" in resp: 
-                key = resp["owner"] + resp["image"] + resp["playList"] # Esto crashea si no tengo estas claves (comprobar)
+            if "owner" in resp and "image" in resp and "id" in resp and "playList" in resp and "song" in resp and "id" in resp and "artist" in resp: 
+                key = resp["id"]
                 if key in aux: # ya esta de antes
-                    listaComp[aux.index(key)]['listSongs'].update({resp['id']: [resp['song'], resp['artist']]})
+                    listaComp[aux.index(key)]['songs'].update({resp['id']: [resp['song'], resp['artist']]})
                 else:
-                    listaComp.append({"owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "listSongs": {resp['id']: [resp['song'], resp['artist']]}})
+                    listaComp.append({"id": resp["id"], "owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "songs": {resp['id']: [resp['song'], resp['artist']]}})
                     aux.append(key)
 
         def search(key, list):
-            return next((item for item in list if item['listSongs'].get(key, False)), False)
+            return next((item for item in list if item['id']==key), False)
 
         distintos = False
         
@@ -948,24 +959,19 @@ if social_network in network_list:
 
         import pdb; pdb.set_trace()
 
-        for j, componente in enumerate(listaComp):
-            for i,datosAPI in enumerate(listSpotify):
-                idAPI=datosAPI["listSongs"].keys()
-                for id in idAPI:
-                    found = False
-                    datosComponente = search(id, listaComp)
-                    if datosComponente:
-                        cmp(listaComp[j], listSpotify[i])
-                        #ver que esta pasando aqui porque creo que no avanzan los punteros por lo tanto no coge la siguiente lista de ninguno de los dos
-                        #comparar todos los campos de esos dos index
-                        #listaComp.remove()  
-                        found = True
-                    else:
-                        contadorFallos+=1
-                        #mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
-                        distintos = True
-                        print "son distintos!"
-                        break
+        for datosAPI in listSpotify:
+            found = False
+            datosComponente = search(datosAPI['id'], listaComp)
+            if datosComponente:
+                datosAPI == datosComponente
+                listaComp.remove(datosComponente)  
+                found = True
+            else:
+                contadorFallos+=1
+                #mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
+                distintos = True
+                print "son distintos!"
+                break
 
         if not distintos:
             print "son iguales"
