@@ -852,7 +852,7 @@ if social_network in network_list:
 
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
         x=mixpanel_api.Mixpanel("c8fcf17a2d3201de0c409c902d8f4a08","60375710344595c8d8a05b18a9574adb")
-        lista=[]; listacomp=[] listatime=[]; listacomp1=[]; listacomp2=[] 
+        lista=[]; listacomp=[]; listatime=[]; listacomp1=[]; listacomp2=[] 
 
         if version in version_list:
             if version=="master":
@@ -1087,8 +1087,7 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficRefrescoAccuracy.html" + "?" + description)
                 sleep(3)
 
-        listpost=[]
-        listtpubl_ms=[]
+        listpost=[]; listtpubl_ms=[]
         
         datos = {"description": description}
         url = "https://centauro.ls.fi.upm.es:4444/traffic"
@@ -1102,35 +1101,39 @@ if social_network in network_list:
         dictPython=dict(zipPython)
 
 
- elif social_network == 'spotify':
+    elif social_network == 'spotify':
     
         ##########################################################################################################################################
         #---------------------------------------------------------DATOS SPOTIFY API--------------------------------------------------------------
         ##########################################################################################################################################
         
-
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyCompletitudMaster.html" + "?" + message)
+                webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyRefrescoMaster.html")
                 sleep(5)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyCompletitudLatency.html" + "?" + message)
+                webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyRefrescoLatency.html")
                 sleep(5)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyCompletitudAccuracy.html" + "?" + message)
+                webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyRefrescoAccuracy.html")
                 sleep(5)
 
         listestado=[]; listtpubl_ms=[]
-    
-        datos = {"description": description}
+        access_token= "BQBlb4vsORgCC3MUTmL-n67WI05JLxHdJI_ElxZliyqJfqbSDCT_oGpLTf2a3obEvyEoAKthT9jrSHAG8vmi48QVYHbBKfslxUzgbB5WmtkJGNAhNT8Pro0tMEUzS88i3Zw2w5EJCQR15MYJSmhg1QKOZHqI3Blb"
+        headers = {"Authorization": access_token}
+
+        datos ={"description": "New playlist description", "public": "false", "name": "New Playlist"}
         #create a playlist
         url = "https://api.spotify.com/v1/users/me/playlists"
-        response = requests.post(url, data=datos, verify=False)
-        tpubl_ms=int(time.time())
-        listpost.append(description)
-        listtpubl_ms.append(tpubl_ms)
+        response = requests.post(url, data=datos, verify=False, headers=headers)
 
-        zipPython=zip(listestado,listtpubl_ms)
-        #diccionario con los mensajes publicados y su tiempo de publicacion
-        dictPython=dict(zipPython)
-        print dictPython
+        print response
+
+        # tpubl_ms=int(time.time())
+        # listpost.append(description)
+        # listtpubl_ms.append(tpubl_ms)
+
+        # zipPython=zip(listestado,listtpubl_ms)
+        # #diccionario con los mensajes publicados y su tiempo de publicacion
+        # dictPython=dict(zipPython)
+        # print dictPython
