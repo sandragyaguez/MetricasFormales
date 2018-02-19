@@ -1119,15 +1119,19 @@ if social_network in network_list:
                 sleep(5)
 
         listestado=[]; listtpubl_ms=[]
-        access_token= "BQBlb4vsORgCC3MUTmL-n67WI05JLxHdJI_ElxZliyqJfqbSDCT_oGpLTf2a3obEvyEoAKthT9jrSHAG8vmi48QVYHbBKfslxUzgbB5WmtkJGNAhNT8Pro0tMEUzS88i3Zw2w5EJCQR15MYJSmhg1QKOZHqI3Blb"
-        headers = {"Authorization": access_token}
+        access_token= "BQCZNOrr5b2apmPrAoPtVgcrwqgXTEFnDgQ2ffWyUeBF9ad7C7CCjynFXdjaXkDsEWBIxQzoNfnBnoDDNWtIzENnq4ML8eNbKW8czPSR890ndv6g9DVgAsg_MrWA_9EL6hgvazmnKYJUnJ8E2Qp4M2pFh-kVx7IQ"
 
         datos ={"description": "New playlist description", "public": "false", "name": "New Playlist"}
         #create a playlist
-        url = "https://api.spotify.com/v1/users/me/playlists"
-        response = requests.post(url, data=datos, verify=False, headers=headers)
+        url = "https://api.spotify.com/v1/users/deusconwet/playlists"
+        headers = {"Authorization": "Bearer " + access_token}
 
+        response= requests.post(url, datos ,headers=headers)
         print response
+
+
+
+        #response = requests.post(url, data=datos, verify=False, headers=headers)
 
         # tpubl_ms=int(time.time())
         # listpost.append(description)
