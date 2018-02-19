@@ -39,6 +39,7 @@ mpPinterest = Mixpanel("6ceb3a37029277deb7f530ac7d65d7d4")
 mpTraffic = Mixpanel("85519859ef8995bfe213dfe822e72ab3")
 mpWeather = Mixpanel("19ecdb19541d1e7b61dce3d4d5fa485b")
 mpStock = Mixpanel("f2703d11ce4b2e6fed5d95f400306e48")
+mpSpotify = Mixpanel ("bab1fc9e4af4e9e0fb7d5992fc35ab73")
 
 def byteify(input):
     if isinstance(input, dict):
@@ -876,14 +877,9 @@ if social_network in network_list:
         #########################################################################################################################################
          
         #eliminar datos de mixpanel
-
-        #https://mixpanel.com/api/2.0/annotations/delete/
-        #params={'event':version,'name':'value'}
-            #respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
- 
-
-
-
+        #request = requests.get('https://mixpanel.com/api/2.0/engage',  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
+        #print request
+        #requests.delete('https://mixpanel.com/api/2.0/annotations/delete/', params, auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', ''))
 
         if version in version_list:
             if(version=="master"):
@@ -897,7 +893,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQDVuSu3nmp2klnUduWaggPoUwvXJLR6p1Agxibgj0OVKbmx-n2WZvL1VcpBUxkXuFEi4awQKw-mhkS2Yiq36ODUrWyEAHCl3XohwDpDAFeCtVnNX3-81Lb4W5qrFVnyRpniDaSiCRhyRAWxkyXfrVobRRth6fss"
+        access_token= "BQBlb4vsORgCC3MUTmL-n67WI05JLxHdJI_ElxZliyqJfqbSDCT_oGpLTf2a3obEvyEoAKthT9jrSHAG8vmi48QVYHbBKfslxUzgbB5WmtkJGNAhNT8Pro0tMEUzS88i3Zw2w5EJCQR15MYJSmhg1QKOZHqI3Blb"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -910,7 +906,6 @@ if social_network in network_list:
             if 'items' in timeline_spoti:
                 itemsSpoti=timeline_spoti.get('items',None)
         for playlist in itemsSpoti:
-            print playlist['id']
             namePlaylist.append(playlist['name'])
             createdByList.append(playlist['owner']['id'])
             hashed_image= hashlib.sha1(playlist['images'][0]['url']).hexdigest()
@@ -938,7 +933,6 @@ if social_network in network_list:
             respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
  
         aux = []
-
         for datosComp in respuesta:
             resp = ast.literal_eval(datosComp)
             if "owner" in resp and "image" in resp and "id" in resp and "playList" in resp and "song" in resp and "id" in resp and "artist" in resp: 
@@ -957,8 +951,6 @@ if social_network in network_list:
         if len(listSpotify) != len(listaComp):
             print ("las longitudes de los diccionarios no son iguales")
 
-        import pdb; pdb.set_trace()
-
         for datosAPI in listSpotify:
             found = False
             datosComponente = search(datosAPI['id'], listaComp)
@@ -968,7 +960,7 @@ if social_network in network_list:
                 found = True
             else:
                 contadorFallos+=1
-                #mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
+                mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
                 distintos = True
                 print "son distintos!"
                 break
