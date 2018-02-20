@@ -1107,6 +1107,7 @@ if social_network in network_list:
         #---------------------------------------------------------DATOS SPOTIFY API--------------------------------------------------------------
         ##########################################################################################################################################
         
+
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyRefrescoMaster.html")
@@ -1119,23 +1120,29 @@ if social_network in network_list:
                 sleep(5)
 
         listestado=[]; listtpubl_ms=[]
-        access_token= "BQCZNOrr5b2apmPrAoPtVgcrwqgXTEFnDgQ2ffWyUeBF9ad7C7CCjynFXdjaXkDsEWBIxQzoNfnBnoDDNWtIzENnq4ML8eNbKW8czPSR890ndv6g9DVgAsg_MrWA_9EL6hgvazmnKYJUnJ8E2Qp4M2pFh-kVx7IQ"
+        access_token= "BQDg2Z0KkzSvbNEjCNeOO2AkzOSf9wKord7MM08sMcnplabELzT2g7ixK-48XryCqSH2s4FoDpG4Y3E9gVD4f26PSV58r4iDRz_TycG0LVWJs5unka9D2ahPB1xVsjZVDY1YL5KdJbTmtg8iXOx8PW3gf5F8MOAsTHZwlQRXAAE"
 
-        datos ={"description": "New playlist description", "public": "false", "name": "New Playlist"}
+        datos = {"description": "New playlist description", "public": "false", "name": "New Playlist"}
         #create a playlist
-        url = "https://api.spotify.com/v1/users/deusconwet/playlists"
-        headers = {"Authorization": "Bearer " + access_token}
+        url_newPlayList = "https://api.spotify.com/v1/users/deusconwet/playlists"
+        headers = {
+            'Authorization': 'Bearer ' + access_token,
+            'Content-Type': 'application/json'
+            }
 
-        response= requests.post(url, datos ,headers=headers)
-        print response
+        response= requests.post(url_newPlayList, json.dumps(datos) ,headers=headers)
+        idNewPlayList = response.json()['id']
+        newTracks= {"uris": ["spotify:track:6rqhFgbbKwnb9MLmUQDhG6"]}
+        url_postTracks= "https://api.spotify.com/v1/users/deusconwet/playlists/" + idNewPlayList + "/tracks"
+        print url_postTracks
+        res= requests.post(url_postTracks, json.dumps(newTracks) ,headers=headers)
+        print res.json()
 
-
-
-        #response = requests.post(url, data=datos, verify=False, headers=headers)
-
-        # tpubl_ms=int(time.time())
+        tpubl_ms=int(time.time())
         # listpost.append(description)
-        # listtpubl_ms.append(tpubl_ms)
+        listtpubl_ms.append(tpubl_ms)
+        print listtpubl_ms
+
 
         # zipPython=zip(listestado,listtpubl_ms)
         # #diccionario con los mensajes publicados y su tiempo de publicacion
