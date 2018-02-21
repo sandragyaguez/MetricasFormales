@@ -1,0 +1,100 @@
+
+#######################################     TWITTER     ###########################################
+
+#Credenciales para la autentificacion en la API de Twitter (estan metidas las claves de DEUS)
+twitter_credentials:
+    consumer_key: 'BOySBn8XHlyYDQiGiqZ1tzllx'
+    consumer_secret: 'xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE'
+    access_token: '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf'
+    access_token_secret: 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'
+
+#Fichero donde se guarda el estado de Twitter
+file_data_Twitter: "respuestasTwitter.txt"
+
+#url de Twitter
+url_Twitter: "https://api.twitter.com/1.1/statuses/home_timeline.json?count=200"
+
+
+#######################################     FACEBOOK    ###########################################
+
+#Credenciales para la autentificacion en la API de Facebook (estan metidas las claves de Alvaro Conwet)
+facebook_credentials:
+    access_token: 'ef889927776cb9d57432633b4ba74345'
+    app_id: '2068167070136934'
+
+#Fichero donde se guarda el estado de Facebook
+file_data_Facebook: "respuestasFacebook.txt"
+
+#url de Twitter
+url_Facebook: "https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=client_credentials"
+
+
+#######################################     PINTEREST    ##########################################
+
+#Credenciales para la autentificacion en la API de Pinterest (estan metidas las claves de DEUS)
+pinterest_credentials:
+    access_token: 'AYzOkS8gPFoFyhU56X9RjekH8IQFFI3y549FYk9DmW-C0gBCfwAAAAA'
+
+#Fichero donde se guarda el estado de Pinterest
+file_data_Pinterest: "respuestasPinterest.txt"
+
+#url de Pinterest
+url_Pinterest: "https://api.pinterest.com/v1/me/pins/?access_token="
+
+
+#######################################     TRAFFIC    ############################################
+
+#Fichero donde se guarda el estado de Traffic
+file_data_Traffic: "respuestasTraffic.txt"
+
+#url de Traffic
+url_Traffic: "https://centauro.ls.etsiinf.upm.es:4444/traffic?map=39.56276609909911,-4.650120900900901,41.36456790090091,-2.848319099099099&key=AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"
+
+
+#######################################     OPEN-WEATHER    #######################################
+
+#Fichero donde se guarda el estado de Weather
+file_data_Weather: "respuestasWeather.txt"
+
+#url de Weather
+url_Weather: "https://centauro.ls.etsiinf.upm.es:4444/weather?lat=40.4336199&lon=-3.8134707000000003&units=metric&lang=es&appId=655f716c02b3f0aceac9e3567cfb46a8"
+
+
+#######################################     REDDIT    ##############################################
+
+#Fichero donde se guarda el estado de Reddit
+file_data_Reddit: "respuestasReddit.txt"
+
+#url de Reddit
+url_Reddit: "https://www.reddit.com/r/random.json"
+
+
+#######################################     SPOTIFY     ###########################################
+
+#Credenciales para la autentificacion en la API de Spotify (estan metidas las claves de Alvaro Conwet)
+spotify_credentials:
+    client_id: 'a00f88f629ff42c1b8d41ef082c5fed3'
+    client_secret: 'eb94b1160f8c419c9a88949a07b6ab0b'
+
+#Fichero donde se guarda el estado de Spotify
+file_data_Spotify: "respuestasSpotify.txt"
+
+#url de Spotify
+url_Spotify: "https://accounts.spotify.com/api/token"
+
+
+#######################################     GOOGLE     ############################################
+
+#Fichero donde se guarda el estado de Google
+file_data_Google: "respuestasGoogle.txt"
+
+#url de Google
+url_Google: "https://www.googleapis.com/auth/plus.me"
+
+#######################################     FINANCE     ###########################################
+
+#Fichero donde se guarda el estado de Finance
+file_data_Finance: "respuestasFinance.txt"
+
+#url de Google
+url_Finance: "https://centauro.ls.etsiinf.upm.es:4444/company?q=alpha"
