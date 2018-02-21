@@ -62,6 +62,9 @@ if len(sys.argv) >= 3:
 else:
     version = ''
 
+def randomword(length):
+    return ''.join(random.choice(string.lowercase) for i in range(length))
+
 #CASOS:
 if social_network in network_list:
 
@@ -82,10 +85,6 @@ if social_network in network_list:
         ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
 
         listestado=[]; listtpubl_ms=[]
-
-        #funcion random para crear tweets aleatorios
-        def randomword(length):
-            return ''.join(random.choice(string.lowercase) for i in range(length))
 
         estado=randomword(10)
         #PUBLICACION DE TWEET Y REQUEST DEL TIMELINE
@@ -261,10 +260,6 @@ if social_network in network_list:
         ##########################################################################################################################################
         #---------------------------------------------------------DATOS FACEBOOK API--------------------------------------------------------------
         ##########################################################################################################################################
-        
-        #funcion random para crear publicaciones aleatorias
-        def randomword(length):
-            return ''.join(random.choice(string.lowercase) for i in range(length))
 
         message=randomword(10)
 
@@ -423,10 +418,6 @@ if social_network in network_list:
         # Url para obtener nuevo token google: https://developers.google.com/+/web/api/rest/latest/activities/list#try-it
         # (Para el caso de Google, haces una peticion a la API con el explorer API, vas a networks, y coges el token que
         # viene en el header Authorization: 'Bearer TOKEN')
-
-        # generate random text
-        def randomword(length):
-            return ''.join(random.choice(string.lowercase) for i in range(length))
         randomtext = randomword(20)
         if version in version_list:
             if(version=="master"):
@@ -635,9 +626,6 @@ if social_network in network_list:
         ##########################################################################################################################################
         #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
         ##########################################################################################################################################
-        
-        def randomword(length):
-            return ''.join(random.choice(string.lowercase) for i in range(length))
 
         description=randomword(10)
 
@@ -1066,13 +1054,10 @@ if social_network in network_list:
 #--------------------------------------------------
 
     elif social_network == 'traffic-incidents':
-
-        ##########################################################################################################################################
-        #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
-        ##########################################################################################################################################
         
-        def randomword(length):
-            return ''.join(random.choice(string.lowercase) for i in range(length))
+    ##########################################################################################################################################
+    #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
+    ##########################################################################################################################################
 
         description=randomword(10)
 
@@ -1107,22 +1092,29 @@ if social_network in network_list:
         #---------------------------------------------------------DATOS SPOTIFY API--------------------------------------------------------------
         ##########################################################################################################################################
         
+        datos = {"name": randomword(8)}
+        datos=json.dumps(datos)
+        newTracks= {"uris": ["spotify:track:6rqhFgbbKwnb9MLmUQDhG6"]}
+        newTracks=json.dumps(newTracks)
+        datosEnviar= datos+newTracks
+        print datosEnviar
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyRefrescoMaster.html")
+                webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyRefrescoMaster.html" + "?" + datosEnviar)
                 sleep(5)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyRefrescoLatency.html")
+                webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyRefrescoLatency.html" + "?" + datosEnviar)
                 sleep(5)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyRefrescoAccuracy.html")
+                webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyRefrescoAccuracy.html" + "?" + datosEnviar)
                 sleep(5)
-
+                
         listestado=[]; listtpubl_ms=[]
-        access_token= "BQDg2Z0KkzSvbNEjCNeOO2AkzOSf9wKord7MM08sMcnplabELzT2g7ixK-48XryCqSH2s4FoDpG4Y3E9gVD4f26PSV58r4iDRz_TycG0LVWJs5unka9D2ahPB1xVsjZVDY1YL5KdJbTmtg8iXOx8PW3gf5F8MOAsTHZwlQRXAAE"
+        #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
+        #https://developer.spotify.com/web-api/console/post-playlists/
+        access_token= "BQCvNyN7VXJmgdMdHmxFYJI-n_E4VLELxyJvRXFkQXIEU54qndNgygDaAoC8FWDTkLK4aBcQsQUYP7mvKI61W_4VdnuoJQQ0t3EkjRCGacJVWtEFnMHAOkDov7UaNU5yOpq9CfGXvmCBVW7xZU082VFFSJh5JxcTy7alKN1ijc7OwBaqL0pxbK0vVbXBTz3Ref1XtFQ3cBw"
 
-        datos = {"description": "New playlist description", "public": "false", "name": "New Playlist"}
         #create a playlist
         url_newPlayList = "https://api.spotify.com/v1/users/deusconwet/playlists"
         headers = {
@@ -1130,12 +1122,11 @@ if social_network in network_list:
             'Content-Type': 'application/json'
             }
 
-        response= requests.post(url_newPlayList, json.dumps(datos) ,headers=headers)
+        response= requests.post(url_newPlayList, datos ,headers=headers)
         idNewPlayList = response.json()['id']
-        newTracks= {"uris": ["spotify:track:6rqhFgbbKwnb9MLmUQDhG6"]}
         url_postTracks= "https://api.spotify.com/v1/users/deusconwet/playlists/" + idNewPlayList + "/tracks"
         print url_postTracks
-        res= requests.post(url_postTracks, json.dumps(newTracks) ,headers=headers)
+        res= requests.post(url_postTracks, newTracks ,headers=headers)
         print res.json()
 
         tpubl_ms=int(time.time())
