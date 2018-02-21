@@ -66,3 +66,5 @@ target/
 
 # vscode conf
 .vscode
+
+*.yaml  
