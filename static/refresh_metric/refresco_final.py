@@ -1110,10 +1110,10 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyRefrescoAccuracy.html" + "?" + dataSend)
                 sleep(5)
                 
-        listestado=[]; listtpubl_ms=[]
+        listtpubl_ms=[]
         #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
         #https://developer.spotify.com/web-api/console/post-playlists/
-        access_token= "BQDEnWmmfTPGE48xb1xoETRhZirmnEFggfo1E2Q-HnUdD8iYASd9oOh_oMKEgaMbh-5BrD6nSkd2td7BfBN1NyF1RMMtb6xTJhqg6y8r5-lts97zLZfC_L7KXGt148ccKqFSRXAr-nwjAtlH4egDLkeV3fHsJI6jRNo4hatBgVxHr1lTb7rCUqFZPtSVrs7m6yWdJnLYqvY"
+        access_token = "BQBw3lgGnmQYEWey3qezIz8XoKVei57WMxxFxkr5f1YKuhx8vf4DO1my4XzkB0m_8PkVVHCCIawrxkuLvIMc0cTQTgX_G7yOt7qoMRrpYR8DpdNpbftypWVCrJziQTeKjjAd1iosEWmsp90Z4yI2tZZvWjrVnGuTsFH1vHvEeyBtmfMCeJ5n0Erh39rhsUqKjPxN8ubymUk"
 
         #create a playlist
         url_newPlayList = "https://api.spotify.com/v1/users/deusconwet/playlists"
@@ -1140,19 +1140,25 @@ if social_network in network_list:
         ##########################################################################################################################################
         #------------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
         ##########################################################################################################################################
-
+        sleep (50)
+        lista=[]
         if version in version_list:
             params={'event':version,'name':'value'}
-            #a la peticion se le mete el token
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('f73b9d342b7b76be34eb3c3ef9375478', '')).json()
-        
-            #for x in respuesta:
-                #pasar de unicode a dict
-                #resp = ast.literal_eval(x)
-                #lista.append(resp)
+            #a la peticion se le mete el api secret
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('e1437fb0cc27d32cad87bd94bcb95bc7', '')).json()
 
-        # #ordeno la lista de diccionarios por el post
+            for x in respuesta:
+                #pasar de unicode a dict
+                resp = ast.literal_eval(x)
+                lista.append(resp)
+            print lista
+            print dataSend
+            data = filter(lambda post: post['post'] == dataSend, lista)
+            print data
+
+        #ordeno la lista de diccionarios por el post
         # newlist = sorted(lista, key=lambda post: post['post'])
+
         #     for y in newlist:
         #         postcomp=y.items()[0][1]
         #         timecomp=y.items()[1][1]

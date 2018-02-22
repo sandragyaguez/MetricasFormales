@@ -42,5 +42,5 @@ document.addEventListener('WebComponentsReady', function() {
    }
   }        
   });
-}, 8000);
+}, 10000);
 });
