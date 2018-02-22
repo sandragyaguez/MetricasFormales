@@ -35,6 +35,8 @@ import mixpanel
 import mixpanel_api, json
 from mixpanel import Mixpanel
 from postGoogle import post as postGoogle
+from requests.auth import HTTPBasicAuth
+
 
 mpTwitter = Mixpanel("070bf8a01a6127ebf78325716490697a")
 mpFacebook=Mixpanel("f9177cf864c2778e099d5ec71113d0bf")
@@ -130,7 +132,6 @@ if social_network in network_list:
                     break
         #Pruebas
         publicar(estado)
-
         #zip con todos los post y sus correspondientes tiempos de publicacion
         zipPython=zip(listestado,listtpubl_ms)
         dictPython=dict(zipPython)
@@ -784,7 +785,6 @@ if social_network in network_list:
         #cuando divido entres 3 conozco el intervalo en el que estoy y a partir de que elemento tengo que coger en el array par apublicar
         #si por ejemplo tiempo=12. Divido 12/3=4 y se que tengo que publicar desde la posicion 4 de mi array datos
         
-
         intervalo=tiempo/int(3)
         #pongo datos random para que cada post sea unico
         datos = [{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"}, {"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"},{"temp": random.randint(0,100), "min": 1, "max": 40, "icon": "wi-day-sunny"}]
@@ -1048,7 +1048,6 @@ if social_network in network_list:
 
         mpReddit.track(final_time, "Final time "+ version,{"time final": final_time, "version":version})
 
-
 #--------------------------------------------------
 #CASO: TRAFFIC INCIDENTS
 #--------------------------------------------------
@@ -1092,28 +1091,29 @@ if social_network in network_list:
         #---------------------------------------------------------DATOS SPOTIFY API--------------------------------------------------------------
         ##########################################################################################################################################
         
-        datos = {"name": randomword(8)}
-        datos=json.dumps(datos)
-        newTracks= {"uris": ["spotify:track:6rqhFgbbKwnb9MLmUQDhG6"]}
-        newTracks=json.dumps(newTracks)
-        datosEnviar= datos+newTracks
-        print datosEnviar
-
+        datos = {'name' : randomword(8)}
+        playListSend = datos['name']
+        newTracks = {'uris': ["spotify:track:6rqhFgbbKwnb9MLmUQDhG6","spotify:track:1qfYG2JrchEyJiqKnkE7YQ"]}
+        track = newTracks['uris']
+        dataSend = playListSend
+        for i in track:
+            dataSend += i
+    
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyRefrescoMaster.html" + "?" + datosEnviar)
+                webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyRefrescoMaster.html" + "?" + dataSend)
                 sleep(5)
             elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyRefrescoLatency.html" + "?" + datosEnviar)
+                webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyRefrescoLatency.html" + "?" + dataSend)
                 sleep(5)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyRefrescoAccuracy.html" + "?" + datosEnviar)
+                webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyRefrescoAccuracy.html" + "?" + dataSend)
                 sleep(5)
                 
         listestado=[]; listtpubl_ms=[]
         #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
         #https://developer.spotify.com/web-api/console/post-playlists/
-        access_token= "BQCvNyN7VXJmgdMdHmxFYJI-n_E4VLELxyJvRXFkQXIEU54qndNgygDaAoC8FWDTkLK4aBcQsQUYP7mvKI61W_4VdnuoJQQ0t3EkjRCGacJVWtEFnMHAOkDov7UaNU5yOpq9CfGXvmCBVW7xZU082VFFSJh5JxcTy7alKN1ijc7OwBaqL0pxbK0vVbXBTz3Ref1XtFQ3cBw"
+        access_token= "BQDEnWmmfTPGE48xb1xoETRhZirmnEFggfo1E2Q-HnUdD8iYASd9oOh_oMKEgaMbh-5BrD6nSkd2td7BfBN1NyF1RMMtb6xTJhqg6y8r5-lts97zLZfC_L7KXGt148ccKqFSRXAr-nwjAtlH4egDLkeV3fHsJI6jRNo4hatBgVxHr1lTb7rCUqFZPtSVrs7m6yWdJnLYqvY"
 
         #create a playlist
         url_newPlayList = "https://api.spotify.com/v1/users/deusconwet/playlists"
@@ -1122,20 +1122,53 @@ if social_network in network_list:
             'Content-Type': 'application/json'
             }
 
-        response= requests.post(url_newPlayList, datos ,headers=headers)
+        response= requests.post(url_newPlayList, json.dumps(datos) ,headers=headers)
         idNewPlayList = response.json()['id']
         url_postTracks= "https://api.spotify.com/v1/users/deusconwet/playlists/" + idNewPlayList + "/tracks"
-        print url_postTracks
-        res= requests.post(url_postTracks, newTracks ,headers=headers)
-        print res.json()
+        res= requests.post(url_postTracks, json.dumps(newTracks) ,headers=headers)
 
         tpubl_ms=int(time.time())
         # listpost.append(description)
         listtpubl_ms.append(tpubl_ms)
         print listtpubl_ms
 
-
         # zipPython=zip(listestado,listtpubl_ms)
         # #diccionario con los mensajes publicados y su tiempo de publicacion
         # dictPython=dict(zipPython)
         # print dictPython
+
+        ##########################################################################################################################################
+        #------------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
+        ##########################################################################################################################################
+
+        if version in version_list:
+            params={'event':version,'name':'value'}
+            #a la peticion se le mete el token
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('f73b9d342b7b76be34eb3c3ef9375478', '')).json()
+        
+            #for x in respuesta:
+                #pasar de unicode a dict
+                #resp = ast.literal_eval(x)
+                #lista.append(resp)
+
+        # #ordeno la lista de diccionarios por el post
+        # newlist = sorted(lista, key=lambda post: post['post'])
+        #     for y in newlist:
+        #         postcomp=y.items()[0][1]
+        #         timecomp=y.items()[1][1]
+        #         listacomp.append(postcomp)
+        #         listatime.append(timecomp)
+
+        #         zipComp=zip(listacomp,listatime)
+        #         #Diccionario post, time
+        #         dictComp=dict(zipComp)
+
+        #         #la key es el texto de la publicacion y el value son los times de refresco en el componente
+        #         for key,value in dictComp.iteritems():
+        #             #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+        #             if(dictPython.has_key(key)):
+        #                 #si es asi, cojo los values de python y del componente y los comparo
+        #                 valuesP=dictPython.get(key,None)
+        #                 final_time=float(value)-float(valuesP)
+        #                 print "final_time: " + str(final_time)
+        #                 mpWeather.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
