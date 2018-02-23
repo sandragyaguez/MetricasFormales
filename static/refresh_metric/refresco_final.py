@@ -67,7 +67,6 @@ else:
 def randomword(length):
     return ''.join(random.choice(string.lowercase) for i in range(length))
 
-#CASOS:
 if social_network in network_list:
 
 #--------------------------------------------------
@@ -619,7 +618,7 @@ if social_network in network_list:
                             mpPinterest.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
 
 #--------------------------------------------------
-#CASO4: TRAFFIC INCIDENTS
+#CASO5: TRAFFIC INCIDENTS
 #--------------------------------------------------
 
     elif social_network == 'traffic-incidents':
@@ -766,7 +765,7 @@ if social_network in network_list:
                             mpTraffic.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
 
 #--------------------------------------------------
-#CASO5: OPEN WEATHER
+#CASO6: OPEN WEATHER
 #--------------------------------------------------
 
     elif social_network == 'open-weather':
@@ -1049,7 +1048,7 @@ if social_network in network_list:
         mpReddit.track(final_time, "Final time "+ version,{"time final": final_time, "version":version})
 
 #--------------------------------------------------
-#CASO: TRAFFIC INCIDENTS
+#CASO7: TRAFFIC INCIDENTS
 #--------------------------------------------------
 
     elif social_network == 'traffic-incidents':
@@ -1085,6 +1084,10 @@ if social_network in network_list:
         dictPython=dict(zipPython)
 
 
+#--------------------------------------------------
+#CASO8: SPOTIFY
+#--------------------------------------------------
+
     elif social_network == 'spotify':
     
         ##########################################################################################################################################
@@ -1113,9 +1116,8 @@ if social_network in network_list:
         listtpubl_ms=[]
         #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
         #https://developer.spotify.com/web-api/console/post-playlists/
-        access_token = "BQBw3lgGnmQYEWey3qezIz8XoKVei57WMxxFxkr5f1YKuhx8vf4DO1my4XzkB0m_8PkVVHCCIawrxkuLvIMc0cTQTgX_G7yOt7qoMRrpYR8DpdNpbftypWVCrJziQTeKjjAd1iosEWmsp90Z4yI2tZZvWjrVnGuTsFH1vHvEeyBtmfMCeJ5n0Erh39rhsUqKjPxN8ubymUk"
+        access_token = "BQAtOgZ4GRv8s66Rbp6lI34cizthYvY38spECtYeSaIjaAOhTAiVGCcvJ9lUsOZaVgay8G_m5WmJu_d3EdOyZV0En4rr_UaNjdSzC6_irwNHt7BYMt8Hd77cvbU9JzJPw3e5QSsS5OsiaTd_PpVd8ugGcysuq7JC3kufS8YrLIMq8yiZ-vzgmva9YZXBl6BEtlBQpQEWVFQ"
 
-        #create a playlist
         url_newPlayList = "https://api.spotify.com/v1/users/deusconwet/playlists"
         headers = {
             'Authorization': 'Bearer ' + access_token,
@@ -1131,6 +1133,7 @@ if social_network in network_list:
         # listpost.append(description)
         listtpubl_ms.append(tpubl_ms)
         print listtpubl_ms
+        print dataSend
 
         # zipPython=zip(listestado,listtpubl_ms)
         # #diccionario con los mensajes publicados y su tiempo de publicacion
@@ -1140,7 +1143,7 @@ if social_network in network_list:
         ##########################################################################################################################################
         #------------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
         ##########################################################################################################################################
-        sleep (50)
+        sleep (70)
         lista=[]
         if version in version_list:
             params={'event':version,'name':'value'}
@@ -1151,10 +1154,10 @@ if social_network in network_list:
                 #pasar de unicode a dict
                 resp = ast.literal_eval(x)
                 lista.append(resp)
-            print lista
-            print dataSend
-            data = filter(lambda post: post['post'] == dataSend, lista)
-            print data
+
+            for i in lista:
+                data = filter(lambda i: i['post'] == dataSend, lista)
+            
 
         #ordeno la lista de diccionarios por el post
         # newlist = sorted(lista, key=lambda post: post['post'])
