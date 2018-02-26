@@ -1116,7 +1116,7 @@ if social_network in network_list:
         listtpubl_ms=[]
         #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
         #https://developer.spotify.com/web-api/console/post-playlists/
-        access_token = "BQAtOgZ4GRv8s66Rbp6lI34cizthYvY38spECtYeSaIjaAOhTAiVGCcvJ9lUsOZaVgay8G_m5WmJu_d3EdOyZV0En4rr_UaNjdSzC6_irwNHt7BYMt8Hd77cvbU9JzJPw3e5QSsS5OsiaTd_PpVd8ugGcysuq7JC3kufS8YrLIMq8yiZ-vzgmva9YZXBl6BEtlBQpQEWVFQ"
+        access_token = "BQCgMXnDz8Dt3lj0zUW_LZD200QknWfICc_V9veDVE4JvaTLujg40zGMYQ22zrEbNjgpbu9I6npnAfnpVSaCK1DxbUn440f7CjUKSpZ6O2LWGOfZxFiykXuRK2qzYI3ysfeBCfPJWYQ4W6adfgBGc4R2rM4AckNeK-9gnvk4hVg4X6D7LV6epsS-6FyxCxDvUCq-vp6uKYY"
 
         url_newPlayList = "https://api.spotify.com/v1/users/deusconwet/playlists"
         headers = {
@@ -1132,8 +1132,6 @@ if social_network in network_list:
         tpubl_ms=int(time.time())
         # listpost.append(description)
         listtpubl_ms.append(tpubl_ms)
-        print listtpubl_ms
-        print dataSend
 
         # zipPython=zip(listestado,listtpubl_ms)
         # #diccionario con los mensajes publicados y su tiempo de publicacion
@@ -1154,6 +1152,8 @@ if social_network in network_list:
                 #pasar de unicode a dict
                 resp = ast.literal_eval(x)
                 lista.append(resp)
+            
+            print lista
 
             for i in lista:
                 data = filter(lambda i: i['post'] == dataSend, lista)
