@@ -3,16 +3,9 @@
 
 import sys
 import os
-import yaml
 from pymongo import Connection
 
 path = os.path.dirname(os.path.abspath(__file__))
-
-#Accedemos a todos los datos mediante el fichero yaml de configuracion
-output_file2 = os.path.join(path, "configUptime.yaml") 
-configFile = open(output_file2,"r")
-yaml_config = yaml.load(configFile)
-
 con = Connection('localhost')
 db = con.StatusAPIs
 
