@@ -46,7 +46,7 @@ mpWeather=Mixpanel("1a7d93449a9b07f9d00e86e03a1a7d6a")
 mpGoogleplus = Mixpanel('6751dd100b3e2547ac09c6ce4e5707ac')
 mpStock = Mixpanel("92f1f1dd586a4cad694bb8e8678456c2")
 mpReddit = Mixpanel("5dc419ba21c54259cf5bad65954c62d0")
-
+mpSpotify= Mixpanel ("f73b9d342b7b76be34eb3c3ef9375478")
 
 network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit", "spotify"]
 version_list = ["master","latency", "accuracy"]
@@ -1113,10 +1113,10 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyRefrescoAccuracy.html" + "?" + dataSend)
                 sleep(5)
                 
-        listtpubl_ms=[]
+        listtpubl_ms=[]; listpost=[]; listestado=[]
         #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
         #https://developer.spotify.com/web-api/console/post-playlists/
-        access_token = "BQCgMXnDz8Dt3lj0zUW_LZD200QknWfICc_V9veDVE4JvaTLujg40zGMYQ22zrEbNjgpbu9I6npnAfnpVSaCK1DxbUn440f7CjUKSpZ6O2LWGOfZxFiykXuRK2qzYI3ysfeBCfPJWYQ4W6adfgBGc4R2rM4AckNeK-9gnvk4hVg4X6D7LV6epsS-6FyxCxDvUCq-vp6uKYY"
+        access_token = "BQDD3qu_X-ivFj2sQ1acB5krIGyM_VG0UVHkFUQdJYv38MrZLi_IotJDs33SMymNJeurqPSEtqSUECfe0uiBge8fPifOAQiBfjD4nkuJrcY7rbKJMdzFh-ggtNwKAoEGkB6XO96AFVk6rIICrr70CdNhnrR0fQTb0lZtxFYN06YTkEzLzyBXFemBbv4p8-Mmk2MygnOgP0Q"
 
         url_newPlayList = "https://api.spotify.com/v1/users/deusconwet/playlists"
         headers = {
@@ -1130,19 +1130,18 @@ if social_network in network_list:
         res= requests.post(url_postTracks, json.dumps(newTracks) ,headers=headers)
 
         tpubl_ms=int(time.time())
-        # listpost.append(description)
+        listpost.append(dataSend)
         listtpubl_ms.append(tpubl_ms)
 
-        # zipPython=zip(listestado,listtpubl_ms)
-        # #diccionario con los mensajes publicados y su tiempo de publicacion
-        # dictPython=dict(zipPython)
-        # print dictPython
+        zipPython=zip(listestado,listtpubl_ms)
+        #diccionario con los mensajes publicados y su tiempo de publicacion
+        dictPython=dict(zipPython)
 
         ##########################################################################################################################################
         #------------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
         ##########################################################################################################################################
         sleep (70)
-        lista=[]
+        lista=[]; listacomp=[]; listatime=[]
         if version in version_list:
             params={'event':version,'name':'value'}
             #a la peticion se le mete el api secret
@@ -1152,32 +1151,30 @@ if social_network in network_list:
                 #pasar de unicode a dict
                 resp = ast.literal_eval(x)
                 lista.append(resp)
+
+            timeComp=lista[0]['time']
+            print timeComp
+            final_time=float(timeComp)-float(tpubl_ms)
             
-            print lista
+            #print "final_time: " + str(final_time)
+            mpSpotify.track(final_time, "Final time",{"time final": final_time, "post": dataSend, "version":version})
 
-            for i in lista:
-                data = filter(lambda i: i['post'] == dataSend, lista)
-            
+            # for y in lista:
+            #     postcomp=y.items()[0][1]
+            #     timecomp=y.items()[1][1]
+            #     listacomp.append(postcomp)
+            #     listatime.append(timecomp)
 
-        #ordeno la lista de diccionarios por el post
-        # newlist = sorted(lista, key=lambda post: post['post'])
+            # zipComp=zip(listacomp,listatime)
+            # #Diccionario post, time
+            # dictComp=dict(zipComp)
 
-        #     for y in newlist:
-        #         postcomp=y.items()[0][1]
-        #         timecomp=y.items()[1][1]
-        #         listacomp.append(postcomp)
-        #         listatime.append(timecomp)
-
-        #         zipComp=zip(listacomp,listatime)
-        #         #Diccionario post, time
-        #         dictComp=dict(zipComp)
-
-        #         #la key es el texto de la publicacion y el value son los times de refresco en el componente
-        #         for key,value in dictComp.iteritems():
-        #             #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-        #             if(dictPython.has_key(key)):
-        #                 #si es asi, cojo los values de python y del componente y los comparo
-        #                 valuesP=dictPython.get(key,None)
-        #                 final_time=float(value)-float(valuesP)
-        #                 print "final_time: " + str(final_time)
-        #                 mpWeather.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
+            # #la key es el texto de la publicacion y el value son los times de refresco en el componente
+            # for key,value in dictComp.iteritems():
+            # #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+            #     if(dictPython.has_key(key)):
+            #     #si es asi, cojo los values de python y del componente y los comparo
+            #         valuesP=dictPython.get(key,None)
+            #         final_time=float(value)-float(valuesP)
+            #         print "final_time: " + str(final_time)
+            #         mpSpotify.track(final_time, "Final time",{"time final": final_time, "post": key, "version":version})
