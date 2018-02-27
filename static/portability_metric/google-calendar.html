@@ -1,0 +1,633 @@
+<!-- 
+#Author: Robinson Ganchala
+#Google Calendar
+# <google-calendar 
+		calendarId="{{calendarId}}" 
+		token="{{token}}" 
+		api_key="{{api_key}}">
+  </google-calendar>
+ -->
+ <link rel="import" href="../iron-ajax/iron-ajax.html">
+ <link rel="import" href="../paper-header-panel/paper-header-panel.html">
+ <link rel="import" href="../paper-toolbar/paper-toolbar.html">
+ <link rel="import" href="../iron-icons/iron-icons.html">
+ <link rel="import" href="../polymer/polymer.html">
+ <link rel="import" href="../paper-spinner/paper-spinner.html">
+ <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+
+<dom-module id="google-calendar">
+
+    <template>
+
+    <style is="custom-style">
+        :host {
+            display: inline-block;
+            width: var(--google-calendar-width,400px);
+            height:var(--google-calendar-height,400px);
+            min-height: 300px;
+            min-width: 300px;
+            position: relative;
+            font-size: 14px;
+        }
+        paper-header-panel {
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            min-width: 300px;
+            position: relative;
+        }
+        paper-toolbar{
+            background: -webkit-linear-gradient(top,#4387fd,#4683ea);
+            box-shadow: inset 0px -5px 25px -6px rgba(0,0,0,0.64);
+            display: inline-block;
+        }
+        .dropbtn {
+            font-family: 'Roboto Slab', serif;
+            font-weight: bolder;
+            text-align: center;
+            width: auto;
+            color: white;
+            padding: 12px;
+            padding-left: 5px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        #eventos{
+            max-width: 300px;
+            max-height: 127px;
+            overflow-y: auto;
+        }
+        #listaEventos{
+            font-family: 'Roboto Slab', serif;
+            font-weight: lighter;
+            text-align: left;
+            color: black;
+            padding-top: 11px;
+            padding-left: 13px;
+            height: 30px;
+            width: 260px;
+            border-bottom: 1px solid #9E9E9E;
+        }
+        #listaEventos:hover{
+            background-color: #e0e0e0;
+        }
+        #acceder{
+            color: blue;
+        }
+        paper-toolbar div.title {
+            font-family: 'Roboto Slab', serif;
+            margin-left: 25px;
+        }
+        paper-spinner {
+            right: 48px;
+        }
+        .refresh.button{
+            right: 25px;
+            top: 19px;
+            position: absolute;
+            border-top-left-radius: 50px;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            border-top-right-radius: 50px;
+        }
+        .refresh.button:hover{
+             background: #e0e0e0;
+        }
+        #contenido{
+            text-align: center;
+            /*margin: 5px;*/
+            position: fixed;
+            width: 400px;
+        }
+        #calendario{
+            margin: auto;
+            display: table;
+            box-shadow:0px 3px 3px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            height: 100%;
+        }
+        #calendario .header{
+            background: -webkit-linear-gradient(top,#4387fd,#4683ea);
+            box-shadow: inset 0px 6px 109px -30px rgba(0,0,0,0.64);
+            position: relative;
+            font-weight: bold;
+            color: #fff;
+        }
+        #calendario .header span{
+            display: inline-block;
+            line-height: 25px;
+        }
+        #calendario .header .button{
+            text-align: center;
+            position: absolute;
+            border-top-left-radius: 50px;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            border-top-right-radius: 50px;
+        }
+        .right.button{
+            right: 0;
+            top: 25%;
+        }
+        .left.button{
+            left: 0;
+            top: 25%;
+        }
+        #calendario .header .button:hover{
+            background: #e0e0e0;
+        }
+        #calendario .header .month-year{
+            letter-spacing: 1px;
+            width: 100%;
+            text-align:center;
+        }
+        .dropbtn.mes{
+            padding-left: 16px;
+        }
+        #mesLista {
+            color: black;
+            font-family: 'Roboto Slab', serif;
+            max-height: 150px;
+            max-width: 125px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }#choose {
+            padding-top: 10px;
+            height: 30px;
+            width: 102px;
+        }
+        #choose:hover {
+            background: #e0e0e0;
+        }
+        .dropbtn.anio{
+            padding-left: 16px;
+        }
+        #anioLista{
+            color: black;
+            font-family: 'Roboto Slab', serif;
+            max-height: 150px;
+            max-width: 85px;
+            left: -3px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        #choose2 {
+            padding-top: 10px;
+            height: 30px;
+            width: 70px;
+        }
+        #choose2:hover {
+            background: #e0e0e0;
+        }
+        #calendario table{
+            width: 100%;
+            background:white;
+            border-collapse: collapse;
+        }
+        #calendario td{
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border:1px solid #e0e0e0 ;
+            cursor: default;
+            position: relative;
+        }
+        #calendario #days td{
+            height: 26px;
+            line-height: 26px;
+            text-transform: uppercase;
+            color: black;
+        }
+        #calendario #days tr:first-child td{
+            border:none;
+        }
+        #calendario #days tr:first-child td:first-child
+        {
+            border-left:1px solid #e0e0e0;
+        }
+        #calendario #days tr:first-child td:last-child
+        {
+            border-right:1px solid #e0e0e0;
+        }
+        #calendario #days td:not(:last-child){
+            border-right: 1px solid #fff;
+        }
+        #calendario #calendar-frame td.today {
+            background: #e0e0e0;
+        }
+        #calendario #calendar-frame td:not(.nil):hover {
+            color:#fff;
+            background:#e0e0e0;
+        }
+        #calendario #calendar-frame td span {
+            font-size:12px;
+            position:relative;
+        }
+        #calendario #calendar-frame td span :first-child {
+            bottom:5px;
+        }
+        #calendario #calendar-frame td span:last-child {
+            top:5px;
+        }
+        #calendario #calendar-frame table.curr {
+            float:left;
+        }
+        td > .more-info{
+            display:none;
+            color: black;
+            background: #e0e0e0;
+            box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.64);
+        }
+        .more-info-text{
+            margin: 10px 10px;
+        }
+        td:hover > .more-info{
+            display: inline-block;
+            position: absolute;
+            z-index: 1;
+            top: 32px;
+            left:0px;
+            width: auto;
+            height: auto;
+        }
+    </style>
+
+        <iron-ajax
+            id="solicitud";
+            url="https://www.googleapis.com/calendar/v3/calendars/primary/events?key={{api_key}}&access_token={{token}}&fields=items"
+            method="GET"
+            handle-as="json"
+            loading="{{cargando}}"
+            on-response="responseEvents">
+        </iron-ajax>
+
+        <iron-ajax
+             id="solicitud2";
+             method="GET"
+             loading="{{cargando}}"
+             url="https://www.googleapis.com/calendar/v3/colors?key={{api_key}}&access_token={{token}}&fields=event"
+             handle-as="json"
+             on-response="responseColors">
+        </iron-ajax>
+
+        <paper-header-panel mode="waterfall" class="flex">
+            <paper-toolbar>
+                <div class="dropdown">
+                    <div class="dropbtn">
+                        <iron-icon icon="icons:perm-contact-calendar"></iron-icon>Eventos
+                    </div>
+                    <div id="eventos" class="dropdown-content">
+                        <template is="dom-repeat" items="[[getEvent.items]]">
+                            <div id="listaEventos" on-tap="_getEvento" title="Ir">
+                                [[item.summary]]&nbsp&nbsp&nbsp&nbsp<a href="{{_compuCalHref(item.htmlLink)}}" id="acceder" target="_blank">Acceder</a>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+               <div class="title">Google Calendar</div>
+               <div><paper-spinner alt="Cargando información" active="[[cargando]]"></paper-spinner></div>
+               <div>
+                  <iron-icon icon="icons:refresh" class="refresh button" title="refresh" on-tap="consultar"></iron-icon> 
+               </div> 
+            </paper-toolbar>
+
+            <div id="contenido" class="content">
+                <div id="calendario">
+                    <div class="header">
+                        <iron-icon icon="chevron-left" class="left button" id ="prev" on-tap="_prev"></iron-icon>
+                        <div class="dropdown">
+                            <div class="dropbtn mes">
+                                {{_getUpdated(month,'month')}}
+                                <iron-icon icon="icons:arrow-drop-down"></iron-icon>
+                            </div>
+                            <div id="mesLista" class="dropdown-content">
+                                <template is="dom-repeat" items="{{months_names}}">
+                                    <div id="choose" on-tap="_setMonth">[[item]]</div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="dropdown">
+                            <div class="dropbtn anio">
+                                {{_getUpdated(year,'year')}}
+                                <iron-icon icon="icons:arrow-drop-down"></iron-icon>
+                            </div>
+                            <div id="anioLista" class="dropdown-content">
+                                <template is="dom-repeat" items="{{yearList}}">
+                                    <div id="choose2" on-tap="_setYear">[[item]]</div>
+                                </template>
+                            </div>
+                        </div>
+                        <iron-icon icon="chevron-right" class="right button" id ="next" on-tap="_next"></iron-icon>
+                    </div>
+
+                    <table id ="days">
+                        <tr>
+                            <td>L</td><td>M</td><td>X</td><td>J</td><td>V</td><td>S</td><td>D</td>
+                        </tr>
+                    </table>
+
+                    <div id="calendar-frame">
+                        <table class="curr">
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </paper-header-panel>
+    </template>
+
+<script>
+    Polymer({
+        is: 'google-calendar',
+        properties: {
+            yearList:{
+                type: Array,
+                value: function(){
+                    return [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,
+                    2021,2022,2023,2024,2025,2026,2027,2028,2029,2030]
+                }
+            },
+            months_names: {
+                type: Array,
+                value: function(){
+                    return ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+                }
+            },
+            actual: {
+                type: Date
+            },
+            month: {
+                type: Date
+            },
+            year:{
+                type: Date
+            },
+            api_Key: {
+                type: String,
+                reflectToAttribute: true,
+                notify: true
+            },
+            token: {
+                type: String,
+                reflectToAttribute: true,
+                notify: true
+            },
+            getEvent: {
+                type: Array,
+                notify: true,
+                value: function() { return {}; }
+            },
+            colores: {
+                type: Object,
+                notify: true,
+                value: function() { return {}; }
+            },
+            okEvent:{
+                type: Boolean,
+                value: false,
+                observer: '_OK'
+            },
+            okColor:{
+                type: Boolean,
+                value: false,
+                observer: '_OK'
+            },
+            refresh_time: {
+                type: Number,
+                value: 60000,
+                reflectToAttribute: true
+            }
+        },
+        ready: function() {
+            this.$.solicitud.generateRequest();
+            this.$.solicitud2.generateRequest();
+            //var back = this;
+            // this.sleep(5000).then(function () {
+            //     back._OK();
+            // });
+        },
+        init: function(){
+            this.actual = new Date();
+            this.month = new Date();
+            this.year = new Date();
+        },
+        // sleep: function(time) {
+        //  return new Promise((resolve) => setTimeout(resolve, time));
+        // },
+        consultar: function(){
+            this.$.solicitud.generateRequest();
+            this.$.solicitud2.generateRequest();
+            this.okEvent=false;
+            this.okColor=false;
+            this._OK();
+        },
+        _resfresh_time: function(){
+            this.$.solicitud.generateRequest();
+            this.$.solicitud2.generateRequest();
+            this.pintarCalendario(this.year,this.month);
+        },
+        _paintEvent: function(pYear,pMonth){
+           var aux = this.getEvent.items;
+           for(var i=0;i<this.getEvent.items.length;i++){
+                if(aux[i].start.date){
+                    this._paintEvent2(pYear,pMonth,aux[i]);
+               }
+               if(aux[i].start.dateTime){
+                    this._paintEvent3(pYear,pMonth,aux[i]);
+                }
+           }
+        },
+        _paintEvent2: function(pYear,pMonth,e){
+            if(pYear===parseInt(e.start.date.substring(0,4))&&pMonth===parseInt(e.start.date.substring(5,7))){
+                console.log("DAYEVENT DATETIME: "+e.start.date +" "+ e.summary);
+                var pinta = parseInt(e.start.date.substring(8,11));
+                var target = document.getElementsByClassName("curr")[0].getElementsByTagName("tbody")[0];
+                var inicio = new Date(pYear,pMonth-1,1);
+                var iniciaEnDia = (inicio.getDay()==0)?7:inicio.getDay();
+                console.log("SUMAREMOS time: "+iniciaEnDia);
+                var newColor=this.colores.event[e.colorId];
+                var location=e.location;
+                var titulo=e.summary;
+                var call = target.getElementsByTagName("td")[pinta+iniciaEnDia-2];
+                if(newColor)
+                target.getElementsByTagName("td")[pinta+iniciaEnDia-2].style.backgroundColor=newColor.background;
+                else
+                target.getElementsByTagName("td")[pinta+iniciaEnDia-2].style.backgroundColor="#F4511E";
+                call.innerHTML = "<a href="+this._compuCalHref(e.htmlLink)+" target='_blank'>"+pinta+"</a>";
+                if(location===undefined){
+                    location="";
+                }
+                call.innerHTML += "<div class='style-scope more-info google-calendar'>"
+                    +"<div class='style-scope more-info-text google-calendar'>"
+                    +titulo +". <br>"
+                    +location +"</div></div>";
+            }
+        },
+        _paintEvent3: function(pYear,pMonth,e){
+            if(pYear===parseInt(e.start.dateTime.substring(0,4))&&pMonth===parseInt(e.start.dateTime.substring(5,7))){
+                console.log("DAYEVENT DATETIME: "+e.start.dateTime +" "+ e.summary);
+                var pinta = parseInt(e.start.dateTime.substring(8,11));
+                var target = document.getElementsByClassName("curr")[0].getElementsByTagName("tbody")[0];
+                var inicio = new Date(pYear,pMonth-1,1);
+                var iniciaEnDia = (inicio.getDay()==0)?7:inicio.getDay();
+                console.log("SUMAREMOS time: "+iniciaEnDia);
+                var newColor=this.colores.event[e.colorId];
+                var location=e.location;
+                var titulo=e.summary;
+                var call = target.getElementsByTagName("td")[pinta+iniciaEnDia-2];
+                if(newColor)
+                target.getElementsByTagName("td")[pinta+iniciaEnDia-2].style.backgroundColor=newColor.background;
+                else
+                target.getElementsByTagName("td")[pinta+iniciaEnDia-2].style.backgroundColor="#F4511E";
+                call.innerHTML = "<a href="+this._compuCalHref(e.htmlLink)+" target='_blank'>"+pinta+"</a>";
+                if(location===undefined){
+                    location="";
+                }
+                call.innerHTML += "<div class='style-scope more-info google-calendar'>"
+                    +"<div class='style-scope more-info-text google-calendar'>"
+                    +titulo +". <br>"
+                    +location +"</div></div>";
+            }
+        },
+        responseEvents: function(e){
+            this.getEvent=e.detail.__data__.response;
+            this.okEvent=true;
+        },
+        responseColors: function(e){
+            this.colores=e.detail.__data__.response;
+            this.okColor=true;
+        },
+        attached: function(){
+            this._interval = window.setInterval(this._resfresh_time.bind(this),this.refresh_time);
+        },
+        detached: function(){
+            if(this._interval) window.clearInterval(this._interval);
+        },
+        _OK: function(){
+            if(this.okColor===true&&this.okEvent===true){
+                this.init();
+                this.pintarCalendario(this.actual.getFullYear(),this.actual.getMonth()+1);
+                console.log("HOY ES: "+this.actual.getDate()+"/"+this.months_names[this.actual.getMonth()]+"/"+this.actual.getFullYear());
+            }
+        },
+        _getEvento: function(e){
+            var f;
+            if(e.model.__data__.item.start.date){
+                f = e.model.__data__.item.start.date;
+            }else{
+                f =  e.model.__data__.item.start.dateTime;
+            }
+            console.log(f);
+            this.year =  parseInt(f.substring(0,4));
+            this.month = parseInt(f.substring(5,7));
+            this.pintarCalendario(this.year,this.month);
+        },
+        _compuCalHref: function(htmlLink) {
+            return htmlLink;
+        },
+        _getUpdated: function(data,type){
+            if(type == 'year'){
+                return data;
+            }else if(type == 'month'){
+                console.log("UPDATE "+this.months_names[data-1]);
+                return this.months_names[data-1];
+            }
+         },
+         _setYear: function(y){
+            this.year=y.model.item;
+            this.pintarCalendario(this.year,this.month);
+         },
+         _setMonth: function(m){
+            this.month=this.months_names.indexOf(m.model.item)+1;
+            this.pintarCalendario(this.year,this.month);
+         },
+        _prev: function(){
+            prevMonth=this.month-1;
+            prevYear=this.year;
+            if(this.month-1<1)
+            {
+                prevMonth=12;
+                prevYear=this.year-1;
+            }
+            this.pintarCalendario(prevYear,prevMonth);
+            console.log("AÑO: "+prevYear);
+            console.log("MES PREV: "+prevMonth);
+        },
+        _next: function(){
+            nextMonth=this.month+1;
+            nextYear=this.year;
+            if(this.month+1>12)
+            {
+                nextMonth=1;
+                nextYear=this.year+1;
+            }
+            this.pintarCalendario(nextYear,nextMonth);
+            console.log("AÑO: "+nextYear);
+            console.log("MES NEXT: "+nextMonth);
+        },
+        pintarCalendario: function(year,month){
+            var inicio=new Date(year,month-1,1);
+            var fin=new Date(year,month,0);
+            var iniciaEnDia=(inicio.getDay()==0)?7:inicio.getDay();
+            var ultimoDia=fin.getDate();
+            var dia=0;
+            var ultima_cell=iniciaEnDia+ultimoDia;
+            var resultado="<tr class='style-scope google-calendar'>";
+            for(var i=1;i<=42;i++)
+            {
+                if(i==iniciaEnDia)
+                {
+                    dia=1;
+                }
+                if(i<iniciaEnDia || i>=ultima_cell)
+                {
+                    resultado+="<td class='nil style-scope google-calendar'>";
+                }
+                else{
+                    if(dia==this.actual.getDate() && month==this.actual.getMonth()+1 && year==this.actual.getFullYear())
+                        resultado+="<td class='today style-scope google-calendar' title='HOY'>"+dia+"</td>";
+                    else
+                        resultado+="<td class='style-scope google-calendar'>"+dia+"</td>";
+                    dia++;
+                }
+                if(i%7==0)
+                {
+                    if(dia>ultimoDia)
+                        break;
+                    resultado+="</tr><tr class='style-scope google-calendar'>\n";
+                }
+            }
+            resultado+="</tr>";
+            this.month=month;
+            this.year=year;
+            var aux = document.createElement("tbody");
+            aux.innerHTML=resultado;
+            document.querySelector(".curr").innerHTML="";
+            document.querySelector(".curr").appendChild(aux);
+            this._paintEvent(year,month);
+        }
+    });
+</script>
+</dom-module>
