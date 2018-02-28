@@ -23,7 +23,8 @@ document.addEventListener('WebComponentsReady', function () {
           }
           if (publish_text == data) {
             found = true;
-            time = new Date().getTime();
+            time = new Date().getTime()/1000;            
+            console.log(time);
             var diccionario = {
               'time': time,
               'post': data

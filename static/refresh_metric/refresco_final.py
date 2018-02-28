@@ -1116,7 +1116,7 @@ if social_network in network_list:
         listtpubl_ms=[]; listpost=[]; listestado=[]
         #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
         #https://developer.spotify.com/web-api/console/post-playlists/
-        access_token = "BQDD3qu_X-ivFj2sQ1acB5krIGyM_VG0UVHkFUQdJYv38MrZLi_IotJDs33SMymNJeurqPSEtqSUECfe0uiBge8fPifOAQiBfjD4nkuJrcY7rbKJMdzFh-ggtNwKAoEGkB6XO96AFVk6rIICrr70CdNhnrR0fQTb0lZtxFYN06YTkEzLzyBXFemBbv4p8-Mmk2MygnOgP0Q"
+        access_token = "BQAp2gOyZPJ5OnhYe5mWhgh76I2P-UZos0SzBM3Aq8t0LkDpowEg8C8VMrWp1MDmshhSYOCgXkr7puVSBphV0_dDBVvN7YZjmZfuGEzC3f-Wtc5xObFeJWfKInfr9V47UzAEbIgVL8-LSFsQLnRv4psOeWDzMfQuavDAcLamWyKAXS42UlrPZqZYq-4K9iJPPGJ8C_dyrNs"
 
         url_newPlayList = "https://api.spotify.com/v1/users/deusconwet/playlists"
         headers = {
@@ -1130,13 +1130,8 @@ if social_network in network_list:
         res= requests.post(url_postTracks, json.dumps(newTracks) ,headers=headers)
 
         tpubl_ms=int(time.time())
-        listpost.append(dataSend)
-        listtpubl_ms.append(tpubl_ms)
-
-        zipPython=zip(listestado,listtpubl_ms)
-        #diccionario con los mensajes publicados y su tiempo de publicacion
-        dictPython=dict(zipPython)
-
+        print tpubl_ms
+       
         ##########################################################################################################################################
         #------------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
         ##########################################################################################################################################
@@ -1152,29 +1147,9 @@ if social_network in network_list:
                 resp = ast.literal_eval(x)
                 lista.append(resp)
 
-            timeComp=lista[0]['time']
-            print timeComp
-            final_time=float(timeComp)-float(tpubl_ms)
-            
-            #print "final_time: " + str(final_time)
-            mpSpotify.track(final_time, "Final time",{"time final": final_time, "post": dataSend, "version":version})
+            for i in lista:
+                if(i['post']==dataSend):
+                    final_time=float(i['time'])-float(tpubl_ms)
+                    print "final_time: " + str(final_time)
+                    mpSpotify.track(final_time, "Final time " + version,{"time final": final_time, "post": dataSend, "version":version})
 
-            # for y in lista:
-            #     postcomp=y.items()[0][1]
-            #     timecomp=y.items()[1][1]
-            #     listacomp.append(postcomp)
-            #     listatime.append(timecomp)
-
-            # zipComp=zip(listacomp,listatime)
-            # #Diccionario post, time
-            # dictComp=dict(zipComp)
-
-            # #la key es el texto de la publicacion y el value son los times de refresco en el componente
-            # for key,value in dictComp.iteritems():
-            # #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-            #     if(dictPython.has_key(key)):
-            #     #si es asi, cojo los values de python y del componente y los comparo
-            #         valuesP=dictPython.get(key,None)
-            #         final_time=float(value)-float(valuesP)
-            #         print "final_time: " + str(final_time)
-            #         mpSpotify.track(final_time, "Final time",{"time final": final_time, "post": key, "version":version})
