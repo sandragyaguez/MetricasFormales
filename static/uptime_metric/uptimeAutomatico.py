@@ -33,7 +33,7 @@ def updateFile(request, app):
         answer = 'Correct'
     else:
         answer = 'Wrong'
-    status = {'code':request, 'date': time.strftime("%x"), 'time': time.strftime("%X"), 'answer':answer}
+    status = {'code':request, 'time': time.time(), 'answer':answer}
     store = db[app]
     store.insert(status)
 

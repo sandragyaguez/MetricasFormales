@@ -30,7 +30,7 @@ iron-ajax,Firefox,Firefox,Different relative URLs depending on data binding,NE,W
 iron-ajax,Chrome,Chrome,Different relative URLs depending on data binding,NE,When using relative paths the absolute URL of a generated request seems to be different depending on whether data binding is used.,
 iron-ajax,UC Browser,UC Browser,UC Browser doesn't support handleAs = 'json' in AJAX requests.,NE,UC Browser doesn't support handleAs = 'json' in AJAX requests.,
 iron-ajax,Chrome,Chrome,Setting headers in Iron-ajax html property 'headers' never works,NE,Setting headers in Iron-ajax html property 'headers' never works,
-iron-ajax,Safari ,Safari 10,Setting headers in Iron-ajax html property 'headers' never works,NE,Setting headers in Iron-ajax html property 'headers' never works,
+iron-ajax,Safari,Safari 10,Setting headers in Iron-ajax html property 'headers' never works,NE,Setting headers in Iron-ajax html property 'headers' never works,
 iron-ajax,Chrome,Chrome,Headers get sent with the wrong name,NE,"When I set a header like so: this.$.authAjax.headers = {""Authorization"" : ""Bearer ""+this.accessToken}; it doesn't send it correctly",
 iron-ajax,Firefox,Firefox,Headers get sent with the wrong name,NE,"When I set a header like so: this.$.authAjax.headers = {""Authorization"" : ""Bearer ""+this.accessToken}; it doesn't send it correctly",
 iron-ajax,Safari,Safari 7,Headers get sent with the wrong name,NE,"When I set a header like so: this.$.authAjax.headers = {""Authorization"" : ""Bearer ""+this.accessToken}; it doesn't send it correctly",
