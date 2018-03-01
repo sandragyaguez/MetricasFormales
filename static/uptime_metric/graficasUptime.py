@@ -20,7 +20,13 @@ tuplas = []
 
 horaActual = time.time()
 
-if medida == "horas":
+if medida == "minutos":
+    segundosARestar = 60
+    rango = range(60)
+    formato = "%M"
+    caracter = 'o'
+
+elif medida == "horas":
     segundosARestar = 3600
     rango = range(24)
     formato = '%H:%M'
@@ -35,7 +41,7 @@ elif medida == "dias":
 elif medida == "meses":
     segundosARestar = 2592000
     rango = range(12)
-    formato = '%m:%Y'
+    formato = '%m/%Y'
     caracter = 'o'
 else:
     print "La medida para medir no es correcta."
