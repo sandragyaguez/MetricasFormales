@@ -893,7 +893,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQBlb4vsORgCC3MUTmL-n67WI05JLxHdJI_ElxZliyqJfqbSDCT_oGpLTf2a3obEvyEoAKthT9jrSHAG8vmi48QVYHbBKfslxUzgbB5WmtkJGNAhNT8Pro0tMEUzS88i3Zw2w5EJCQR15MYJSmhg1QKOZHqI3Blb"
+        access_token= "BQB-H8XFfNdUAQdWMcwxZK5HxQKVjTIUWYHngfxJUx13Pcl3IKQRnbTETF0JigTTdKvC_xhko4cEUqDRQXrCkJDzS9M3k5XTFMawzYmCGFyXJx6ekZeq6cUquC5GDhUrGm83q9aVh8VMqfHewEW9jnVaFgyplS_pU6XE-Adhj9k"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -901,15 +901,18 @@ if social_network in network_list:
         timeline_spoti = byteify(pet_timeline_spoti.json())
 
         imagesList=[]; namePlaylist=[]; createdByList=[]; listaCanciones=[]; listSpotify=[];
+        numTracksArtists=0
     
         for k,v in timeline_spoti.iteritems():
             if 'items' in timeline_spoti:
                 itemsSpoti=timeline_spoti.get('items',None)
         for playlist in itemsSpoti:
+            numPlayList=len(itemsSpoti)
             namePlaylist.append(playlist['name'])
             createdByList.append(playlist['owner']['id'])
             hashed_image= hashlib.sha1(playlist['images'][0]['url']).hexdigest()
             imagesList.append(hashed_image)
+            numImages=len(imagesList)
             listaCanciones.append(playlist['tracks']['href'])
             listSpotify.append({"id": playlist['id'],"owner": playlist['owner']['id'], "image": hashlib.sha1(playlist['images'][0]['url']).hexdigest(), "playList": playlist['name'], "songs": {}})
         
@@ -920,12 +923,15 @@ if social_network in network_list:
             pet_tracks= requests.get(spotify_getTracks,headers=headers)
             tracks_spoti= byteify(pet_tracks.json())
             for canciones in tracks_spoti['items']:
+                numTracksArtists+=1
                 listSpotify[i]['songs'].update({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0]['name']]})
-                
+
+        datosEstudiados= numPlayList+numImages+(numTracksArtists*2)
+
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
-        sleep(10)
+        sleep(30)
         contadorFallos=0
         listaComp=[]; liscompararAPI=[]; liscompararComp=[]
         if version in version_list:
@@ -947,23 +953,26 @@ if social_network in network_list:
             return next((item for item in list if item['id']==key), False)
 
         distintos = False
-        
+
         if len(listSpotify) != len(listaComp):
             print ("las longitudes de los diccionarios no son iguales")
 
         for datosAPI in listSpotify:
             found = False
             datosComponente = search(datosAPI['id'], listaComp)
-            if datosComponente:
-                datosAPI == datosComponente
-                listaComp.remove(datosComponente)  
+            #si todos los datos del mismo diccionario son iguales: TRUE, sino quiero hacer contador++ por cada fallo que haya individual. No en bloque
+            if datosComponente and datosAPI == datosComponente:
+                listaComp.remove(datosComponente)
                 found = True
+                mpSpotify.track(0, "Fallos totales " + version, {"numero fallos": 0})                           
+
             else:
                 contadorFallos+=1
                 mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
                 distintos = True
-                print "son distintos!"
-                break
+                print "distintos"
+                fallosInterpolados = float(contadorFallos/6)
+        print "%f" % fallosInterpolados
 
         if not distintos:
             print "son iguales"

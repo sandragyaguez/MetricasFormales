@@ -1116,7 +1116,7 @@ if social_network in network_list:
         listtpubl_ms=[]; listpost=[]; listestado=[]
         #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
         #https://developer.spotify.com/web-api/console/post-playlists/
-        access_token = "BQAp2gOyZPJ5OnhYe5mWhgh76I2P-UZos0SzBM3Aq8t0LkDpowEg8C8VMrWp1MDmshhSYOCgXkr7puVSBphV0_dDBVvN7YZjmZfuGEzC3f-Wtc5xObFeJWfKInfr9V47UzAEbIgVL8-LSFsQLnRv4psOeWDzMfQuavDAcLamWyKAXS42UlrPZqZYq-4K9iJPPGJ8C_dyrNs"
+        access_token = "BQBZtLJoBcsHrHDSh1kdL5QqE6_x8_50eWix6Z-qqRtSu35spEXiBmQ4prYmIKfKpno4x7wctbcz8Ij6IVBcyGjt-OYJJ71UznD2TXfcuMm9chtO5ks51GlWf3yeeSWfXkWB2erpoAkel_lTQFnx3NaKyACCvU_9dfslcpQw8h4FhuKV_ZXWXNifSP79qHpnVf0P09f47wY"
 
         url_newPlayList = "https://api.spotify.com/v1/users/deusconwet/playlists"
         headers = {
@@ -1130,7 +1130,6 @@ if social_network in network_list:
         res= requests.post(url_postTracks, json.dumps(newTracks) ,headers=headers)
 
         tpubl_ms=int(time.time())
-        print tpubl_ms
        
         ##########################################################################################################################################
         #------------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
