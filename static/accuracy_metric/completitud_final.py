@@ -893,7 +893,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQB-H8XFfNdUAQdWMcwxZK5HxQKVjTIUWYHngfxJUx13Pcl3IKQRnbTETF0JigTTdKvC_xhko4cEUqDRQXrCkJDzS9M3k5XTFMawzYmCGFyXJx6ekZeq6cUquC5GDhUrGm83q9aVh8VMqfHewEW9jnVaFgyplS_pU6XE-Adhj9k"
+        access_token= "BQBFFEUoQOB2JSgvljk3Q6m7JEdqD7fK41WO2S-HhX-TC_qh4maXZSbw8ky2O4EqqhD2PIH4MX9ldaWxR76vNZ_nNKvYWK-V4hNigAuNmIKyCnHHZL4YUR4n66fxhjveV03SF5d0NPbFQ65OUyoiN6S7uEq8Ffh1Xy5a9w3iIUn5vOCzO6QyBLEU"
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -931,51 +931,55 @@ if social_network in network_list:
         ##########################################################################################################################################
         #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
         ##########################################################################################################################################
-        sleep(30)
+        sleep(10)
         contadorFallos=0
         listaComp=[]; liscompararAPI=[]; liscompararComp=[]
         if version in version_list:
             params={'event':version,'name':'value'}
             respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
- 
+        
         aux = []
         for datosComp in respuesta:
             resp = ast.literal_eval(datosComp)
-            if "owner" in resp and "image" in resp and "id" in resp and "playList" in resp and "song" in resp and "id" in resp and "artist" in resp: 
-                key = resp["id"]
+            if "owner" in resp and "image" in resp and "id" in resp and "playList" in resp and "song" in resp and "idSong" in resp and "artist" in resp: 
+                key = resp["idSong"]
                 if key in aux: # ya esta de antes
-                    listaComp[aux.index(key)]['songs'].update({resp['id']: [resp['song'], resp['artist']]})
+                    listaComp[aux.index(key)]['songs'].update({resp['idSong']: [resp['song'], resp['artist']]})
                 else:
-                    listaComp.append({"id": resp["id"], "owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "songs": {resp['id']: [resp['song'], resp['artist']]}})
+                    listaComp.append({"id": resp["id"], "owner": resp['owner'], "image": resp['image'], "playList": resp['playList'], "songs": {resp['idSong']: [resp['song'], resp['artist']]}})
                     aux.append(key)
 
         def search(key, list):
             return next((item for item in list if item['id']==key), False)
-
-        distintos = False
-
-        if len(listSpotify) != len(listaComp):
-            print ("las longitudes de los diccionarios no son iguales")
-
+        
+        #contadorFallos += abs(len(listSpotify) - len(listaComp))
         for datosAPI in listSpotify:
-            found = False
             datosComponente = search(datosAPI['id'], listaComp)
-            #si todos los datos del mismo diccionario son iguales: TRUE, sino quiero hacer contador++ por cada fallo que haya individual. No en bloque
-            if datosComponente and datosAPI == datosComponente:
-                listaComp.remove(datosComponente)
-                found = True
-                mpSpotify.track(0, "Fallos totales " + version, {"numero fallos": 0})                           
+            if datosComponente:
+                if datosAPI['owner'] != datosComponente['owner']:
+                    contadorFallos += 1
+                #if datosAPI['image'] != datosComponente['image']:
+                    #contadorFallos += 1
+                if datosAPI['playList'] != datosComponente['playList']:
+                    contadorFallos += 1
 
-            else:
-                contadorFallos+=1
-                mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
-                distintos = True
-                print "distintos"
-                fallosInterpolados = float(contadorFallos/6)
-        print "%f" % fallosInterpolados
+                #contadorFallos += abs(len(datosAPI['songs']) - len(datosComponente['songs']))
+                for key in datosAPI['songs']:
+                    for i in listaComp:
+                        #print str(i['songs'].keys()[0])
+                        if key == i['songs'].keys()[0]:
+                            #import ipdb; ipdb.sset_trace()
+                            if datosAPI['songs'][key][0] != i['songs'][key][0]: 
+                                contadorFallos += 1
+                            if datosAPI['songs'][key][1] != i['songs'][key][1]:
+                                contadorFallos += 1
+                
+            listaComp.remove(datosComponente)
 
-        if not distintos:
-            print "son iguales"
+        print contadorFallos
+        fallosInterpolados = float(contadorFallos)/datosEstudiados
+        mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": fallosInterpolados})
+
 
     else:
         print "Wrong social network or missing param"
