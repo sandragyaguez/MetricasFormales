@@ -56,7 +56,6 @@ def byteify(input):
         return input
 
 
-#---------------------------------------------------------------------------------------------------------------------
 network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit", "spotify"]
 version_list = ["master","latency", "accuracy"]
 # url_base_remote= "http://metricas-formales.appspot.com/app/accuracy_metric"
@@ -73,29 +72,25 @@ if len(sys.argv) >= 3:
 else:
     version = ''
 
-#CASOS:
+
 if social_network in network_list:
 
 ############################################
-############################################
             #CASO1: TWITTER
 ############################################
-############################################
+
 
     if social_network == 'twitter':
 
         ##########################################################################################################################################
         #---------------------------------------------------------DATOS TWITTER API---------------------------------------------------------------
         ##########################################################################################################################################
-
-        #Las credenciales no cambian, a no ser que se quieran hacer peticiones con un usuarios que no sea Deus
         
         CONSUMER_KEY = yaml_config['twitter']['consumer_key']  #Consumer key
         CONSUMER_SECRET =  yaml_config['twitter']['consumer_key'] #Consumer secret
         ACCESS_KEY =  yaml_config['twitter']['access-token'] #Access token
         ACCESS_SECRET =  yaml_config['twitter']['secret-token']   #Access token secret
 
-        #Lanzamos una pestana por cada version del componente
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new( url_base_local + "/Master/twitter-timeline-stable/static/TwitterCompletitud.html")
@@ -123,7 +118,6 @@ if social_network in network_list:
         lista = []; listaid = []; liskey = []; lisvalue = []; listaFallosText = []; listaFallosUser = []
         contadorFallos = 0
 
-        #defino los parametros necesarios para la peticion
         params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
         respuesta=x.request(['events/properties/values'], params, format='json')           
 
@@ -156,10 +150,9 @@ if social_network in network_list:
         contadorFallos=contadorFallos/(contador * 2.0)
         mpTwitter.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
 
-############################################
+
 ############################################
             #CASO2: FACEBOOK
-############################################
 ############################################
 
     elif social_network == 'facebook':
@@ -226,7 +219,6 @@ if social_network in network_list:
         #x=mixpanel_api.Mixpanel("de21df1c2c63dff29ffce8a1a449494a","a7917928a9ba3dd88592fac7ac36e8a9")
         contadorFallos=0
 
-        #defino los parametros necesarios para la peticion
         params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
         respuesta=x.request(['events/properties/values'], params, format='json')
         respuesta = [json.loads(str(post)) for post in respuesta]
@@ -251,10 +243,9 @@ if social_network in network_list:
         contadorFallos=contadorFallos/(len(respuesta)*3.0)
         mpFacebook.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
 
-############################################
+
 ############################################
             #CASO3: GOOGLE+
-############################################
 ############################################
 
     elif social_network == 'googleplus':
@@ -291,7 +282,6 @@ if social_network in network_list:
         posts=[]
         #Request a timeline Deus para todos los usuarios. Para obtener la informacion de los post, previamente he tenido que obtener los followers
         for i in followers:
-            #hay que poner str(i) porque sino no se puede concatenar string con un long (int)
             google_url="https://www.googleapis.com/plus/v1/people/" + str(i) + "/activities/public"
             pet= requests.get(google_url,headers=headers)
 
@@ -321,7 +311,6 @@ if social_network in network_list:
 
             lista = []
             for x in respuesta:
-                #pasar de unicode a dict
                 resp = ast.literal_eval(x)
                 lista.append(resp)
 
@@ -339,10 +328,9 @@ if social_network in network_list:
             contadorFallos=contadorFallos / (len(newlist)*2.0)
             mpGoogle.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
             
-############################################
+
 ############################################
             #CASO4: PINTEREST
-############################################
 ############################################
 
     elif social_network == 'pinterest':
@@ -390,7 +378,6 @@ if social_network in network_list:
             new[4]=str(new[4])
             board.append(new[4])
 
-        #junto cada usuario con su tablero
         zipUserBoard=zip(username,board)
         
         #voy a crear todas las urls a las que tengo que hacer peticion con su usuario y tablero correspondiente
@@ -407,7 +394,6 @@ if social_network in network_list:
             
         #metodo que coge las urls de las imagenes (60 como maximo por cada tablero)
         def getData(pets):
-            contador=0
             for pet in pets:
                 request=makeRequest(pet)
                 data= request.get('data',None)
@@ -443,9 +429,7 @@ if social_network in network_list:
                 params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
                 imagComp = [str(json.loads(res)['url']) for res in respuesta]        
-
                 fallos=comp(imagAPI,imagComp)
-
                 mpPinterest.track(fallos,"Fallos master imagenes",{"imagen":fallos, "version":"master"})
                 contadorFallos=contadorFallos/float(len(imagAPI))
                 mpPinterest.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
@@ -453,10 +437,8 @@ if social_network in network_list:
             elif version=="latency":
                 params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
-
                 imagComp = [str(json.loads(res)['url']) for res in respuesta]
                 fallos=comp(imagAPI,imagComp)
-
                 mpPinterest.track(fallos,"Fallos latency imagenes",{"imagen":fallos, "version":"latency"})
                 contadorFallos=contadorFallos/float(len(imagAPI))
                 mpPinterest.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
@@ -466,16 +448,13 @@ if social_network in network_list:
                 respuesta=x.request(['events/properties/values'], params, format='json')
                 imagComp = [str(json.loads(res)['url']) for res in respuesta]         
                 fallos=comp(imagAPI,imagComp)
-
                 mpPinterest.track(fallos,"Fallos accuracy imagenes",{"imagen":fallos, "version":"accuracy"})
                 contadorFallos=contadorFallos/float(len(imagComp))
                 mpPinterest.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
 
 
 ############################################
-############################################
         #CASO5: TRAFFIC-INCIDENTS
-############################################
 ############################################
 
     elif social_network == 'traffic-incidents':
@@ -554,7 +533,6 @@ if social_network in network_list:
         respuesta=x.request(['events/properties/values'], params, format='json')
 
         for x in respuesta:
-            #pasar de unicode a dict
             resp = ast.literal_eval(x)
             lista.append(resp)
 
@@ -564,7 +542,6 @@ if social_network in network_list:
         for index, entry in enumerate(newlist):
           if len(dictPythonText) < index or  dictPythonText[index] != entry['descripcion']:
             print "falla en posicion: ", entry['i'] 
-            print "el date que falla es : descripcion"
             liskey.append(k)
             lisvalue.append(v)
             listaFallosDate=zip(liskey,lisvalue)
@@ -572,7 +549,6 @@ if social_network in network_list:
           
           if len(dictPythonText) < index or dictPythonType[index] != entry['tipo']:
             print "falla en posicion: ", entry['i'] 
-            print "el date que falla es : type" 
             liskey.append(k)
             lisvalue.append(v)
             listaFallosDate=zip(liskey,lisvalue)
@@ -581,13 +557,9 @@ if social_network in network_list:
         contadorFallos=contadorFallos/(contador*2.0)
         mpTraffic.track(contadorFallos, "Fallos totales" + version, {"numero fallos": contadorFallos})
    
-
-############################################
 ############################################
         #CASO6: FINANCE-SEARCH
 ############################################
-############################################
-
 
     elif social_network == 'finance-search':
 
@@ -644,10 +616,9 @@ if social_network in network_list:
         print "% fallos " + version, ' :', contadorFallos
         mpStock.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
 
-############################################
+
 ############################################
         #CASO6: OPEN-WEATHER
-############################################
 ############################################
 
     elif social_network == 'open-weather':
@@ -670,7 +641,6 @@ if social_network in network_list:
         request_uri= "https://centauro.ls.fi.upm.es:4444/weather?lat=40.4336199&lon=-3.8134707000000003&units=metric&lang=es&appId=" + ppid_weather
         
         headers= {"content-type":"application/x-www-form-urlencoded"}
-        #verify=False para que no me de errores de SSL
         s= requests.get(request_uri, verify=False, headers=headers)
         timeline=s.json()
 
@@ -756,7 +726,6 @@ if social_network in network_list:
           params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
           respuesta=x.request(['events/properties/values'], params, format='json')
           
-          #pasar de unicode a dict
           for x in respuesta:
             resp = ast.literal_eval(x)
             lista.append(resp)                   
@@ -781,10 +750,9 @@ if social_network in network_list:
           contadorFallos=contadorFallos / (len(newlist)*4.0)
           mpWeather.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})
 
-############################################
+
 ############################################
         #CASO6: REDDIT-TIMELINE
-############################################
 ############################################
 
     elif social_network == "reddit":
@@ -871,9 +839,7 @@ if social_network in network_list:
 
 
 ############################################
-############################################
         #CASO7: SPOTIFY
-############################################
 ############################################
 
     elif social_network == "spotify":
@@ -964,17 +930,13 @@ if social_network in network_list:
             if datosComponente:
                 if datosAPI['owner'] != datosComponente['owner']:
                     contadorFallos += 1
-                #if datosAPI['image'] != datosComponente['image']:
-                    #contadorFallos += 1
                 if datosAPI['playList'] != datosComponente['playList']:
                     contadorFallos += 1
 
                 #contadorFallos += abs(len(datosAPI['songs']) - len(datosComponente['songs']))
                 for key in datosAPI['songs']:
                     for i in listaComp:
-                        #print str(i['songs'].keys()[0])
                         if key == i['songs'].keys()[0]:
-                            #import ipdb; ipdb.sset_trace()
                             if datosAPI['songs'][key][0] != i['songs'][key][0]: 
                                 contadorFallos += 1
                             if datosAPI['songs'][key][1] != i['songs'][key][1]:
@@ -982,7 +944,6 @@ if social_network in network_list:
                 
             listaComp.remove(datosComponente)
 
-        print contadorFallos
         fallosInterpolados = float(contadorFallos)/datosEstudiados
         mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": fallosInterpolados})
 
