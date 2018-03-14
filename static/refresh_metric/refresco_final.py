@@ -36,7 +36,13 @@ import mixpanel_api, json
 from mixpanel import Mixpanel
 from postGoogle import post as postGoogle
 from requests.auth import HTTPBasicAuth
+import yaml
+import os
 
+path = os.path.dirname(os.path.abspath(__file__))
+output_file2 = os.path.join(path, "../config.yaml") 
+configFile = open(output_file2,"r")
+yaml_config = yaml.load(configFile)
 
 mpTwitter = Mixpanel("070bf8a01a6127ebf78325716490697a")
 mpFacebook=Mixpanel("f9177cf864c2778e099d5ec71113d0bf")
@@ -80,10 +86,10 @@ if social_network in network_list:
         ##########################################################################################################################################
 
         #Las credenciales no cambian, a no ser que se quieran hacer peticiones con un usuarios que no sea Deus
-        CONSUMER_KEY = 'BOySBn8XHlyYDQiGiqZ1tzllx' #Consumer key
-        CONSUMER_SECRET = 'xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE' #Consumer secret
-        ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
-        ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
+        CONSUMER_KEY = yaml_config['twitter']['consumer_key']  #Consumer key
+        CONSUMER_SECRET =  yaml_config['twitter']['consumer_key'] #Consumer secret
+        ACCESS_KEY =  yaml_config['twitter']['access-token'] #Access token
+        ACCESS_SECRET =  yaml_config['twitter']['secret-token']   #Access token secret
 
         listestado=[]; listtpubl_ms=[]
 
@@ -277,8 +283,7 @@ if social_network in network_list:
         #Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
         
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
-        access_token='EAANMUmJPs2UBAGO3kih5ywQREUbZAbYu3IEmLtKXoRWMw8BtIZA2AZAaaKCmYOZAKg7ZA0hszEBsA3BbICipIfF0ejYKwZAdpn05mZBc69twUyTQzkiv8A3UJ0Kl25GwBtXDGRDyNAOFIdZB6HOFiQOCN7QuXIhwZAxIIJz4nZAZAq3ZBZBV7OoSDTXxC83apmEXIrbAZD'
-
+        access_token= yaml_config['facebook']['access_token']
         listestado=[]; listtpubl_ms=[]
 
         #uso la API de facebook pasandole como parametro el access token y la version de la api que utilizamos
@@ -477,7 +482,7 @@ if social_network in network_list:
             #     webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestRefrescoAccuracy.html" + "?" + image_url)
             #     sleep(3)
 
-        access_token="AXh-Xld9fy7jeDuI23ovntIthRVjFI6N-kmb11xDmW-C0gBCfwAAAAA"
+        access_token= yaml_config['pinterest']['token']
         post_my_board= "https://api.pinterest.com/v1/me/pins/?access_token=" + access_token
         note="Take a look"
         link="https://www.google.es/search?q=perros&espv=2&biw=1855&bih=966&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjchq_cz8vRAhXCzxQKHQ4DCWMQ_AUIBigB#imgrc=BqLqaxHeCHP0ZM%3A"
@@ -1116,7 +1121,7 @@ if social_network in network_list:
         listtpubl_ms=[]; listpost=[]; listestado=[]
         #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
         #https://developer.spotify.com/web-api/console/post-playlists/
-        access_token = "BQBZtLJoBcsHrHDSh1kdL5QqE6_x8_50eWix6Z-qqRtSu35spEXiBmQ4prYmIKfKpno4x7wctbcz8Ij6IVBcyGjt-OYJJ71UznD2TXfcuMm9chtO5ks51GlWf3yeeSWfXkWB2erpoAkel_lTQFnx3NaKyACCvU_9dfslcpQw8h4FhuKV_ZXWXNifSP79qHpnVf0P09f47wY"
+         access_token= yaml_config['spotify']['token']
 
         url_newPlayList = "https://api.spotify.com/v1/users/deusconwet/playlists"
         headers = {

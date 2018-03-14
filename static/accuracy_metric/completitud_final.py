@@ -30,6 +30,10 @@ import base64
 from requests.auth import HTTPBasicAuth
 import yaml
 
+path = os.path.dirname(os.path.abspath(__file__))
+output_file2 = os.path.join(path, "../config.yaml") 
+configFile = open(output_file2,"r")
+yaml_config = yaml.load(configFile)
 
 #objetos Mixpanel para las distintas redes sociales (token del project)
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
@@ -85,10 +89,11 @@ if social_network in network_list:
         ##########################################################################################################################################
 
         #Las credenciales no cambian, a no ser que se quieran hacer peticiones con un usuarios que no sea Deus
-        CONSUMER_KEY = 'BOySBn8XHlyYDQiGiqZ1tzllx' #Consumer key
-        CONSUMER_SECRET = 'xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE' #Consumer secret
-        ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
-        ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
+        
+        CONSUMER_KEY = yaml_config['twitter']['consumer_key']  #Consumer key
+        CONSUMER_SECRET =  yaml_config['twitter']['consumer_key'] #Consumer secret
+        ACCESS_KEY =  yaml_config['twitter']['access-token'] #Access token
+        ACCESS_SECRET =  yaml_config['twitter']['secret-token']   #Access token secret
 
         #Lanzamos una pestana por cada version del componente
         if version in version_list:
@@ -179,7 +184,7 @@ if social_network in network_list:
                 sleep(5)
         # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
-        access_token="EAANMUmJPs2UBAHQGTF7m8XnJWBw7wjuVVZCh7isrZARoXU5sZCkOrv2wqytW66urZALhjujJX8GZBIBbQJbLBaNqMAod89avZBqG71LgI0CBU1yUjrg4UaTHzuVRZA2M5EDhUA2ZBIf4FUdz8BXiTm9sUIvHzWZBl5CwTlJUeabqfQIorqkOsDOws5r7xpUPhLo8ZD"
+        access_token= yaml_config['facebook']['access_token']
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
         #Request timeline home
@@ -273,8 +278,8 @@ if social_network in network_list:
         # (Para el caso de Google, haces una peticion a la API con el explorer API, vas a networks, y coges el token que
         # viene en el header Authorization: 'Bearer TOKEN')
         #cambiar token cada hora y media: https://developers.google.com/+/web/api/rest/latest/activities/list?authuser=1
-        access_token="ya29.Gl1oBMPNI8iI22G0j2AEj8JdssVrW90t7fg7xABbT8rydEPsxTn-XHfZGsIxhu0P_AUA8Oj-dYJcrVUN7Mujm-Te-M13X29a2_cYhuk0ZoCdFAXDGQXS3gVTLA0jycI"
-        key = "AIzaSyAArT6pflqm1-rj9Nwppuj_4z15FFh4Kis"
+        access_token= yaml_config['googleplus']['token']
+        key = yaml_config['googleplus']['api_key']
         google_url_followers="https://people.googleapis.com/v1/people/me/connections?key=%s&access_token=%s" % (key,access_token)
         headers = {"Authorization": "Bearer " + access_token}
         
@@ -356,7 +361,7 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
                 sleep(3)
 
-        access_token="AYzOkS8gPFoFyhU56X9RjekH8IQFFI3y549FYk9DmW-C0gBCfwAAAAA"
+        access_token= yaml_config['pinterest']['token']
         request_my_board= "https://api.pinterest.com/v1/me/pins/?access_token=" + access_token  + "&limit=60"
         request_others= "https://api.pinterest.com/v1/me/following/boards/?access_token=" + access_token
 
@@ -488,8 +493,8 @@ if social_network in network_list:
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficCompletitudAccuracy.html")
                 sleep(3)
-               
-        request_uri= "https://centauro.ls.fi.upm.es:4444/traffic?map=39.56276609909911,-4.650120900900901,41.36456790090091,-2.848319099099099&key=AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"
+        token = yaml_config['traffic-incidents']['api_key_traffic']
+        request_uri= "https://centauro.ls.fi.upm.es:4444/traffic?map=39.56276609909911,-4.650120900900901,41.36456790090091,-2.848319099099099&key=" + token
         
         headers= {"content-type":"application/x-www-form-urlencoded"}
         #verify=False para que no me de errores de SSL
@@ -661,7 +666,8 @@ if social_network in network_list:
         
         #pasar parametros de weather   
         contador = 0
-        request_uri= "https://centauro.ls.fi.upm.es:4444/weather?lat=40.4336199&lon=-3.8134707000000003&units=metric&lang=es&appId=655f716c02b3f0aceac9e3567cfb46a8"
+        ppid_weather = yaml_config['open-weather']['app-id']
+        request_uri= "https://centauro.ls.fi.upm.es:4444/weather?lat=40.4336199&lon=-3.8134707000000003&units=metric&lang=es&appId=" + ppid_weather
         
         headers= {"content-type":"application/x-www-form-urlencoded"}
         #verify=False para que no me de errores de SSL
@@ -784,7 +790,7 @@ if social_network in network_list:
     elif social_network == "reddit":
         experiment_id = int(time.time())
         print "ID. Experimento: %d" % experiment_id
-        reddit_token = "bHluEetl5RSZIi7wH_NwnEu4YhI"
+        reddit_token = yaml_config['reddit-timeline']['token']
         if(version=="master"):
             webbrowser.open_new(url_base_local + "/Master/reddit-timeline/demo/RedditTimelineMaster.html?" + str(experiment_id))
         # elif(version=="latency"):
@@ -893,7 +899,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQBFFEUoQOB2JSgvljk3Q6m7JEdqD7fK41WO2S-HhX-TC_qh4maXZSbw8ky2O4EqqhD2PIH4MX9ldaWxR76vNZ_nNKvYWK-V4hNigAuNmIKyCnHHZL4YUR4n66fxhjveV03SF5d0NPbFQ65OUyoiN6S7uEq8Ffh1Xy5a9w3iIUn5vOCzO6QyBLEU"
+        access_token= yaml_config['spotify']['token']
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}

@@ -9,10 +9,10 @@ echo "Realizando pruebas sobre el componente reddit-timeline..."
 python measureLatency.py spotify
 
 
-# sleep 20
-# echo "##################################################################"
-# echo "Recolectando y calculando métrica de latencia sobre los componentes probados..."
-# python collectLatencyRecords.py spotify
-# echo "Métricas calculadas"
+ sleep 20
+ echo "##################################################################"
+ echo "Recolectando y calculando métrica de latencia sobre los componentes probados..."
+ python collectLatencyRecords.py spotify
+ echo "Métricas calculadas"
 
-# kill -9 $PID
+kill -9 $PID
