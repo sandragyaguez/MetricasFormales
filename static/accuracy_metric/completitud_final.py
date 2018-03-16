@@ -30,6 +30,10 @@ import base64
 from requests.auth import HTTPBasicAuth
 import yaml
 
+path = os.path.dirname(os.path.abspath(__file__))
+output_file2 = os.path.join(path, "../config.yaml") 
+configFile = open(output_file2,"r")
+yaml_config = yaml.load(configFile)
 
 #objetos Mixpanel para las distintas redes sociales (token del project)
 mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
@@ -52,7 +56,6 @@ def byteify(input):
         return input
 
 
-#---------------------------------------------------------------------------------------------------------------------
 network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit", "spotify"]
 version_list = ["master","latency", "accuracy"]
 # url_base_remote= "http://metricas-formales.appspot.com/app/accuracy_metric"
@@ -69,28 +72,25 @@ if len(sys.argv) >= 3:
 else:
     version = ''
 
-#CASOS:
+
 if social_network in network_list:
 
 ############################################
-############################################
             #CASO1: TWITTER
 ############################################
-############################################
+
 
     if social_network == 'twitter':
 
         ##########################################################################################################################################
         #---------------------------------------------------------DATOS TWITTER API---------------------------------------------------------------
         ##########################################################################################################################################
+        
+        CONSUMER_KEY = yaml_config['twitter']['consumer_key']  #Consumer key
+        CONSUMER_SECRET =  yaml_config['twitter']['consumer_key'] #Consumer secret
+        ACCESS_KEY =  yaml_config['twitter']['access-token'] #Access token
+        ACCESS_SECRET =  yaml_config['twitter']['secret-token']   #Access token secret
 
-        #Las credenciales no cambian, a no ser que se quieran hacer peticiones con un usuarios que no sea Deus
-        CONSUMER_KEY = 'BOySBn8XHlyYDQiGiqZ1tzllx' #Consumer key
-        CONSUMER_SECRET = 'xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE' #Consumer secret
-        ACCESS_KEY = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf' #Access token
-        ACCESS_SECRET = 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock'   #Access token secret
-
-        #Lanzamos una pestana por cada version del componente
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new( url_base_local + "/Master/twitter-timeline-stable/static/TwitterCompletitud.html")
@@ -118,7 +118,6 @@ if social_network in network_list:
         lista = []; listaid = []; liskey = []; lisvalue = []; listaFallosText = []; listaFallosUser = []
         contadorFallos = 0
 
-        #defino los parametros necesarios para la peticion
         params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
         respuesta=x.request(['events/properties/values'], params, format='json')           
 
@@ -151,10 +150,9 @@ if social_network in network_list:
         contadorFallos=contadorFallos/(contador * 2.0)
         mpTwitter.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
 
-############################################
+
 ############################################
             #CASO2: FACEBOOK
-############################################
 ############################################
 
     elif social_network == 'facebook':
@@ -179,7 +177,7 @@ if social_network in network_list:
                 sleep(5)
         # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
         #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
-        access_token="EAANMUmJPs2UBAHQGTF7m8XnJWBw7wjuVVZCh7isrZARoXU5sZCkOrv2wqytW66urZALhjujJX8GZBIBbQJbLBaNqMAod89avZBqG71LgI0CBU1yUjrg4UaTHzuVRZA2M5EDhUA2ZBIf4FUdz8BXiTm9sUIvHzWZBl5CwTlJUeabqfQIorqkOsDOws5r7xpUPhLo8ZD"
+        access_token= yaml_config['facebook']['access_token']
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
         #Request timeline home
@@ -221,7 +219,6 @@ if social_network in network_list:
         #x=mixpanel_api.Mixpanel("de21df1c2c63dff29ffce8a1a449494a","a7917928a9ba3dd88592fac7ac36e8a9")
         contadorFallos=0
 
-        #defino los parametros necesarios para la peticion
         params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
         respuesta=x.request(['events/properties/values'], params, format='json')
         respuesta = [json.loads(str(post)) for post in respuesta]
@@ -246,10 +243,9 @@ if social_network in network_list:
         contadorFallos=contadorFallos/(len(respuesta)*3.0)
         mpFacebook.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
 
-############################################
+
 ############################################
             #CASO3: GOOGLE+
-############################################
 ############################################
 
     elif social_network == 'googleplus':
@@ -273,8 +269,8 @@ if social_network in network_list:
         # (Para el caso de Google, haces una peticion a la API con el explorer API, vas a networks, y coges el token que
         # viene en el header Authorization: 'Bearer TOKEN')
         #cambiar token cada hora y media: https://developers.google.com/+/web/api/rest/latest/activities/list?authuser=1
-        access_token="ya29.Gl1oBMPNI8iI22G0j2AEj8JdssVrW90t7fg7xABbT8rydEPsxTn-XHfZGsIxhu0P_AUA8Oj-dYJcrVUN7Mujm-Te-M13X29a2_cYhuk0ZoCdFAXDGQXS3gVTLA0jycI"
-        key = "AIzaSyAArT6pflqm1-rj9Nwppuj_4z15FFh4Kis"
+        access_token= yaml_config['googleplus']['token']
+        key = yaml_config['googleplus']['api_key']
         google_url_followers="https://people.googleapis.com/v1/people/me/connections?key=%s&access_token=%s" % (key,access_token)
         headers = {"Authorization": "Bearer " + access_token}
         
@@ -286,7 +282,6 @@ if social_network in network_list:
         posts=[]
         #Request a timeline Deus para todos los usuarios. Para obtener la informacion de los post, previamente he tenido que obtener los followers
         for i in followers:
-            #hay que poner str(i) porque sino no se puede concatenar string con un long (int)
             google_url="https://www.googleapis.com/plus/v1/people/" + str(i) + "/activities/public"
             pet= requests.get(google_url,headers=headers)
 
@@ -316,7 +311,6 @@ if social_network in network_list:
 
             lista = []
             for x in respuesta:
-                #pasar de unicode a dict
                 resp = ast.literal_eval(x)
                 lista.append(resp)
 
@@ -334,10 +328,9 @@ if social_network in network_list:
             contadorFallos=contadorFallos / (len(newlist)*2.0)
             mpGoogle.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
             
-############################################
+
 ############################################
             #CASO4: PINTEREST
-############################################
 ############################################
 
     elif social_network == 'pinterest':
@@ -356,7 +349,7 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
                 sleep(3)
 
-        access_token="AYzOkS8gPFoFyhU56X9RjekH8IQFFI3y549FYk9DmW-C0gBCfwAAAAA"
+        access_token= yaml_config['pinterest']['token']
         request_my_board= "https://api.pinterest.com/v1/me/pins/?access_token=" + access_token  + "&limit=60"
         request_others= "https://api.pinterest.com/v1/me/following/boards/?access_token=" + access_token
 
@@ -385,7 +378,6 @@ if social_network in network_list:
             new[4]=str(new[4])
             board.append(new[4])
 
-        #junto cada usuario con su tablero
         zipUserBoard=zip(username,board)
         
         #voy a crear todas las urls a las que tengo que hacer peticion con su usuario y tablero correspondiente
@@ -402,7 +394,6 @@ if social_network in network_list:
             
         #metodo que coge las urls de las imagenes (60 como maximo por cada tablero)
         def getData(pets):
-            contador=0
             for pet in pets:
                 request=makeRequest(pet)
                 data= request.get('data',None)
@@ -438,9 +429,7 @@ if social_network in network_list:
                 params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
                 imagComp = [str(json.loads(res)['url']) for res in respuesta]        
-
                 fallos=comp(imagAPI,imagComp)
-
                 mpPinterest.track(fallos,"Fallos master imagenes",{"imagen":fallos, "version":"master"})
                 contadorFallos=contadorFallos/float(len(imagAPI))
                 mpPinterest.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
@@ -448,10 +437,8 @@ if social_network in network_list:
             elif version=="latency":
                 params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
                 respuesta=x.request(['events/properties/values'], params, format='json')
-
                 imagComp = [str(json.loads(res)['url']) for res in respuesta]
                 fallos=comp(imagAPI,imagComp)
-
                 mpPinterest.track(fallos,"Fallos latency imagenes",{"imagen":fallos, "version":"latency"})
                 contadorFallos=contadorFallos/float(len(imagAPI))
                 mpPinterest.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
@@ -461,16 +448,13 @@ if social_network in network_list:
                 respuesta=x.request(['events/properties/values'], params, format='json')
                 imagComp = [str(json.loads(res)['url']) for res in respuesta]         
                 fallos=comp(imagAPI,imagComp)
-
                 mpPinterest.track(fallos,"Fallos accuracy imagenes",{"imagen":fallos, "version":"accuracy"})
                 contadorFallos=contadorFallos/float(len(imagComp))
                 mpPinterest.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
 
 
 ############################################
-############################################
         #CASO5: TRAFFIC-INCIDENTS
-############################################
 ############################################
 
     elif social_network == 'traffic-incidents':
@@ -488,8 +472,8 @@ if social_network in network_list:
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficCompletitudAccuracy.html")
                 sleep(3)
-               
-        request_uri= "https://centauro.ls.fi.upm.es:4444/traffic?map=39.56276609909911,-4.650120900900901,41.36456790090091,-2.848319099099099&key=AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"
+        token = yaml_config['traffic-incidents']['api_key_traffic']
+        request_uri= "https://centauro.ls.fi.upm.es:4444/traffic?map=39.56276609909911,-4.650120900900901,41.36456790090091,-2.848319099099099&key=" + token
         
         headers= {"content-type":"application/x-www-form-urlencoded"}
         #verify=False para que no me de errores de SSL
@@ -549,7 +533,6 @@ if social_network in network_list:
         respuesta=x.request(['events/properties/values'], params, format='json')
 
         for x in respuesta:
-            #pasar de unicode a dict
             resp = ast.literal_eval(x)
             lista.append(resp)
 
@@ -559,7 +542,6 @@ if social_network in network_list:
         for index, entry in enumerate(newlist):
           if len(dictPythonText) < index or  dictPythonText[index] != entry['descripcion']:
             print "falla en posicion: ", entry['i'] 
-            print "el date que falla es : descripcion"
             liskey.append(k)
             lisvalue.append(v)
             listaFallosDate=zip(liskey,lisvalue)
@@ -567,7 +549,6 @@ if social_network in network_list:
           
           if len(dictPythonText) < index or dictPythonType[index] != entry['tipo']:
             print "falla en posicion: ", entry['i'] 
-            print "el date que falla es : type" 
             liskey.append(k)
             lisvalue.append(v)
             listaFallosDate=zip(liskey,lisvalue)
@@ -576,13 +557,9 @@ if social_network in network_list:
         contadorFallos=contadorFallos/(contador*2.0)
         mpTraffic.track(contadorFallos, "Fallos totales" + version, {"numero fallos": contadorFallos})
    
-
-############################################
 ############################################
         #CASO6: FINANCE-SEARCH
 ############################################
-############################################
-
 
     elif social_network == 'finance-search':
 
@@ -639,10 +616,9 @@ if social_network in network_list:
         print "% fallos " + version, ' :', contadorFallos
         mpStock.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
 
-############################################
+
 ############################################
         #CASO6: OPEN-WEATHER
-############################################
 ############################################
 
     elif social_network == 'open-weather':
@@ -661,10 +637,10 @@ if social_network in network_list:
         
         #pasar parametros de weather   
         contador = 0
-        request_uri= "https://centauro.ls.fi.upm.es:4444/weather?lat=40.4336199&lon=-3.8134707000000003&units=metric&lang=es&appId=655f716c02b3f0aceac9e3567cfb46a8"
+        ppid_weather = yaml_config['open-weather']['app-id']
+        request_uri= "https://centauro.ls.fi.upm.es:4444/weather?lat=40.4336199&lon=-3.8134707000000003&units=metric&lang=es&appId=" + ppid_weather
         
         headers= {"content-type":"application/x-www-form-urlencoded"}
-        #verify=False para que no me de errores de SSL
         s= requests.get(request_uri, verify=False, headers=headers)
         timeline=s.json()
 
@@ -750,7 +726,6 @@ if social_network in network_list:
           params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
           respuesta=x.request(['events/properties/values'], params, format='json')
           
-          #pasar de unicode a dict
           for x in respuesta:
             resp = ast.literal_eval(x)
             lista.append(resp)                   
@@ -775,16 +750,15 @@ if social_network in network_list:
           contadorFallos=contadorFallos / (len(newlist)*4.0)
           mpWeather.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})
 
-############################################
+
 ############################################
         #CASO6: REDDIT-TIMELINE
-############################################
 ############################################
 
     elif social_network == "reddit":
         experiment_id = int(time.time())
         print "ID. Experimento: %d" % experiment_id
-        reddit_token = "bHluEetl5RSZIi7wH_NwnEu4YhI"
+        reddit_token = yaml_config['reddit-timeline']['token']
         if(version=="master"):
             webbrowser.open_new(url_base_local + "/Master/reddit-timeline/demo/RedditTimelineMaster.html?" + str(experiment_id))
         # elif(version=="latency"):
@@ -865,9 +839,7 @@ if social_network in network_list:
 
 
 ############################################
-############################################
         #CASO7: SPOTIFY
-############################################
 ############################################
 
     elif social_network == "spotify":
@@ -893,7 +865,7 @@ if social_network in network_list:
                 sleep(3)
 
         #token:te vas al componente y haces polymer serve -o -p 8080. Se despliega, en consola de navegador haces $(componente).token
-        access_token= "BQBFFEUoQOB2JSgvljk3Q6m7JEdqD7fK41WO2S-HhX-TC_qh4maXZSbw8ky2O4EqqhD2PIH4MX9ldaWxR76vNZ_nNKvYWK-V4hNigAuNmIKyCnHHZL4YUR4n66fxhjveV03SF5d0NPbFQ65OUyoiN6S7uEq8Ffh1Xy5a9w3iIUn5vOCzO6QyBLEU"
+        access_token= yaml_config['spotify']['token']
 
         spotify_getTimeline = "https://api.spotify.com/v1/me/playlists" 
         headers = {"Authorization": "Bearer " + access_token}
@@ -958,17 +930,13 @@ if social_network in network_list:
             if datosComponente:
                 if datosAPI['owner'] != datosComponente['owner']:
                     contadorFallos += 1
-                #if datosAPI['image'] != datosComponente['image']:
-                    #contadorFallos += 1
                 if datosAPI['playList'] != datosComponente['playList']:
                     contadorFallos += 1
 
                 #contadorFallos += abs(len(datosAPI['songs']) - len(datosComponente['songs']))
                 for key in datosAPI['songs']:
                     for i in listaComp:
-                        #print str(i['songs'].keys()[0])
                         if key == i['songs'].keys()[0]:
-                            #import ipdb; ipdb.sset_trace()
                             if datosAPI['songs'][key][0] != i['songs'][key][0]: 
                                 contadorFallos += 1
                             if datosAPI['songs'][key][1] != i['songs'][key][1]:
@@ -976,7 +944,6 @@ if social_network in network_list:
                 
             listaComp.remove(datosComponente)
 
-        print contadorFallos
         fallosInterpolados = float(contadorFallos)/datosEstudiados
         mpSpotify.track(contadorFallos, "Fallos totales " + version, {"numero fallos": fallosInterpolados})
 

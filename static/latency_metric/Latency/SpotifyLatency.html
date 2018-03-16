@@ -21,7 +21,7 @@
 </head>
 
 <body unresolve>
-  <spotify-component id="componentTested" token="BQCpe54z57Mfzu7_2sN-4utJ6SbDW1Ouxpbsk_ZALa05qxAZONv87Epmx0dnwQyqY_mbOotNgvtl5-YQnrM_FdUaM0ZEfy1VlG3eRXWiNy_a9nhX_M7bwjHQWZAYv7_LjpQJMNAMz68DNHRFFEAQ7cYaSRSiR_D_"></spotify-component>
+  <spotify-component id="componentTested" token="BQDYZIgUEtaOp3mfSghtdzMRQdQDt-4hz49FRLd2TFKcEMRgxU6DG88BHzxNxgNIr3Q5uv8o12Gac561ExMyC0LmjZEzWxTi5nBUbHXtVgJJOceMfwXCVzM99sN3v1s6kLrOG4AV9RWpMlFn9CVOHhdCKfcLTwX8yJoAG2EiwR0"></spotify-component>
   <script>
     function getParameterByName(name, url) {
       if (!url) url = window.location.href;
@@ -76,7 +76,7 @@
         "experiment_timestamp": timestamp,
         "experiment_id": getParameterByName('experiment'),
         // Computed attributes based on the request
-        "requestDuration": time + (target.latency || 0) * resourceList.length,
+        "requestDuration": time + (target.latency || 0) + resourceList.length,
         "responseEndTime": Math.max.apply(this, requestEnd) + (target.latency || 0) * resourceList.length,
         "fetchStartTime": Math.min.apply(this, request_fetchs),
       }

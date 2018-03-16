@@ -15,6 +15,13 @@ from mixpanel_client import MixpanelQueryClient
 from mixpanel import Mixpanel
 import time
 import base64
+import yaml
+import os
+
+path = os.path.dirname(os.path.abspath(__file__))
+output_file2 = os.path.join(path, "../config.yaml") 
+configFile = open(output_file2,"r")
+yaml_config = yaml.load(configFile)
 
 mp = Mixpanel("53da31965c3d047fa72de756aae43db1")
 # Instantiates the Query Client
@@ -176,10 +183,15 @@ def main():
         elif social_network == 'twitter':
             #twitter_url = "http://metricas-formales.appspot.com/oauth/twitter"
             twitter_url = "https://centauro.ls.fi.upm.es/api/aux/twitterTimeline"
-            data = {'access_token': "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
-                      'secret_token': "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
-                      'consumer_key': "BOySBn8XHlyYDQiGiqZ1tzllx",
-                      'consumer_secret': "xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE",
+            CONSUMER_KEY = yaml_config['twitter']['consumer_key']  #Consumer key
+            CONSUMER_SECRET =  yaml_config['twitter']['consumer_key'] #Consumer secret
+            ACCESS_KEY =  yaml_config['twitter']['access-token'] #Access token
+            ACCESS_SECRET =  yaml_config['twitter']['secret-token']   #Access token secret
+
+            data = {'access_token': ACCESS_KEY,
+                      'secret_token': ACCESS_SECRET,
+                      'consumer_key': CONSUMER_KEY,
+                      'consumer_secret': CONSUMER_SECRET,
                       'count': 200 }
 
             url_values = urllib.urlencode(data)	
@@ -234,7 +246,7 @@ def main():
         elif social_network == 'pinterest':
             board_names = []
             req_limit = 60
-            access_token = "AdCKtwyMSg_tKhDOvhzQ-25yrkSHFJKOjZfO6N9DaxDMLKAvZgAAAAA"
+            access_token = yaml_config['pinterest']['token']
             user_url = "https://api.pinterest.com/v1/me/"
             userboards_url = "https://api.pinterest.com/v1/me/boards/"
             followingboards_url = "https://api.pinterest.com/v1/me/following/boards/"
@@ -373,11 +385,12 @@ def main():
 
         elif social_network == 'weather':
             weather_url = "https://centauro.ls.fi.upm.es:4444/weather"
+            appid_weather = yaml_config['open-weather']['app-id']
             weather_data = {"lat": "40.4893538421231",
                             "lon": "-3.6827461557",
                             "units": "metric",
                             "lang": "es",
-                            "appId": "655f716c02b3f0aceac9e3567cfb46a8"}
+                            "appId": appid_weather}
             weather_values = urllib.urlencode(weather_data)
             weather_url_complete = weather_url + '?' + weather_values
 
@@ -406,9 +419,10 @@ def main():
             webbrowser.open_new(server_base_url + "/Latency/OpenWeatherLatency.html?experiment=" + experiment_id)
 
         elif social_network == "traffic":
+            token_traff = yaml_config['traffic-incidents']['api_key_traffic']
             traffic_url = "https://centauro.ls.fi.upm.es:4444/traffic"
             traffic_data = {"map": "50.6064499990991,-1.028659200900901,52.4082518009009,0.7731426009009009",
-                            "key": "AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"}
+                            "key": token_traff}
             traffic_values = urllib.urlencode(traffic_data)
             traffic_url_complete = traffic_url + '?' + traffic_values
 
@@ -480,7 +494,8 @@ def main():
         elif social_network == "spotify":
             total_time = 0
             spotify_url = "https://api.spotify.com/v1/me/playlists?limit=20&after=0aV6DOiouImYTqrR5YlIqx"
-            rq_token = "BQCpe54z57Mfzu7_2sN-4utJ6SbDW1Ouxpbsk_ZALa05qxAZONv87Epmx0dnwQyqY_mbOotNgvtl5-YQnrM_FdUaM0ZEfy1VlG3eRXWiNy_a9nhX_M7bwjHQWZAYv7_LjpQJMNAMz68DNHRFFEAQ7cYaSRSiR_D_"
+            
+            rq_token = yaml_config['spotify']['token']
             # Añadir authorization: Basic 
             headers = {
                 "Authorization":"Bearer " + rq_token,
