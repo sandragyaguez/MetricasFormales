@@ -1,0 +1,140 @@
+# -*- coding: utf-8 -*-
+import csv
+import re
+from sys import argv
+from os import path
+from mixpanel import Mixpanel
+import ConfigParser
+
+config = ConfigParser.ConfigParser()
+config.read('file.conf')
+token = config.get('TOKEN', 'token')
+mp = Mixpanel(token)
+
+
+def getErrors(diccsErrores, comps_Name):
+	
+	arrResult = []    
+	for k in comps_Name:
+		arrResult.append({k:[[],[],[]]})
+	for dicc in diccsErrores:
+		coErr=dicc['Component']
+		if comps_Name.count(coErr) != 0:
+			for p in arrResult:
+				if p.has_key(coErr):
+					p[coErr][0].append(dicc['Browser'])
+					p[coErr][1].append(dicc['Browser Version'])
+					p[coErr][2].append(dicc)
+	return arrResult
+
+
+def getComponents(cfile):
+	file = open(cfile,'r')
+	ref = ""
+	comment = 0
+	components = []
+	res = []
+	resFinal = []
+	for line in file.readlines():
+		arr_line = line.split()
+		for word in arr_line:
+			if word== "<!--":
+				comment = 1
+			elif word =="-->" and comment==1:
+				comment = 0
+			elif comment == 0:
+				match = re.search('<link rel="import" +href="(.+?)" *>', line)
+				if match != None:
+					components.append(match.group(1))
+					break
+				else:
+					break
+	file.close()
+	for c in components:
+		c_aux = path.basename(c)
+		c_aux2 = c_aux.replace(".html","")
+		res.append(c_aux2)
+	resFinal.append(res)
+	resFinal.append(components)
+	return resFinal
+
+def insertInDB(datos,fname,compNames):
+	fname = fname.replace("-","")
+	fname = fname.replace(".","")
+	Errores = fname + "Errores"
+	EstadisticaBuscadores = fname + "EstadBuscadores"
+	EstadVersionBuscadores = fname + "EstadVersionBuscadores"
+
+	for componente in datos:
+		clave = componente.keys()
+		if (len(componente[clave[0]][0]) != 0):
+			for diccErr in componente[clave[0]][2]:
+				mp.track(fname,Errores,diccErr)
+				
+			diccBuscadores = {}
+			diccVersiones = {}
+			buscadores = componente[clave[0]][0]
+			versBuscadores = componente[clave[0]][1]
+			diccBuscadores['Component'] = clave[0]
+			diccVersiones['Component'] = clave[0]
+
+			if len(buscadores)!=0:
+				for buscador in buscadores:
+					if diccBuscadores.keys().count(buscador) == 0: 
+						diccBuscadores[buscador] = str(buscadores.count(buscador))
+
+			if len(versBuscadores)!=0:
+				for versBus in versBuscadores:
+					if diccVersiones.keys().count(versBus) == 0:
+						diccVersiones[versBus] = str(versBuscadores.count(versBus))
+
+			mp.track(fname,EstadisticaBuscadores,diccBuscadores)
+			mp.track(fname,EstadVersionBuscadores,diccVersiones)
+			mp.track("componente base","Errores Totales",{"Errores Totales":"Errores Totales"})
+
+
+def mainFun (componentFile,diccionarios,rutaBase):
+	
+	arr_Fallos = []
+	nombreFichero = path.basename(componentFile)
+	nomFichRes = nombreFichero
+	nomFichRes = nomFichRes.replace(".html","")
+	componentFile = rutaBase + '/' +nombreFichero
+	print componentFile
+	c_Name = getComponents(componentFile)
+	c_NameCompl = c_Name[1]
+	c_NameAbr = c_Name[0]
+	arr_Fallos = getErrors(diccionarios,c_NameAbr)
+	insertInDB(arr_Fallos,nombreFichero,c_NameAbr)
+	return c_Name
+	
+def funcionRecursiva(c_N,dicc,rutaBase,cRevisados):
+	for c in c_N[1]:
+		rutaComp = path.dirname(c)
+		rutaComp = rutaComp.replace("..","bower_components")
+		nombreC = path.basename(c)
+		if rutaComp == "" and cRevisados.count(nombreC)==0:
+			cRecur = mainFun(c,dicc,rutaBase)
+			cRevisados.append(nombreC)
+			funcionRecursiva(cRecur,dicc,rutaBase,cRevisados)
+		elif cRevisados.count(nombreC)==0:
+			cRecur = mainFun(c,dicc,rutaComp)
+			cRevisados.append(nombreC)
+			funcionRecursiva(cRecur,dicc,rutaComp,cRevisados)
+
+script, bbdd, fEntrada = argv
+with open(bbdd, 'r') as csvfile:
+	lineas = csvfile.read().splitlines()        
+	lineas.pop(0)                               
+	arr_dicc = []
+	for l in lineas:
+		linea = l.split(',')
+		linea3 = linea[3].replace(",","")
+		linea5 = linea[5].replace(",","")
+		arr_dicc.append({'Component':linea[0],'Browser':linea[1],'Browser Version':linea[2],
+			'Error':linea3,'Operating System': linea[4],'Description': linea5})
+	listC = mainFun(fEntrada,arr_dicc,".")
+	cRev = []
+	funcionRecursiva(listC,arr_dicc,".",cRev)
+	
+
