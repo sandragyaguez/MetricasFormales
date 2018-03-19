@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 #!/usr/bin/python
 # -*- coding: UTF-8 -*
@@ -14,12 +13,10 @@ import hmac
 import base64
 import time
 from time import sleep
-from twitter import *
 from requests_oauthlib import OAuth1
 import requests
 import webbrowser
 import urllib3
-import requests.packages.urllib3
 requests.packages.urllib3.disable_warnings()
 import datetime
 import re
@@ -44,19 +41,19 @@ output_file2 = os.path.join(path, "../config.yaml")
 configFile = open(output_file2,"r")
 yaml_config = yaml.load(configFile)
 
-mpTwitter = Mixpanel("070bf8a01a6127ebf78325716490697a")
-mpFacebook=Mixpanel("f9177cf864c2778e099d5ec71113d0bf")
-mpPinterest=Mixpanel("98b144c253b549db5cdeb812a9323ca3")
-mpTraffic=Mixpanel("d47fab64a1be9d41d8b1e8850df74754")
-mpWeather=Mixpanel("1a7d93449a9b07f9d00e86e03a1a7d6a")
-mpGoogleplus = Mixpanel('6751dd100b3e2547ac09c6ce4e5707ac')
-mpStock = Mixpanel("92f1f1dd586a4cad694bb8e8678456c2")
-mpReddit = Mixpanel("5dc419ba21c54259cf5bad65954c62d0")
-mpSpotify= Mixpanel ("f73b9d342b7b76be34eb3c3ef9375478")
+#objetos Mixpanel para las distintas redes sociales (token del project)
+mpTwitter = Mixpanel (yaml_config['mixpanel']['twitter'])
+mpFacebook = Mixpanel (yaml_config['mixpanel']['facebook'])
+mpGoogle = Mixpanel (yaml_config['mixpanel']['google'])
+mpPinterest = Mixpanel (yaml_config['mixpanel']['pinterest'])
+mpTraffic = Mixpanel (yaml_config['mixpanel']['traffic'])
+mpWeather = Mixpanel (yaml_config['mixpanel']['weather'])
+mpStock = Mixpanel (yaml_config['mixpanel']['finance'])
+mpReddit = Mixpanel (yaml_config['mixpanel']['reddit'])
+mpSpotify = Mixpanel (yaml_config['mixpanel']['spotify'])
 
 network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit", "spotify"]
 version_list = ["master","latency", "accuracy"]
-url_base_remote= "http://metricas-formales.appspot.com/app/refresh_metric"
 url_base_local= "http://localhost:8000"
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),consola: python refresco.py twitter coge la "variable" twitter
@@ -75,21 +72,18 @@ def randomword(length):
 
 if social_network in network_list:
 
-#--------------------------------------------------
-#CASO1: TWITTER
-#--------------------------------------------------
+
+############################################
+            #CASO1: TWITTER
+############################################
 
     if social_network == 'twitter':
 
-        ##########################################################################################################################################
-        #---------------------------------------------------------DATOS TWITTER API---------------------------------------------------------------
-        ##########################################################################################################################################
-
-        #Las credenciales no cambian, a no ser que se quieran hacer peticiones con un usuarios que no sea Deus
-        CONSUMER_KEY = yaml_config['twitter']['consumer_key']  #Consumer key
-        CONSUMER_SECRET =  yaml_config['twitter']['consumer_key'] #Consumer secret
-        ACCESS_KEY =  yaml_config['twitter']['access-token'] #Access token
-        ACCESS_SECRET =  yaml_config['twitter']['secret-token']   #Access token secret
+        #--DATOS TWITTER API--#
+        CONSUMER_KEY = yaml_config['twitter']['consumer_key']  
+        CONSUMER_SECRET =  yaml_config['twitter']['consumer_key']
+        ACCESS_KEY =  yaml_config['twitter']['access-token']
+        ACCESS_SECRET =  yaml_config['twitter']['secret-token']
 
         listestado=[]; listtpubl_ms=[]
 
@@ -106,10 +100,6 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/twitter-timeline-latency/static/TwitterRefrescoLatency.html"  + "?" + estado)
                 sleep(10)
-            # elif(version=="accuracy"):
-            #     webbrowser.open_new(url_base_local + "/Accuracy/twitter-timeline/static/TwitterRefrescoAccuracy.html" + "?" + estado)
-            #     sleep(3)
-
    
         #Request publicar tweet
         def publicar(estado):
@@ -135,15 +125,12 @@ if social_network in network_list:
                 text=tweet['text']
                 if text==estado:
                     break
-        #Pruebas
         publicar(estado)
         #zip con todos los post y sus correspondientes tiempos de publicacion
         zipPython=zip(listestado,listtpubl_ms)
         dictPython=dict(zipPython)
 
-        ##########################################################################################################################################
-        #-----------------------------------------DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
-        ##########################################################################################################################################
+        #--DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
         sleep(100)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
@@ -258,15 +245,13 @@ if social_network in network_list:
                         print "final_time: " + str(final_time)
                         mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":"master"})
 
-#--------------------------------------------------
-#CASO2: FACEBOOK
-#--------------------------------------------------
+
+############################################
+            #CASO2: FACEBOOK
+############################################
     elif social_network == 'facebook':
 
-        ##########################################################################################################################################
-        #---------------------------------------------------------DATOS FACEBOOK API--------------------------------------------------------------
-        ##########################################################################################################################################
-
+        #--DATOS FACEBOOK API--#
         message=randomword(10)
 
         if version in version_list:
@@ -276,9 +261,6 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/facebook-wall/FacebookRefrescoLatency.html" + "?" + message)
                 sleep(5)
-            # elif(version=="accuracy"):
-            #     webbrowser.open_new(url_base_local + "/Accuracy/facebook-wall/FacebookRefrescoAccuracy.html" + "?" + message)
-            #     sleep(5)
 
         #Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
         
@@ -303,13 +285,11 @@ if social_network in network_list:
         dictPython=dict(zipPython)
         print dictPython
 
-        ##########################################################################################################################################
-        #----------------------------------------DATOS FACEBOOK COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
-        ##########################################################################################################################################
-        #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
+        #--DATOS FACEBOOK COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(70)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("1c480cfa1d4cbaaeadc5c102a9ff50ea","b1308de232be2c6edf329081831eba52")
+    
+
+
         lista=[]; listacomp=[]; listatime=[]
 
         if version in version_list:
@@ -410,15 +390,13 @@ if social_network in network_list:
                             print "final_time: " + str(final_time)
                             mpFacebook.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
 
-   
-#--------------------------------------------------
-#CASO3: GOOGLEPLUS
-#--------------------------------------------------
+
+############################################
+            #CASO3: GOOGLE+
+############################################
     elif social_network == 'googleplus':
 
-        ##########################################################################################################################################
-        #---------------------------------------------------------DATOS GOOGLEPLUS API--------------------------------------------------------------
-        ##########################################################################################################################################
+        #--DATOS GOOGLE+ API--#
 
         # Url para obtener nuevo token google: https://developers.google.com/+/web/api/rest/latest/activities/list#try-it
         # (Para el caso de Google, haces una peticion a la API con el explorer API, vas a networks, y coges el token que
@@ -431,13 +409,8 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/googleplus-timeline-latency/demo/GoogleplusRefrescoLatency.html?" + randomtext)
                 sleep(5)
-            # elif(version=="accuracy"):
-            #     webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline/demo/GoogleplusRefrescoAccuracy.html?" + randomtext)
-            #     sleep(5)
 
-        ##########################################################################################################################################
-        #----------------------------------------DATOS GOOGLEPLUS COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
-        ##########################################################################################################################################
+       #--DATOS GOOGLE+ COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         postTime = postGoogle.publish(randomtext)
         latency=0
         if (version=="latency"):
@@ -453,22 +426,19 @@ if social_network in network_list:
         correct_post = [post for post in respuesta if post['post'] == randomtext][0]
 
         final_time = correct_post['time']/1000 - postTime
-        mpGoogleplus.track(final_time, "Final time "+ version,{"time final": final_time, "post": correct_post['post'], "version":version})
+        mpGoogle.track(final_time, "Final time "+ version,{"time final": final_time, "post": correct_post['post'], "version":version})
         print "Tiempo final: ", final_time
         print "Version: ", version
         print "Post: ", correct_post['post']     
         
 
-#--------------------------------------------------
-#CASO4: PINTEREST
-#--------------------------------------------------
+############################################
+            #CASO4: PINTEREST
+############################################
 
     elif social_network == 'pinterest':
 
-        ##########################################################################################################################################
-        #-------------------------------------------------------DATOS PINTEREST API---------------------------------------------------------------
-        ##########################################################################################################################################
-        
+        #--DATOS PINTEREST API--#
         image_url="http://www.mundoperro.net/wp-content/uploads/Perro-Carlino-485x300.jpg"
 
         if version in version_list:
@@ -478,10 +448,7 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestRefrescoLatency.html" + "?" + image_url)
                 sleep(10)
-            # elif(version=="accuracy"):
-            #     webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestRefrescoAccuracy.html" + "?" + image_url)
-            #     sleep(3)
-
+  
         access_token= yaml_config['pinterest']['token']
         post_my_board= "https://api.pinterest.com/v1/me/pins/?access_token=" + access_token
         note="Take a look"
@@ -514,10 +481,7 @@ if social_network in network_list:
         #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
 
-        ##########################################################################################################################################
-        #----------------------------------------DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
-        ##########################################################################################################################################
-        #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
+        #--DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(100)
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
         x=mixpanel_api.Mixpanel("c6a5d1682613e89df94c6eceb3859be6","17a38edfdff693b56b50f332ae8f8e9e")
@@ -622,16 +586,14 @@ if social_network in network_list:
                             print "final_time: " + str(final_time)
                             mpPinterest.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
 
-#--------------------------------------------------
-#CASO5: TRAFFIC INCIDENTS
-#--------------------------------------------------
+
+############################################
+         #CASO5: TRAFFIC-INCIDENTS
+############################################
 
     elif social_network == 'traffic-incidents':
 
-        ##########################################################################################################################################
-        #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
-        ##########################################################################################################################################
-
+        #--DATOS TRAFFIC API--#
         description=randomword(10)
 
         if version in version_list:
@@ -641,12 +603,8 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/traffic-incidents/demo/TrafficRefrescoLatency.html" + "?" + description)
                 sleep(3)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficRefrescoAccuracy.html" + "?" + description)
-                sleep(3)
 
-        listpost=[]
-        listtpubl_ms=[]
+        listpost=[]; listtpubl_ms=[]
         
         datos = {"description": description}
         url = "https://centauro.ls.fi.upm.es:4444/traffic"
@@ -659,10 +617,7 @@ if social_network in network_list:
         #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
 
-        ##########################################################################################################################################
-        #----------------------------------------DATOS TRAFFIC COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
-        ##########################################################################################################################################
-        #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
+        #--DATOS TRAFFIC COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(70)
         #limpio la cache antes de coger datos del componente
         url = "https://centauro.ls.fi.upm.es:4444/fakes/traffic/clean"
@@ -769,16 +724,15 @@ if social_network in network_list:
                             print "final_time: " + str(final_time)
                             mpTraffic.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
 
-#--------------------------------------------------
-#CASO6: OPEN WEATHER
-#--------------------------------------------------
+
+############################################
+           #CASO6: OPEN-WEATHER
+############################################
 
     elif social_network == 'open-weather':
 
-        ##########################################################################################################################################
-        #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
-        ##########################################################################################################################################
-        
+        #--DATOS WEATHER API--#
+
         #cojo el tiempo para saber que hora es y conocer a partir de que hora tengo que publicar
         #tengo un array con 8 tiempos a publicar porque corresponde a las horas 0 3 6 9 12 15 18 21
         tiempo=time.strftime("%H")
@@ -804,9 +758,6 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/open-weather-latency/demo/WeatherRefrescoLatency.html" + "?" + datos2)
                 sleep(10)
-            # elif(version=="accuracy"):
-            #     webbrowser.open_new(url_base_local + "/Accuracy/open-weather/demo/WeatherRefrescoAccuracy.html" + "?" + datos2)
-            #     sleep(3)
 
         listpost=[]; listtpubl_ms=[]
         
@@ -833,12 +784,8 @@ if social_network in network_list:
         #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
 
-        ##########################################################################################################################################
-        #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
-        ##########################################################################################################################################
-        #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
+       #--DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(100)
-        #limpio la cache antes de coger datos del componente
         url = "https://centauro.ls.fi.upm.es:4444/fakes/weather/clean"
         response = requests.get(url, verify=False)
 
@@ -943,12 +890,15 @@ if social_network in network_list:
                         print "final_time: " + str(final_time)
                         mpWeather.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
 
+
+
+############################################
+            #CASO7: FINANCE
+############################################
+
     elif social_network == 'finance-search':
 
-        ##########################################################################################################################################
-        #-------------------------------------------------------DATOS STOCK API---------------------------------------------------------------
-        ##########################################################################################################################################
-        
+        #--DATOS FINANCE API--#
         data = {"Symbol": "GOOGL", "Change": 10, "DaysLow": 10, "DaysHigh": 10, "YearLow": 10, "YearHigh": 10, "Volume": 10, "LastTradePriceOnly": 10, "Name":"Alphabet Inc."}
         data_text = urllib.urlencode(data)
         random_id = random.randint(0,1000000)
@@ -960,13 +910,7 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/finance-search-latency/demo/FinanceSearchRefrescoLatency.html?" + data_text)
                 sleep(8)
-            # elif(version=="accuracy"):
-            #     webbrowser.open_new(url_base_local + "/Accuracy/finance-search/demo/FinanceSearchRefrescoAccuracy.html?" + data_text)
-            #     sleep(8)
-
-        ##########################################################################################################################################
-        #----------------------------------------DATOS STOCK COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
-        ##########################################################################################################################################
+     
         datos = "data= " + urllib.quote(str(data))
         headers= {
             "content-type":"application/x-www-form-urlencoded"
@@ -980,6 +924,7 @@ if social_network in network_list:
         if (version=="latency"):
             latency=10
         
+        #--DATOS FINANCE COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         ## request mixpanel response
         sleep(70+latency)
         panel = mixpanel_api.Mixpanel("f0210615849097c6917b114203c83c6c","544ff7d21c1ab56433d8b6fc2ba7a137")
@@ -1052,53 +997,14 @@ if social_network in network_list:
 
         mpReddit.track(final_time, "Final time "+ version,{"time final": final_time, "version":version})
 
-#--------------------------------------------------
-#CASO7: TRAFFIC INCIDENTS
-#--------------------------------------------------
 
-    elif social_network == 'traffic-incidents':
-        
-    ##########################################################################################################################################
-    #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
-    ##########################################################################################################################################
-
-        description=randomword(10)
-
-        if version in version_list:
-            if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/traffic-incidents/demo/TrafficRefresco.html" + "?" + description)
-                sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/traffic-incidents/demo/TrafficRefrescoLatency.html" + "?" + description)
-                sleep(3)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficRefrescoAccuracy.html" + "?" + description)
-                sleep(3)
-
-        listpost=[]; listtpubl_ms=[]
-        
-        datos = {"description": description}
-        url = "https://centauro.ls.fi.upm.es:4444/traffic"
-        response = requests.post(url, data=datos, verify=False)
-        tpubl_ms=int(time.time())
-        listpost.append(description)
-        listtpubl_ms.append(tpubl_ms)
-
-        zipPython=zip(listpost,listtpubl_ms)
-        #diccionario con los mensajes publicados y su tiempo de publicacion
-        dictPython=dict(zipPython)
-
-
-#--------------------------------------------------
-#CASO8: SPOTIFY
-#--------------------------------------------------
+############################################
+            #CASO8: SPOTIFY
+############################################
 
     elif social_network == 'spotify':
     
-        ##########################################################################################################################################
-        #---------------------------------------------------------DATOS SPOTIFY API--------------------------------------------------------------
-        ##########################################################################################################################################
-        
+        #--DATOS SPOTIFY API--#
         datos = {'name' : randomword(8)}
         playListSend = datos['name']
         newTracks = {'uris': ["spotify:track:6rqhFgbbKwnb9MLmUQDhG6","spotify:track:1qfYG2JrchEyJiqKnkE7YQ"]}
@@ -1114,14 +1020,12 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyRefrescoLatency.html" + "?" + dataSend)
                 sleep(5)
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyRefrescoAccuracy.html" + "?" + dataSend)
-                sleep(5)
+    
                 
         listtpubl_ms=[]; listpost=[]; listestado=[]
         #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
         #https://developer.spotify.com/web-api/console/post-playlists/
-         access_token= yaml_config['spotify']['token']
+        access_token= yaml_config['spotify']['token']
 
         url_newPlayList = "https://api.spotify.com/v1/users/deusconwet/playlists"
         headers = {
@@ -1136,9 +1040,7 @@ if social_network in network_list:
 
         tpubl_ms=int(time.time())
        
-        ##########################################################################################################################################
-        #------------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)-----------------------------------------------
-        ##########################################################################################################################################
+        #--DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep (70)
         lista=[]; listacomp=[]; listatime=[]
         if version in version_list:
