@@ -10,7 +10,6 @@ import urllib2, urllib
 import json
 import time
 from time import sleep
-from twitter import *
 from requests_oauthlib import OAuth1
 import requests
 import webbrowser
@@ -43,6 +42,7 @@ mpPinterest = Mixpanel("6ceb3a37029277deb7f530ac7d65d7d4")
 mpTraffic = Mixpanel("85519859ef8995bfe213dfe822e72ab3")
 mpWeather = Mixpanel("19ecdb19541d1e7b61dce3d4d5fa485b")
 mpStock = Mixpanel("f2703d11ce4b2e6fed5d95f400306e48")
+mpReddit = Mixpanel ("2404440b343c1bc4b5a39ff49b604070")
 mpSpotify = Mixpanel ("bab1fc9e4af4e9e0fb7d5992fc35ab73")
 
 def byteify(input):
@@ -55,10 +55,8 @@ def byteify(input):
     else:
         return input
 
-
 network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit", "spotify"]
 version_list = ["master","latency", "accuracy"]
-# url_base_remote= "http://metricas-formales.appspot.com/app/accuracy_metric"
 url_base_local= "http://localhost:8000"
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),
@@ -72,32 +70,23 @@ if len(sys.argv) >= 3:
 else:
     version = ''
 
-
 if social_network in network_list:
 
 ############################################
             #CASO1: TWITTER
 ############################################
-
-
     if social_network == 'twitter':
-
-        ##########################################################################################################################################
-        #---------------------------------------------------------DATOS TWITTER API---------------------------------------------------------------
-        ##########################################################################################################################################
         
-        CONSUMER_KEY = yaml_config['twitter']['consumer_key']  #Consumer key
-        CONSUMER_SECRET =  yaml_config['twitter']['consumer_key'] #Consumer secret
-        ACCESS_KEY =  yaml_config['twitter']['access-token'] #Access token
-        ACCESS_SECRET =  yaml_config['twitter']['secret-token']   #Access token secret
+        #--DATOS API TWITTER--#
+        CONSUMER_KEY = yaml_config['twitter']['consumer_key']
+        CONSUMER_SECRET =  yaml_config['twitter']['consumer_key']
+        ACCESS_KEY =  yaml_config['twitter']['access-token']
+        ACCESS_SECRET =  yaml_config['twitter']['secret-token']
 
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new( url_base_local + "/Master/twitter-timeline-stable/static/TwitterCompletitud.html")
                 sleep(3)
-            # elif(version=="latency"):
-            #     webbrowser.open_new( url_base_remote + "/Latency/twitter-timeline/static/TwitterCompletitudLatency.html")
-            #     sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new( url_base_local + "/Accuracy/twitter-timeline-accuracy/static/TwitterCompletitudAccuracy.html")
                 sleep(3)
@@ -109,31 +98,24 @@ if social_network in network_list:
         s= requests.get(request_hometimeline, auth=oauth)
         timeline=s.json()
 
-        ##########################################################################################################################################
-        #-----------------------------------------DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
-        ##########################################################################################################################################
+        #--DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(30)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        #x=mixpanel_api.Mixpanel("70d459a2d5e96864f6eacdcb1a1fcd50","4dd2fff92abd81af8f06950f419f066a")
-        lista = []; listaid = []; liskey = []; lisvalue = []; listaFallosText = []; listaFallosUser = []
+        lista = []; liskey = []; lisvalue = []; listaFallosText = []; listaFallosUser = []
         contadorFallos = 0
-
-        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-        respuesta=x.request(['events/properties/values'], params, format='json')           
+        params={'event':version,'name':'value'}
+        #se le pasa el API secret
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('4dd2fff92abd81af8f06950f419f066a', '')).json()
 
         for x in respuesta:
             #pasar de unicode a dict
             resp = ast.literal_eval(x)
             lista.append(resp)
 
-        #ordeno la lista de diccionarios por el id
         newlist = sorted(lista, key=lambda id_tweet: id_tweet['id'])
         newlist.reverse()
 
-        #Recorro el diccionario del componente
         contador = len(newlist)
         for index, element in enumerate(newlist):
-            #Comparamos los valores
             if str(element['text']) != str(timeline[index]['text']):
               print "Falla el texto con valor %s" % element['text']
               liskey.append('text')
@@ -161,26 +143,19 @@ if social_network in network_list:
 #cuando se miren los datos que fallan no van a coincidir con las posiciones de fallo que se guardan en mixpanel
 #Facebook hace una ordenacion por ACTUALIZACION, no por creacion
 
-        ##########################################################################################################################################
-        #--------------------------------------------------------DATOS FACEBOOK API---------------------------------------------------------------
-        ##########################################################################################################################################
-
+        #--DATOS FACEBOOK API--#
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/facebook-wall-stable/FacebookCompletitud.html")
                 sleep(5)
-            # elif(version=="latency"):
-            #     webbrowser.open_new(url_base_remote + "/Latency/facebook-wall/FacebookCompletitudLatency.html")
-            #     sleep(5)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/facebook-wall-accuracy/FacebookCompletitudAccuracy.html")
                 sleep(5)
-        # Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
-        #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
+        #obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
+        #cambiarlo cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
         access_token= yaml_config['facebook']['access_token']
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
-        #Request timeline home
         s= requests.get(facebook_url)
         muro=s.json()
         
@@ -192,7 +167,6 @@ if social_network in network_list:
         for element in muro:
           text = ""
           picture = ""
-
           if(element.has_key('description')):
               text1 = element['description']
               hash_object = hashlib.sha1(text1)
@@ -210,17 +184,12 @@ if social_network in network_list:
           element['_text'] = text
           element['_picture'] = picture
           
-        ##########################################################################################################################################
-        #-------------------------------------------DATOS FACEBOOK COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
-        ##########################################################################################################################################
-
+        #--DATOS FACEBOOK COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(20)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        #x=mixpanel_api.Mixpanel("de21df1c2c63dff29ffce8a1a449494a","a7917928a9ba3dd88592fac7ac36e8a9")
         contadorFallos=0
+        params={'event':version,'name':'value'}
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('a7917928a9ba3dd88592fac7ac36e8a9', '')).json()
 
-        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-        respuesta=x.request(['events/properties/values'], params, format='json')
         respuesta = [json.loads(str(post)) for post in respuesta]
         respuesta = sorted(respuesta, key=lambda posicion: posicion['i'])
         
@@ -249,22 +218,15 @@ if social_network in network_list:
 ############################################
 
     elif social_network == 'googleplus':
-
-        ##########################################################################################################################################
-        #--------------------------------------------------------DATOS GOOGLE+ API---------------------------------------------------------------
-        ##########################################################################################################################################
+        #--DATOS GOOGLE+ API--#
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/googleplus-timeline-stable/demo/GooglePlusCompletitud.html")
                 sleep(3)
-            # elif(version=="latency"):
-            #     webbrowser.open_new(url_base_remote + "/Latency/googleplus-timeline/demo/GooglePlusCompletitudLatency.html")
-            #     sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline-accuracy/demo/GooglePlusCompletitudAccuracy.html")
                 sleep(3)
 
-        sleep(5)
         # Url para obtener nuevo token google: https://developers.google.com/+/web/api/rest/latest/activities/list#try-it
         # (Para el caso de Google, haces una peticion a la API con el explorer API, vas a networks, y coges el token que
         # viene en el header Authorization: 'Bearer TOKEN')
@@ -284,7 +246,6 @@ if social_network in network_list:
         for i in followers:
             google_url="https://www.googleapis.com/plus/v1/people/" + str(i) + "/activities/public"
             pet= requests.get(google_url,headers=headers)
-
             timeline=pet.json()
             if(timeline.has_key('items')):
                 posts += timeline['items']
@@ -296,25 +257,18 @@ if social_network in network_list:
         
         posts = sorted(posts,key=lambda post: post['date_published'], reverse=True)
 
-        ##########################################################################################################################################
-        #-------------------------------------------DATOS GOOGLE+ COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
-        ##########################################################################################################################################
-
+        #--DATOS GOOGLE+ COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(10)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("b9eb42288e7e416028ddf3ee70ae4ca9","0c24b55a9806c9eb41cb3d5f3a7e7ef6")
         contadorFallos=0
-
         if version in version_list:
-            params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-            respuesta=x.request(['events/properties/values'], params, format='json')
+            params={'event':version,'name':'value'}
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('0c24b55a9806c9eb41cb3d5f3a7e7ef6', '')).json()
 
             lista = []
             for x in respuesta:
                 resp = ast.literal_eval(x)
                 lista.append(resp)
 
-            #ordeno la lista de diccionarios por el id
             newlist = sorted(lista, key=lambda posicion: posicion['publish'], reverse=True)            
 
             for component, post_api in zip(newlist,posts):
@@ -335,16 +289,11 @@ if social_network in network_list:
 
     elif social_network == 'pinterest':
 
-        ##########################################################################################################################################
-        #-------------------------------------------------------DATOS PINTEREST API---------------------------------------------------------------
-        ##########################################################################################################################################
+        #--DATOS PINTEREST API--#
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/pinterest-timeline/demo/PinterestCompletitud.html")
                 sleep(3)
-            # elif(version=="latency"):
-            #     webbrowser.open_new(url_base_local + "/Latency/pinterest-timeline/demo/PinterestCompletitudLatency.html")
-            #     sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/pinterest-timeline/demo/PinterestCompletitudAccuracy.html")
                 sleep(3)
@@ -368,7 +317,7 @@ if social_network in network_list:
                 values3=m.get('url',None)
             lista_img.append(values3)
 
-        # de cada url separo por / para poder coger el nombre del usuario y del tablero para despues poder hacer peticion de pins
+        #de cada url separo por / para poder coger el nombre del usuario y del tablero para despues poder hacer peticion de pins
         for image in lista_img:
             new=image.split("/")
             #cojo todos los username a los que sigo para poder hacer la siguiente peticion
@@ -402,14 +351,9 @@ if social_network in network_list:
                     imagAPI.append(url)
                     
         getData(pets)
-       
-        ##########################################################################################################################################
-        #------------------------------------------DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)---------------------------------------------
-        ##########################################################################################################################################
+        
+        #--DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(30)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        #x=mixpanel_api.Mixpanel("55736dc621aade0a3e80ea2f7f28f42b","5d34c88bc7f29c166e56484966b1c85b")
-
         imagComp=[]
         contadorFallos=0
 
@@ -425,32 +369,13 @@ if social_network in network_list:
             return fallos
 
         if version in version_list:
-            if version=="master":
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-                imagComp = [str(json.loads(res)['url']) for res in respuesta]        
-                fallos=comp(imagAPI,imagComp)
-                mpPinterest.track(fallos,"Fallos master imagenes",{"imagen":fallos, "version":"master"})
-                contadorFallos=contadorFallos/float(len(imagAPI))
-                mpPinterest.track(contadorFallos, "Fallos totales master", {"numero fallos": contadorFallos})
-
-            elif version=="latency":
-                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-                imagComp = [str(json.loads(res)['url']) for res in respuesta]
-                fallos=comp(imagAPI,imagComp)
-                mpPinterest.track(fallos,"Fallos latency imagenes",{"imagen":fallos, "version":"latency"})
-                contadorFallos=contadorFallos/float(len(imagAPI))
-                mpPinterest.track(contadorFallos, "Fallos totales latency", {"numero fallos": contadorFallos})
- 
-            elif version=="accuracy":
-                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-                imagComp = [str(json.loads(res)['url']) for res in respuesta]         
-                fallos=comp(imagAPI,imagComp)
-                mpPinterest.track(fallos,"Fallos accuracy imagenes",{"imagen":fallos, "version":"accuracy"})
-                contadorFallos=contadorFallos/float(len(imagComp))
-                mpPinterest.track(contadorFallos, "Fallos totales accuracy", {"numero fallos": contadorFallos})
+            params={'event':version,'name':'value'}
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('5d34c88bc7f29c166e56484966b1c85b', '')).json()        
+            imagComp = [str(json.loads(res)['url']) for res in respuesta]        
+            fallos=comp(imagAPI,imagComp)
+            mpPinterest.track(fallos,"Fallos imagenes %s" % version,{"imagen":fallos, "version": version})
+            contadorFallos=contadorFallos/float(len(imagAPI))
+            mpPinterest.track(contadorFallos, "Fallos totales %s" % version, {"numero fallos": contadorFallos})
 
 
 ############################################
@@ -458,20 +383,16 @@ if social_network in network_list:
 ############################################
 
     elif social_network == 'traffic-incidents':
-
-        ##########################################################################################################################################
-        #-------------------------------------------------------DATOS TRAFFIC API---------------------------------------------------------------
-        ##########################################################################################################################################
+        
+        #--DATOS TRAFFIC API--#
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/traffic-incidents/demo/TrafficCompletitud.html")
                 sleep(3)
-            # elif(version=="latency"):
-            #     webbrowser.open_new(url_base_local + "/Latency/traffic-incidents/demo/TrafficCompletitudLatency.html")
-            #     sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficCompletitudAccuracy.html")
                 sleep(3)
+
         token = yaml_config['traffic-incidents']['api_key_traffic']
         request_uri= "https://centauro.ls.fi.upm.es:4444/traffic?map=39.56276609909911,-4.650120900900901,41.36456790090091,-2.848319099099099&key=" + token
         
@@ -512,31 +433,23 @@ if social_network in network_list:
             contador=contador+1
 
         zipPythonDesc=zip(listacont,lista_descrip)
-        #diccionario contador y usuarios
         dictPythonText=dict(zipPythonDesc)
         zipPythonDate=zip(listacont,lista_date)
-        #diccionario contador y textos
         dictPythonDate=dict(zipPythonDate)
         zipPythonType=zip(listacont,lista_type)
-        #diccionario contador e imagenes
         dictPythonType=dict(zipPythonType)
 
-        ##########################################################################################################################################
-        #----------------------------------------DATOS TRAFFIC COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
-        ##########################################################################################################################################
+        #--DATOS TRAFFIC COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(30)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("f9048e936929679df4e14859ebd1dd98","0795378c7f94b5b1f4170deb0221ec59")
+        params={'event':version,'name':'value'}
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('0795378c7f94b5b1f4170deb0221ec59', '')).json()     
         contadorFallos=0
-        lista=[]; images=[]; listapos=[]; listadate=[]; listatext=[]; listatype=[]; liskey=[]; lisvalue=[]
-        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-        respuesta=x.request(['events/properties/values'], params, format='json')
+        lista=[]; liskey=[]; lisvalue=[]
 
         for x in respuesta:
             resp = ast.literal_eval(x)
             lista.append(resp)
 
-        #ordeno la lista de diccionarios por la posicion (va de 0 a x)
         newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
         for index, entry in enumerate(newlist):
@@ -563,16 +476,11 @@ if social_network in network_list:
 
     elif social_network == 'finance-search':
 
-        ##########################################################################################################################################
-        #-------------------------------------------------------DATOS STOCK API---------------------------------------------------------------
-        ##########################################################################################################################################
+        #--DATOS STOCK API--#
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/finance-search-stable/demo/FinanceSearchMaster.html")
                 sleep(3)
-            # elif(version=="latency"):
-            #     webbrowser.open_new(url_base_local + "/Latency/finance-search/demo/FinanceSearchLatency.html")
-            #     sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/finance-search-accuracy/demo/FinanceSearchAccuracy.html")
                 sleep(3)
@@ -588,23 +496,20 @@ if social_network in network_list:
         data = response.json()
         data = data['query']['results']['quote'][0]
 
-        ##########################################################################################################################################
-        #----------------------------------------DATOS STOCK COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
-        ##########################################################################################################################################
+        #--DATOS STOCK COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         latency=0
         if version == 'latency':
           latency=10
         sleep(10+latency)
-        panel = mixpanel_api.Mixpanel('67699e9fba765cebbbe98621271db4ba','fbb422f045419447722e54b70690c638')
-        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-        response=panel.request(['events/properties/values'], params, format='json')
-        response = [ json.loads(res) for res in response ]
-        response = sorted(response, key=lambda x: -x['Date'])
-        response = response[0]
+        params={'event':version,'name':'value'}
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('fbb422f045419447722e54b70690c638', '')).json()
+        respuesta = [ json.loads(res) for res in respuesta ]
+        respuesta = sorted(respuesta, key=lambda x: -x['Date'])
+        respuesta = respuesta[0]
         errors = 0
         analyzed = 0.0
         
-        for key,value in response.iteritems():
+        for key,value in respuesta.iteritems():
           key = str(key)
           value = str(value)
           if key != 'Date':
@@ -623,15 +528,10 @@ if social_network in network_list:
 
     elif social_network == 'open-weather':
 
-        ##########################################################################################################################################
-        #-------------------------------------------------------DATOS WEATHER API---------------------------------------------------------------
-        ##########################################################################################################################################
+        #--DATOS WEATHER API--#
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/open-weather-stable/demo/WeatherCompletitud.html")
-            # elif(version=="latency"):
-            #     webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherCompletitudLatency.html")
-            #     sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/open-weather-accuracy/demo/WeatherCompletitudAccuracy.html")
         
@@ -696,6 +596,7 @@ if social_network in network_list:
             weather['temp_max'] = maxs[index]
           
           return lista_timeline
+       
         def recorrer_timeline(lista_timeline):
           pretty = []          
           for entry in lista_timeline:
@@ -713,43 +614,37 @@ if social_network in network_list:
         api_response = recorrer_timeline(timeline['list'])
         api_response = list_temp_min_max(api_response)
 
-        ##########################################################################################################################################
-        #----------------------------------------DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
-        ##########################################################################################################################################
+        #--DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(30)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        x=mixpanel_api.Mixpanel("aab0e30bdb1ec923fe2d85fb95e051ec","a019aa23c38827f307f0d5eff0d0d6f5")
         contadorFallos=0
         lista=[]
 
         if version in version_list:
-          params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-          respuesta=x.request(['events/properties/values'], params, format='json')
+            params={'event':version,'name':'value'}
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('a019aa23c38827f307f0d5eff0d0d6f5', '')).json()     
+    
+            for x in respuesta:
+                resp = ast.literal_eval(x)
+                lista.append(resp)                   
           
-          for x in respuesta:
-            resp = ast.literal_eval(x)
-            lista.append(resp)                   
-          
-          #ordeno la lista de diccionarios por la posicion (va de 0 a x)
-          newlist = sorted(lista, key=lambda posicion: posicion['i'])
+            newlist = sorted(lista, key=lambda posicion: posicion['i'])
 
-          for index, weather in enumerate(newlist):
-            if api_response[index]['icon'] != weather['icon']:
-              print index, " falla en posicion icon: ", api_response[index]['icon'], weather['icon']
-              contadorFallos+=1
-            if api_response[index]['temp'] != weather['temp']:
-              print index, " falla en posicion temp: ", api_response[index]['temp'], weather['temp']
-              contadorFallos+=1
-            if api_response[index]['temp_min'] != weather['temp_min']:
-              print index, " falla en posicion temp_min: ", api_response[index]['temp_min'], weather['temp_min']
-              contadorFallos+=1
-            if api_response[index]['temp_max'] != weather['temp_max']:
-              print index, " falla en posicion temp_max: ", api_response[index]['temp_max'], weather['temp_max']
-              contadorFallos+=1                            
+            for index, weather in enumerate(newlist):
+                if api_response[index]['icon'] != weather['icon']:
+                    print index, " falla en posicion icon: ", api_response[index]['icon'], weather['icon']
+                    contadorFallos+=1
+                if api_response[index]['temp'] != weather['temp']:
+                    print index, " falla en posicion temp: ", api_response[index]['temp'], weather['temp']
+                    contadorFallos+=1
+                if api_response[index]['temp_min'] != weather['temp_min']:
+                    print index, " falla en posicion temp_min: ", api_response[index]['temp_min'], weather['temp_min']
+                    contadorFallos+=1
+                if api_response[index]['temp_max'] != weather['temp_max']:
+                    print index, " falla en posicion temp_max: ", api_response[index]['temp_max'], weather['temp_max']
+                    contadorFallos+=1                            
         
-          contadorFallos=contadorFallos / (len(newlist)*4.0)
-          mpWeather.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})
-
+            contadorFallos=contadorFallos / (len(newlist)*4.0)
+            mpWeather.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})
 
 ############################################
         #CASO6: REDDIT-TIMELINE
@@ -759,15 +654,14 @@ if social_network in network_list:
         experiment_id = int(time.time())
         print "ID. Experimento: %d" % experiment_id
         reddit_token = yaml_config['reddit-timeline']['token']
+        
+        #--DATOS REDDIT API--#
         if(version=="master"):
             webbrowser.open_new(url_base_local + "/Master/reddit-timeline/demo/RedditTimelineMaster.html?" + str(experiment_id))
-        # elif(version=="latency"):
-        #     webbrowser.open_new(url_base_local + "/Latency/open-weather/demo/WeatherCompletitudLatency.html?" + str(experiment_id))
-        #     sleep(3)
         elif(version=="accuracy"):
             webbrowser.open_new(url_base_local + "/Accuracy/reddit-timeline/demo/RedditTimelineAccuracy.html?" + str(experiment_id))
 
-        # Coger un access token valido
+        #Coger un access token valido
         request_uri = "https://oauth.reddit.com/r/all/hot"
         header = {
             "authorization": "Bearer " + reddit_token,
@@ -781,26 +675,24 @@ if social_network in network_list:
         timeline = req.json()['data']['children']
         timeline = [element['data'] for element in timeline]
         
+        #--DATOS REDDIT COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(15)
+        params={'event':version,'name':'value'}
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('7bc71232ea359bf84f9abe6c6e06726b', '')).json()
+        respuesta = [json.loads(data) for data in respuesta]
+        respuesta = filter(lambda el: el['experiment'] == str(experiment_id), respuesta)
+        respuesta = sorted(respuesta, key=lambda element: element['i'])
 
-        mixpanel_redit = mixpanel_api.Mixpanel("b3b33d92ce26bc2171dcd4efa907794e","7bc71232ea359bf84f9abe6c6e06726b")
-        params = {'event':version, 'name':'value','type':'general', 'unit':'day','interval':1}
-        mixpanel_data = mixpanel_redit.request(['events/properties/values'], params, format='json')
-
-        mixpanel_data = [json.loads(data) for data in mixpanel_data]
-        mixpanel_data = filter(lambda el: el['experiment'] == str(experiment_id), mixpanel_data)
-        mixpanel_data = sorted(mixpanel_data, key=lambda element: element['i'])
-
-        if len(mixpanel_data) != len(timeline):
+        if len(respuesta) != len(timeline):
             print "Las longitudes de las dos listas recibidas no son iguales. Comprueba que se mandan todos los datos bien"
-            print "mixpanel: %d  vs  componente: %d" % (len(mixpanel_data), len(timeline))
+            print "mixpanel: %d  vs  componente: %d" % (len(respuesta), len(timeline))
             sys.exit(3)
         
         errores_encontrados = 0
         CAMPOS_COMPROBADOS = 4.0
 
-        errores_maximos = len(mixpanel_data) * CAMPOS_COMPROBADOS
-        for component_data, timeline_data  in zip(mixpanel_data, timeline):
+        errores_maximos = len(respuesta) * CAMPOS_COMPROBADOS
+        for component_data, timeline_data  in zip(respuesta, timeline):
             if component_data['author'] != timeline_data['author']:
                 print "Error en el campo author"
                 print "%s != %s" % (component_data['author'], timeline_data['author'])
@@ -811,16 +703,6 @@ if social_network in network_list:
                 print "Error en el campo title"
                 print "%s != %s" % (component_data['title'], hashed_title)
                 errores_encontrados += 1
-            
-            # if component_data['score'] != timeline_data['score']:
-            #     print "Error en el campo score"
-            #     print "%s != %s" % (component_data['score'], timeline_data['score'])
-            #     errores_encontrados += 1
-
-            # if component_data['num_comments'] != timeline_data['num_comments']:
-            #     print "Error en el campo num_comments"
-            #     print "%s != %s" % (component_data['num_comments'], timeline_data['num_comments'])
-            #     errores_encontrados += 1
 
             if component_data['subreddit'] != timeline_data['subreddit']:
                 print "Error en el campo subreddit"
@@ -832,10 +714,9 @@ if social_network in network_list:
                 print "Error en el campo text"
                 print "%s != %s" % (component_data['text'], hashed_text)
                 errores_encontrados += 1
-            print "--------------------------------------"
         completitud = errores_encontrados/errores_maximos
         print "Completitud del experimento %d: %f" %(experiment_id, completitud)
-        mpFacebook.track(completitud, "Fallos totales " + version, {"numero fallos": completitud})
+        mpReddit.track(completitud, "Fallos totales " + version, {"numero fallos": completitud})
 
 
 ############################################
@@ -843,10 +724,8 @@ if social_network in network_list:
 ############################################
 
     elif social_network == "spotify":
-
-        #########################################################################################################################################
-        #-------------------------------------------------------DATOS SPOTIFY API---------------------------------------------------------------
-        #########################################################################################################################################
+        
+        #--DATOS SPOTIFY API--#
          
         #eliminar datos de mixpanel
         #request = requests.get('https://mixpanel.com/api/2.0/engage',  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
@@ -872,7 +751,7 @@ if social_network in network_list:
         pet_timeline_spoti= requests.get(spotify_getTimeline,headers=headers)   
         timeline_spoti = byteify(pet_timeline_spoti.json())
 
-        imagesList=[]; namePlaylist=[]; createdByList=[]; listaCanciones=[]; listSpotify=[];
+        imagesList=[]; namePlaylist=[]; createdByList=[]; listaCanciones=[]; listSpotify=[]
         numTracksArtists=0
     
         for k,v in timeline_spoti.iteritems():
@@ -899,10 +778,8 @@ if social_network in network_list:
                 listSpotify[i]['songs'].update({canciones['track']['id']: [canciones['track']['name'], canciones['track']['artists'][0]['name']]})
 
         datosEstudiados= numPlayList+numImages+(numTracksArtists*2)
-
-        ##########################################################################################################################################
-        #----------------------------------------DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)------------------------------------------------
-        ##########################################################################################################################################
+        
+        #---DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(10)
         contadorFallos=0
         listaComp=[]; liscompararAPI=[]; liscompararComp=[]
@@ -955,6 +832,3 @@ if social_network in network_list:
 
 # if __name__ == "__main__":
 #     app.run(port=9000)
-
-
-
