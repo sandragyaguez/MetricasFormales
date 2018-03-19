@@ -111,7 +111,6 @@ if social_network in network_list:
                 print "Tweet duplicado"
                 return 1
             print "Respuesta: " + str(r)
-            tpubl=datetime.datetime.now()
             tpubl_ms=int(time.time()*1000)
             print "tiempo post en ms: " + str(tpubl_ms)
             listestado.append(estado)
@@ -120,7 +119,7 @@ if social_network in network_list:
             #Request timeline user   
             s= requests.get(request_usertimeline, auth=oauth)
             timeline=s.json()
-            #Encontrar el texto del tweet que acabo de publicar, con el campo text que tiene cada tweet, y timestamp cuando me lo muestre en twitter (tambien se puede hacer con ID)(polling)
+            #Encontrar el texto del tweet que acabo de publicar, con el campo text que tiene cada tweet, y timestamp cuando me lo muestre en twitter
             for tweet in timeline:
                 text=tweet['text']
                 if text==estado:
@@ -138,113 +137,45 @@ if social_network in network_list:
         x=mixpanel_api.Mixpanel("c10939e3faf2e34b4abb4f0f1594deaa","4a3b46218b0d3865511bc546384b8928")
         lista=[]; listacomp=[]; listatime=[]
 
+        #se le pasa el API secret
+
         if version in version_list:
-            if version=="master":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
+            params={'event':version,'name':'value'}
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
 
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
+            for x in respuesta:
+                #pasar de unicode a dict
+                resp = ast.literal_eval(x)
+                lista.append(resp)
 
-                #ordeno la lista de diccionarios por el tweet
-                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
+            #ordeno la lista de diccionarios por el tweet
+            newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
 
-                for y in newlist:
-                    #obtengo el texto de cada post recogido del componente
-                    textocomp=y.items()[0][1]
-                    #obtengo el tiempo de cada post recogido del componente
-                    timecomp=y.items()[1][1]
-                    #voy guardando ambos datos en dos listas diferentes
-                    listacomp.append(textocomp)
-                    listatime.append(timecomp)
+            for y in newlist:
+                #obtengo el texto de cada post recogido del componente
+                textocomp=y.items()[0][1]
+                #obtengo el tiempo de cada post recogido del componente
+                timecomp=y.items()[1][1]
+                listacomp.append(textocomp)
+                listatime.append(timecomp)
 
-                zipComp=zip(listacomp,listatime)
-                #Diccionario tweet, time
-                dictComp=dict(zipComp)
+            zipComp=zip(listacomp,listatime)
+            #Diccionario tweet, time
+            dictComp=dict(zipComp)
 
-                #la key es el texto del tweet y el value son los times de refresco en el componente
-                #en la siguiente prueba, aunque en el dict de Python haya dos keys con sus values, dictComp solo tiene una key y un value porque
-                #es el nuevo evento. Y busco la key del componente (del nuevo evento) en el dict de Python por lo que siempre va a restar bien los tiempos
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        #resto el tiempo obtenido del componente menos el tiempo que me devuelve directamente la api al postear
-                        final_time=float(value)-float(valuesP)
-                        print "final_time: " + str(final_time)
-                        #mando a Mixpanel el tiempo final obtenido de la resta, el post al que pertenece esa diferencia de tiempo y la version que estamos tratando
-                        mpTwitter.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
-
-            elif version=="latency":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el tweet
-                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
-
-                for y in newlist:
-                    textocomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(textocomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario tweet, time
-                dictComp=dict(zipComp)
-
-                #la key es el texto del tweet y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        final_time=float(value)-float(valuesP)
-                        print "final_time: " + str(final_time)
-                        mpTwitter.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
-
-            elif version=="accuracy":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el tweet
-                newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
-
-                for y in newlist:
-                    textocomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(textocomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario tweet, time
-                dictComp=dict(zipComp)
-
-                #la key es el texto del tweet y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        final_time=float(value)-float(valuesP)
-                        print "final_time: " + str(final_time)
-                        mpTwitter.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":"master"})
-
+            #la key es el texto del tweet y el value son los times de refresco en el componente
+            #en la siguiente prueba, aunque en el dict de Python haya dos keys con sus values, dictComp solo tiene una key y un value porque
+            #es el nuevo evento. Y busco la key del componente (del nuevo evento) en el dict de Python por lo que siempre va a restar bien los tiempos
+            for key,value in dictComp.iteritems():
+                #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
+                if(dictPython.has_key(key)):
+                    #si es asi, cojo los values de python y del componente y los comparo
+                    valuesP=dictPython.get(key,None)
+                    #resto el tiempo obtenido del componente menos el tiempo que me devuelve directamente la api al postear
+                    final_time=float(value)-float(valuesP)
+                    print "final_time: " + str(final_time)
+                    #mando a Mixpanel el tiempo final obtenido de la resta, el post al que pertenece esa diferencia de tiempo y la version que estamos tratando
+                    mpTwitter.track(final_time, "Final time " + version,{"time final": final_time, "post": key, "version":version})
 
 ############################################
             #CASO2: FACEBOOK
@@ -264,7 +195,7 @@ if social_network in network_list:
 
         #Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
         
-        #es necesario cambiar el token cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
+        #cambiarlo cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
         access_token= yaml_config['facebook']['access_token']
         listestado=[]; listtpubl_ms=[]
 
@@ -281,115 +212,38 @@ if social_network in network_list:
         listtpubl_ms.append(tpubl_ms)
 
         zipPython=zip(listestado,listtpubl_ms)
-        #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
         print dictPython
 
         #--DATOS FACEBOOK COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(70)
-    
-
-
         lista=[]; listacomp=[]; listatime=[]
 
         if version in version_list:
-            if version=="master":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
+            params={'event':version,'name':'value'}
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
 
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
+            for x in respuesta:
+                resp = ast.literal_eval(x)
+                lista.append(resp)
 
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    textocomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(textocomp)
-                    listatime.append(timecomp)
+            newlist = sorted(lista, key=lambda post: post['post'])
+            for y in newlist:
+                textocomp=y.items()[0][1]
+                timecomp=y.items()[1][1]
+                listacomp.append(textocomp)
+                listatime.append(timecomp)
 
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
+            zipComp=zip(listacomp,listatime)
+            dictComp=dict(zipComp)
 
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)
-                            final_time=float(value)-float(valuesP)
-                            print "final_time: " + str(final_time)
-                            mpFacebook.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
-
-
-            elif version=="latency":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    textocomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(textocomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
-
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)
-                            final_time=float(value)-float(valuesP)
-                            print "final_time: " + str(final_time)
-                            mpFacebook.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
-
-            elif version=="accuracy":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    textocomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(textocomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
-
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)
-                            final_time=float(value)-float(valuesP)
-                            print "final_time: " + str(final_time)
-                            mpFacebook.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
-
+            for key,value in dictComp.iteritems():
+                if(dictPython.has_key(key)):
+                    valuesP=dictPython.get(key,None)
+                    final_time=float(value)-float(valuesP)
+                    print "final_time: " + str(final_time)
+                    mpFacebook.track(final_time, "Final time " + version,{"time final": final_time, "post": key, "version":version})
+        
 
 ############################################
             #CASO3: GOOGLE+
@@ -415,11 +269,10 @@ if social_network in network_list:
         latency=0
         if (version=="latency"):
             latency=10
-        ## request mixpanel response
+        #request mixpanel response
         sleep(70+latency)
-        panel = mixpanel_api.Mixpanel("9cf467a3377c3c9f482966fb4866c005","ae85ca196b7052f19cea93661d8a5389")
-        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-        respuesta=panel.request(['events/properties/values'], params, format='json')
+        params={'event':version,'name':'value'}
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
         
         # remove unicode
         respuesta = [ ast.literal_eval(data) for data in respuesta ]
@@ -478,114 +331,36 @@ if social_network in network_list:
         post_pin(access_token, board, note, link, image_url)
 
         zipPython=zip(listimags,listtpubl_ms)
-        #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
 
         #--DATOS PINTEREST COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(100)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
-        x=mixpanel_api.Mixpanel("c6a5d1682613e89df94c6eceb3859be6","17a38edfdff693b56b50f332ae8f8e9e")
         lista=[]; listacomp=[]; listatime=[]
 
         if version in version_list:
-            if version=="master":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
+            params={'event':version,'name':'value'}
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
 
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
+            for x in respuesta:
+                resp = ast.literal_eval(x)
+                lista.append(resp)
 
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    urlcomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(urlcomp)
-                    listatime.append(timecomp)
+            newlist = sorted(lista, key=lambda post: post['post'])
+            for y in newlist:
+                urlcomp=y.items()[0][1]
+                timecomp=y.items()[1][1]
+                listacomp.append(urlcomp)
+                listatime.append(timecomp)
 
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
+            zipComp=zip(listacomp,listatime)
+            dictComp=dict(zipComp)
 
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)
-                            final_time=float(value)-float(valuesP)
-                            print "final_time: " + str(final_time)
-                            mpPinterest.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
-
-
-            elif version=="latency":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    urlcomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(urlcomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
-
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)   
-                            final_time=float(value)-float(valuesP)
-                            print "final_time: " + str(final_time)
-                            mpPinterest.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
-
-
-            elif version=="accuracy":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    urlcomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(urlcomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
-
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)
-                            final_time=float(value)-float(valuesP)
-                            print "final_time: " + str(final_time)
-                            mpPinterest.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
-
+            for key,value in dictComp.iteritems():
+                if(dictPython.has_key(key)):
+                    valuesP=dictPython.get(key,None)
+                    final_time=float(value)-float(valuesP)
+                    print "final_time: " + str(final_time)
+                    mpPinterest.track(final_time, "Final time " + version,{"time final": final_time, "post": key, "version":version})
 
 ############################################
          #CASO5: TRAFFIC-INCIDENTS
@@ -614,7 +389,6 @@ if social_network in network_list:
         listtpubl_ms.append(tpubl_ms)
 
         zipPython=zip(listpost,listtpubl_ms)
-        #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
 
         #--DATOS TRAFFIC COMPONENTE (RECOGIDOS DE MIXPANEL)--#
@@ -623,108 +397,34 @@ if social_network in network_list:
         url = "https://centauro.ls.fi.upm.es:4444/fakes/traffic/clean"
         response = requests.get(url, verify=False)
 
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
-        x=mixpanel_api.Mixpanel("f84c5fe9d8cacb4271819b9e0f06f5e5","4b7abff36fb44e36332e12ff744d36c5")
         lista=[]; listacomp=[]; listatime=[]
 
         if version in version_list:
-            if version=="master":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
+            params={'event':version,'name':'value'}
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
 
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
+            for x in respuesta:
+                resp = ast.literal_eval(x)
+                lista.append(resp)
 
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    postcomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(postcomp)
-                    listatime.append(timecomp)
+            newlist = sorted(lista, key=lambda post: post['post'])
+            for y in newlist:
+                postcomp=y.items()[0][1]
+                timecomp=y.items()[1][1]
+                listacomp.append(postcomp)
+                listatime.append(timecomp)
 
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
+            zipComp=zip(listacomp,listatime)
+            dictComp=dict(zipComp)
 
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)
-                            final_time=float(value)-float(valuesP)
-                            print "final_time: " + str(final_time)
-                            mpTraffic.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
+            for key,value in dictComp.iteritems():
+                if(dictPython.has_key(key)):
+                    valuesP=dictPython.get(key,None)
+                    final_time=float(value)-float(valuesP)
+                    print "final_time: " + str(final_time)
+                    mpTraffic.track(final_time, "Final time " + version,{"time final": final_time, "post": key, "version":version})
 
-            elif version=="latency":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    postcomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(postcomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
-
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)
-                            final_time=float(value)-float(valuesP)
-                            print "final_time: " + str(final_time)
-                            mpTraffic.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
-
-            elif version=="accuracy":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    postcomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(postcomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
-
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                            valuesP=dictPython.get(key,None)
-                            final_time=float(value)-float(valuesP)
-                            print "final_time: " + str(final_time)
-                            mpTraffic.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
-
-
+        
 ############################################
            #CASO6: OPEN-WEATHER
 ############################################
@@ -790,106 +490,32 @@ if social_network in network_list:
         response = requests.get(url, verify=False)
 
         # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
-        x=mixpanel_api.Mixpanel("c8fcf17a2d3201de0c409c902d8f4a08","60375710344595c8d8a05b18a9574adb")
         lista=[]; listacomp=[]; listatime=[]; listacomp1=[]; listacomp2=[] 
 
         if version in version_list:
-            if version=="master":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"master",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
+            params={'event':version,'name':'value'}
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
 
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
+            for x in respuesta:
+                resp = ast.literal_eval(x)
+                lista.append(resp)
 
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    postcomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(postcomp)
-                    listatime.append(timecomp)
+            newlist = sorted(lista, key=lambda post: post['post'])
+            for y in newlist:
+                postcomp=y.items()[0][1]
+                timecomp=y.items()[1][1]
+                listacomp.append(postcomp)
+                listatime.append(timecomp)
 
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
+            zipComp=zip(listacomp,listatime)
+            dictComp=dict(zipComp)
 
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        final_time=float(value)-float(valuesP)
-                        print "final_time: " + str(final_time)
-                        mpWeather.track(final_time, "Final time master",{"time final": final_time, "post": key, "version":version})
-
-            elif version=="latency":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"latency",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    postcomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(postcomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
-
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        final_time=float(value)-float(valuesP)
-                        print "final_time: " + str(final_time)
-                        mpWeather.track(final_time, "Final time latency",{"time final": final_time, "post": key, "version":version})
-
-            elif version=="accuracy":
-                #Cuando lo tengas, defines los parametros necesarios para la peticion
-                params={'event':"accuracy",'name':'value','type':"general",'unit':"day",'interval':1}
-                respuesta=x.request(['events/properties/values'], params, format='json')
-
-                for x in respuesta:
-                    #pasar de unicode a dict
-                    resp = ast.literal_eval(x)
-                    lista.append(resp)
-
-                #ordeno la lista de diccionarios por el post
-                newlist = sorted(lista, key=lambda post: post['post'])
-                for y in newlist:
-                    postcomp=y.items()[0][1]
-                    timecomp=y.items()[1][1]
-                    listacomp.append(postcomp)
-                    listatime.append(timecomp)
-
-                zipComp=zip(listacomp,listatime)
-                #Diccionario post, time
-                dictComp=dict(zipComp)
-
-                #la key es el texto de la publicacion y el value son los times de refresco en el componente
-                for key,value in dictComp.iteritems():
-                    #compruebo que el diccionario de Python contiene todas las claves del diccionario del componente
-                    if(dictPython.has_key(key)):
-                        #si es asi, cojo los values de python y del componente y los comparo
-                        valuesP=dictPython.get(key,None)
-                        final_time=float(value)-float(valuesP)
-                        print "final_time: " + str(final_time)
-                        mpWeather.track(final_time, "Final time accuracy",{"time final": final_time, "post": key, "version":version})
-
+            for key,value in dictComp.iteritems():
+                if(dictPython.has_key(key)):
+                    valuesP=dictPython.get(key,None)
+                    final_time=float(value)-float(valuesP)
+                    print "final_time: " + str(final_time)
+                    mpWeather.track(final_time, "Final time " + version,{"time final": final_time, "post": key, "version":version})
 
 
 ############################################
@@ -927,10 +553,9 @@ if social_network in network_list:
         #--DATOS FINANCE COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         ## request mixpanel response
         sleep(70+latency)
-        panel = mixpanel_api.Mixpanel("f0210615849097c6917b114203c83c6c","544ff7d21c1ab56433d8b6fc2ba7a137")
-        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-        respuesta=panel.request(['events/properties/values'], params, format='json')
-        
+         params={'event':version,'name':'value'}
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
+
         # remove unicode
         respuesta = [ ast.literal_eval(data) for data in respuesta ]
         correct_post = [ post for post in respuesta if post['id'] == str(random_id) ]
@@ -997,7 +622,6 @@ if social_network in network_list:
 
         mpReddit.track(final_time, "Final time "+ version,{"time final": final_time, "version":version})
 
-
 ############################################
             #CASO8: SPOTIFY
 ############################################
@@ -1021,7 +645,6 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyRefrescoLatency.html" + "?" + dataSend)
                 sleep(5)
     
-                
         listtpubl_ms=[]; listpost=[]; listestado=[]
         #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
         #https://developer.spotify.com/web-api/console/post-playlists/
