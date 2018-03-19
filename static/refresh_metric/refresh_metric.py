@@ -72,7 +72,6 @@ def randomword(length):
 
 if social_network in network_list:
 
-
 ############################################
             #CASO1: TWITTER
 ############################################
@@ -136,8 +135,6 @@ if social_network in network_list:
         
         x=mixpanel_api.Mixpanel("c10939e3faf2e34b4abb4f0f1594deaa","4a3b46218b0d3865511bc546384b8928")
         lista=[]; listacomp=[]; listatime=[]
-
-        #se le pasa el API secret
 
         if version in version_list:
             params={'event':version,'name':'value'}
@@ -284,7 +281,6 @@ if social_network in network_list:
         print "Version: ", version
         print "Post: ", correct_post['post']     
         
-
 ############################################
             #CASO4: PINTEREST
 ############################################
@@ -553,7 +549,7 @@ if social_network in network_list:
         #--DATOS FINANCE COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         ## request mixpanel response
         sleep(70+latency)
-         params={'event':version,'name':'value'}
+        params={'event':version,'name':'value'}
         respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
 
         # remove unicode
