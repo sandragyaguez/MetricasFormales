@@ -35,15 +35,15 @@ configFile = open(output_file2,"r")
 yaml_config = yaml.load(configFile)
 
 #objetos Mixpanel para las distintas redes sociales (token del project)
-mpTwitter = Mixpanel("b5b07b32170e37ea45248bb1a5a042a1")
-mpFacebook = Mixpanel("04ae91408ffe85bf83628993704feb15")
-mpGoogle = Mixpanel("f2655b08b62cc657d6865f8af003bdd9")
-mpPinterest = Mixpanel("6ceb3a37029277deb7f530ac7d65d7d4")
-mpTraffic = Mixpanel("85519859ef8995bfe213dfe822e72ab3")
-mpWeather = Mixpanel("19ecdb19541d1e7b61dce3d4d5fa485b")
-mpStock = Mixpanel("f2703d11ce4b2e6fed5d95f400306e48")
-mpReddit = Mixpanel ("2404440b343c1bc4b5a39ff49b604070")
-mpSpotify = Mixpanel ("bab1fc9e4af4e9e0fb7d5992fc35ab73")
+mpTwitter = Mixpanel (yaml_config['mixpanel']['twitter'])
+mpFacebook = Mixpanel (yaml_config['mixpanel']['facebook'])
+mpGoogle = Mixpanel (yaml_config['mixpanel']['google'])
+mpPinterest = Mixpanel (yaml_config['mixpanel']['pinterest'])
+mpTraffic = Mixpanel (yaml_config['mixpanel']['traffic'])
+mpWeather = Mixpanel (yaml_config['mixpanel']['weather'])
+mpStock = Mixpanel (yaml_config['mixpanel']['finance'])
+mpReddit = Mixpanel (yaml_config['mixpanel']['reddit'])
+mpSpotify = Mixpanel (yaml_config['mixpanel']['spotify'])
 
 def byteify(input):
     if isinstance(input, dict):
@@ -131,7 +131,6 @@ if social_network in network_list:
 
         contadorFallos=contadorFallos/(contador * 2.0)
         mpTwitter.track(contadorFallos, "Fallos totales " + version, {"numero fallos": contadorFallos})                           
-
 
 ############################################
             #CASO2: FACEBOOK
@@ -735,9 +734,6 @@ if social_network in network_list:
         if version in version_list:
             if(version=="master"):
                 webbrowser.open_new(url_base_local + "/Master/spotify-component/spotifyCompletitudMaster.html")
-                sleep(3)
-            elif(version=="latency"):
-                webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyCompletitudLatency.html")
                 sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/spotify-component/spotifyCompletitudAccuracy.html")
