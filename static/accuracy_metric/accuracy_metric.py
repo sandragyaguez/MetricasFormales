@@ -30,20 +30,20 @@ from requests.auth import HTTPBasicAuth
 import yaml
 
 path = os.path.dirname(os.path.abspath(__file__))
-output_file2 = os.path.join(path, "../config.yaml") 
+output_file2 = os.path.join(path, "../../config.yaml") 
 configFile = open(output_file2,"r")
 yaml_config = yaml.load(configFile)
 
 #objetos Mixpanel para las distintas redes sociales (token del project)
-mpTwitter = Mixpanel (yaml_config['mixpanel']['twitter'])
-mpFacebook = Mixpanel (yaml_config['mixpanel']['facebook'])
-mpGoogle = Mixpanel (yaml_config['mixpanel']['google'])
-mpPinterest = Mixpanel (yaml_config['mixpanel']['pinterest'])
-mpTraffic = Mixpanel (yaml_config['mixpanel']['traffic'])
-mpWeather = Mixpanel (yaml_config['mixpanel']['weather'])
-mpStock = Mixpanel (yaml_config['mixpanel']['finance'])
-mpReddit = Mixpanel (yaml_config['mixpanel']['reddit'])
-mpSpotify = Mixpanel (yaml_config['mixpanel']['spotify'])
+mpTwitter = Mixpanel (yaml_config['mixpanelToken']['twitter'])
+mpFacebook = Mixpanel (yaml_config['mixpanelToken']['facebook'])
+mpGoogle = Mixpanel (yaml_config['mixpanelToken']['google'])
+mpPinterest = Mixpanel (yaml_config['mixpanelToken']['pinterest'])
+mpTraffic = Mixpanel (yaml_config['mixpanelToken']['traffic'])
+mpWeather = Mixpanel (yaml_config['mixpanelToken']['weather'])
+mpStock = Mixpanel (yaml_config['mixpanelToken']['finance'])
+mpReddit = Mixpanel (yaml_config['mixpanelToken']['reddit'])
+mpSpotify = Mixpanel (yaml_config['mixpanelToken']['spotify'])
 
 #api secret de cada project para hacer peticiones
 twitterSecret = yaml_config['requestTokenAccuracy']['twitter']
@@ -68,7 +68,7 @@ def byteify(input):
 
 network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit", "spotify"]
 version_list = ["master","latency", "accuracy"]
-url_base_local= "http://localhost:8000"
+url_base_local= "http://localhost:8080"
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),
 if len(sys.argv) >= 2:
@@ -89,8 +89,8 @@ if social_network in network_list:
     if social_network == 'twitter':
         
         #--DATOS API TWITTER--#
-        CONSUMER_KEY = yaml_config['twitter']['consumer_key']
-        CONSUMER_SECRET =  yaml_config['twitter']['consumer_key']
+        CONSUMER_KEY = yaml_config['twitter']['consumer-key']
+        CONSUMER_SECRET =  yaml_config['twitter']['consumer-secret']
         ACCESS_KEY =  yaml_config['twitter']['access-token']
         ACCESS_SECRET =  yaml_config['twitter']['secret-token']
 
@@ -162,7 +162,7 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Accuracy/facebook-wall-accuracy/FacebookCompletitudAccuracy.html")
                 sleep(5)
         #obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
-        #cambiarlo cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
+        #cambiarlo cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.5)
         access_token= yaml_config['facebook']['access_token']
         facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
 
