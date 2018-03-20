@@ -45,6 +45,17 @@ mpStock = Mixpanel (yaml_config['mixpanel']['finance'])
 mpReddit = Mixpanel (yaml_config['mixpanel']['reddit'])
 mpSpotify = Mixpanel (yaml_config['mixpanel']['spotify'])
 
+#api secret de cada project para hacer peticiones
+twitterSecret = yaml_config['requestTokenAccuracy']['twitter']
+facebookSecret = yaml_config['requestTokenAccuracy']['facebook']
+googleSecret = yaml_config['requestTokenAccuracy']['google']
+pinterestSecret = yaml_config['requestTokenAccuracy']['pinterest']
+trafficSecret = yaml_config['requestTokenAccuracy']['traffic']
+weatherSecret = yaml_config['requestTokenAccuracy']['weather']
+financeSecret = yaml_config['requestTokenAccuracy']['finance']
+redditSecret = yaml_config['requestTokenAccuracy']['reddit']
+spotifySecret = yaml_config['requestTokenAccuracy']['spotify']
+
 def byteify(input):
     if isinstance(input, dict):
         return {byteify(key): byteify(value) for key, value in input.iteritems()}
@@ -104,7 +115,7 @@ if social_network in network_list:
         contadorFallos = 0
         params={'event':version,'name':'value'}
         #se le pasa el API secret
-        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('4dd2fff92abd81af8f06950f419f066a', '')).json()
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(twitterSecret, '')).json()
 
         for x in respuesta:
             #pasar de unicode a dict
@@ -187,7 +198,7 @@ if social_network in network_list:
         sleep(20)
         contadorFallos=0
         params={'event':version,'name':'value'}
-        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('a7917928a9ba3dd88592fac7ac36e8a9', '')).json()
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(facebookSecret, '')).json()
 
         respuesta = [json.loads(str(post)) for post in respuesta]
         respuesta = sorted(respuesta, key=lambda posicion: posicion['i'])
@@ -261,7 +272,7 @@ if social_network in network_list:
         contadorFallos=0
         if version in version_list:
             params={'event':version,'name':'value'}
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('0c24b55a9806c9eb41cb3d5f3a7e7ef6', '')).json()
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(googleSecret, '')).json()
 
             lista = []
             for x in respuesta:
@@ -369,7 +380,7 @@ if social_network in network_list:
 
         if version in version_list:
             params={'event':version,'name':'value'}
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('5d34c88bc7f29c166e56484966b1c85b', '')).json()        
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(pinterestSecret, '')).json()        
             imagComp = [str(json.loads(res)['url']) for res in respuesta]        
             fallos=comp(imagAPI,imagComp)
             mpPinterest.track(fallos,"Fallos imagenes %s" % version,{"imagen":fallos, "version": version})
@@ -441,7 +452,7 @@ if social_network in network_list:
         #--DATOS TRAFFIC COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(30)
         params={'event':version,'name':'value'}
-        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('0795378c7f94b5b1f4170deb0221ec59', '')).json()     
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(trafficSecret, '')).json()     
         contadorFallos=0
         lista=[]; liskey=[]; lisvalue=[]
 
@@ -501,7 +512,7 @@ if social_network in network_list:
           latency=10
         sleep(10+latency)
         params={'event':version,'name':'value'}
-        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('fbb422f045419447722e54b70690c638', '')).json()
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(financeSecret, '')).json()
         respuesta = [ json.loads(res) for res in respuesta ]
         respuesta = sorted(respuesta, key=lambda x: -x['Date'])
         respuesta = respuesta[0]
@@ -620,7 +631,7 @@ if social_network in network_list:
 
         if version in version_list:
             params={'event':version,'name':'value'}
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('a019aa23c38827f307f0d5eff0d0d6f5', '')).json()     
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(weatherSecret, '')).json()     
     
             for x in respuesta:
                 resp = ast.literal_eval(x)
@@ -677,7 +688,7 @@ if social_network in network_list:
         #--DATOS REDDIT COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(15)
         params={'event':version,'name':'value'}
-        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('7bc71232ea359bf84f9abe6c6e06726b', '')).json()
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(redditSecret, '')).json()
         respuesta = [json.loads(data) for data in respuesta]
         respuesta = filter(lambda el: el['experiment'] == str(experiment_id), respuesta)
         respuesta = sorted(respuesta, key=lambda element: element['i'])
@@ -781,7 +792,7 @@ if social_network in network_list:
         listaComp=[]; liscompararAPI=[]; liscompararComp=[]
         if version in version_list:
             params={'event':version,'name':'value'}
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(spotifySecret, '')).json()
         
         aux = []
         for datosComp in respuesta:

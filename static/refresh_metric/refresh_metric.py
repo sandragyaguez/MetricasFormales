@@ -42,15 +42,26 @@ configFile = open(output_file2,"r")
 yaml_config = yaml.load(configFile)
 
 #objetos Mixpanel para las distintas redes sociales (token del project)
-mpTwitter = Mixpanel (yaml_config['mixpanel']['twitter'])
-mpFacebook = Mixpanel (yaml_config['mixpanel']['facebook'])
-mpGoogle = Mixpanel (yaml_config['mixpanel']['google'])
-mpPinterest = Mixpanel (yaml_config['mixpanel']['pinterest'])
-mpTraffic = Mixpanel (yaml_config['mixpanel']['traffic'])
-mpWeather = Mixpanel (yaml_config['mixpanel']['weather'])
-mpStock = Mixpanel (yaml_config['mixpanel']['finance'])
-mpReddit = Mixpanel (yaml_config['mixpanel']['reddit'])
-mpSpotify = Mixpanel (yaml_config['mixpanel']['spotify'])
+mpTwitter = Mixpanel (yaml_config['mixpanelToken']['twitter'])
+mpFacebook = Mixpanel (yaml_config['mixpanelToken']['facebook'])
+mpGoogle = Mixpanel (yaml_config['mixpanelToken']['google'])
+mpPinterest = Mixpanel (yaml_config['mixpanelToken']['pinterest'])
+mpTraffic = Mixpanel (yaml_config['mixpanelToken']['traffic'])
+mpWeather = Mixpanel (yaml_config['mixpanelToken']['weather'])
+mpStock = Mixpanel (yaml_config['mixpanelToken']['finance'])
+mpReddit = Mixpanel (yaml_config['mixpanelToken']['reddit'])
+mpSpotify = Mixpanel (yaml_config['mixpanelToken']['spotify'])
+
+# api secret de cada project para hacer peticiones
+twitterSecret = yaml_config['requestTokenRefresh']['twitter']
+facebookSecret = yaml_config['requestTokenRefresh']['facebook']
+googleSecret = yaml_config['requestTokenRefresh']['google']
+pinterestSecret = yaml_config['requestTokenRefresh']['pinterest']
+trafficSecret = yaml_config['requestTokenRefresh']['traffic']
+weatherSecret = yaml_config['requestTokenRefresh']['weather']
+financeSecret = yaml_config['requestTokenRefresh']['finance']
+redditSecret = yaml_config['requestTokenRefresh']['reddit']
+spotifySecret = yaml_config['requestTokenRefresh']['spotify']
 
 network_list = ["twitter", "facebook","googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit", "spotify"]
 version_list = ["master","latency", "accuracy"]
@@ -115,7 +126,6 @@ if social_network in network_list:
             listestado.append(estado)
             listtpubl_ms.append(tpubl_ms)
 
-            #Request timeline user   
             s= requests.get(request_usertimeline, auth=oauth)
             timeline=s.json()
             #Encontrar el texto del tweet que acabo de publicar, con el campo text que tiene cada tweet, y timestamp cuando me lo muestre en twitter
@@ -124,40 +134,32 @@ if social_network in network_list:
                 if text==estado:
                     break
         publicar(estado)
-        #zip con todos los post y sus correspondientes tiempos de publicacion
         zipPython=zip(listestado,listtpubl_ms)
         dictPython=dict(zipPython)
 
         #--DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         #pongo 70 segundos porque tengo que esperar a que se produzca el refresco automatico del componente y mande los datos a mixpanel
         sleep(100)
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales
-        
-        x=mixpanel_api.Mixpanel("c10939e3faf2e34b4abb4f0f1594deaa","4a3b46218b0d3865511bc546384b8928")
         lista=[]; listacomp=[]; listatime=[]
 
         if version in version_list:
             params={'event':version,'name':'value'}
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
+            #a la peticion se le mete el api secret
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(twitterSecret, '')).json()
 
             for x in respuesta:
-                #pasar de unicode a dict
                 resp = ast.literal_eval(x)
                 lista.append(resp)
 
-            #ordeno la lista de diccionarios por el tweet
             newlist = sorted(lista, key=lambda tweet: tweet['tweet'])
 
             for y in newlist:
-                #obtengo el texto de cada post recogido del componente
                 textocomp=y.items()[0][1]
-                #obtengo el tiempo de cada post recogido del componente
                 timecomp=y.items()[1][1]
                 listacomp.append(textocomp)
                 listatime.append(timecomp)
 
             zipComp=zip(listacomp,listatime)
-            #Diccionario tweet, time
             dictComp=dict(zipComp)
 
             #la key es el texto del tweet y el value son los times de refresco en el componente
@@ -191,7 +193,6 @@ if social_network in network_list:
                 sleep(5)
 
         #Url para obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
-        
         #cambiarlo cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.3)
         access_token= yaml_config['facebook']['access_token']
         listestado=[]; listtpubl_ms=[]
@@ -199,7 +200,6 @@ if social_network in network_list:
         #uso la API de facebook pasandole como parametro el access token y la version de la api que utilizamos
         graph = facebook.GraphAPI(access_token=access_token, version='2.3')
 
-        #POST EN FACEBOOK
         attachment =  {}
         graph.put_wall_post(message=message, attachment=attachment)
         tpubl=datetime.datetime.now()
@@ -218,7 +218,7 @@ if social_network in network_list:
 
         if version in version_list:
             params={'event':version,'name':'value'}
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(facebookSecret, '')).json()
 
             for x in respuesta:
                 resp = ast.literal_eval(x)
@@ -241,14 +241,12 @@ if social_network in network_list:
                     print "final_time: " + str(final_time)
                     mpFacebook.track(final_time, "Final time " + version,{"time final": final_time, "post": key, "version":version})
         
-
 ############################################
             #CASO3: GOOGLE+
 ############################################
     elif social_network == 'googleplus':
 
         #--DATOS GOOGLE+ API--#
-
         # Url para obtener nuevo token google: https://developers.google.com/+/web/api/rest/latest/activities/list#try-it
         # (Para el caso de Google, haces una peticion a la API con el explorer API, vas a networks, y coges el token que
         # viene en el header Authorization: 'Bearer TOKEN')
@@ -266,10 +264,9 @@ if social_network in network_list:
         latency=0
         if (version=="latency"):
             latency=10
-        #request mixpanel response
         sleep(70+latency)
         params={'event':version,'name':'value'}
-        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(googleSecret, '')).json()
         
         # remove unicode
         respuesta = [ ast.literal_eval(data) for data in respuesta ]
@@ -335,7 +332,7 @@ if social_network in network_list:
 
         if version in version_list:
             params={'event':version,'name':'value'}
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(pinterestSecret, '')).json()
 
             for x in respuesta:
                 resp = ast.literal_eval(x)
@@ -397,7 +394,7 @@ if social_network in network_list:
 
         if version in version_list:
             params={'event':version,'name':'value'}
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(trafficSecret, '')).json()
 
             for x in respuesta:
                 resp = ast.literal_eval(x)
@@ -420,7 +417,6 @@ if social_network in network_list:
                     print "final_time: " + str(final_time)
                     mpTraffic.track(final_time, "Final time " + version,{"time final": final_time, "post": key, "version":version})
 
-        
 ############################################
            #CASO6: OPEN-WEATHER
 ############################################
@@ -428,7 +424,6 @@ if social_network in network_list:
     elif social_network == 'open-weather':
 
         #--DATOS WEATHER API--#
-
         #cojo el tiempo para saber que hora es y conocer a partir de que hora tengo que publicar
         #tengo un array con 8 tiempos a publicar porque corresponde a las horas 0 3 6 9 12 15 18 21
         tiempo=time.strftime("%H")
@@ -467,7 +462,6 @@ if social_network in network_list:
         }
         url = "https://centauro.ls.fi.upm.es:4444/weather"
         response = requests.post(url, data=datos, verify=False, headers=headers)        
-
         tpubl_ms=int(time.time())
         
         #hasheo los datos para evitar problema de limitacion de mixpanel
@@ -477,7 +471,6 @@ if social_network in network_list:
         listtpubl_ms.append(tpubl_ms)
 
         zipPython=zip(listpost,listtpubl_ms)
-        #diccionario con los mensajes publicados y su tiempo de publicacion
         dictPython=dict(zipPython)
 
        #--DATOS WEATHER COMPONENTE (RECOGIDOS DE MIXPANEL)--#
@@ -485,12 +478,11 @@ if social_network in network_list:
         url = "https://centauro.ls.fi.upm.es:4444/fakes/weather/clean"
         response = requests.get(url, verify=False)
 
-        # Hay que crear una instancia de la clase Mixpanel, con tus credenciales (API KEY y API SECRET)
-        lista=[]; listacomp=[]; listatime=[]; listacomp1=[]; listacomp2=[] 
+        lista=[]; listacomp=[]; listatime=[]
 
         if version in version_list:
             params={'event':version,'name':'value'}
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(weatherSecret, '')).json()
 
             for x in respuesta:
                 resp = ast.literal_eval(x)
@@ -550,7 +542,7 @@ if social_network in network_list:
         ## request mixpanel response
         sleep(70+latency)
         params={'event':version,'name':'value'}
-        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('', '')).json()
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(financeSecret, '')).json()
 
         # remove unicode
         respuesta = [ ast.literal_eval(data) for data in respuesta ]
@@ -579,7 +571,11 @@ if social_network in network_list:
         }
         url = "https://centauro.ls.fi.upm.es:4444/fakes/stock/clean"
         response = requests.get(url, verify=False, headers=headers)
-    
+
+############################################
+            #CASO8: REDDIT
+############################################
+
     elif social_network == "reddit":
         publish_text = str(time.time())
         data = {"title":"Test post", "author":"test", "selftext":publish_text,"subreddit":"test" }
@@ -591,7 +587,6 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Latency/reddit-timeline/demo/RedditTimelineRefresh.html?" + publish_text)
         
         sleep(10)
-        print "Publicando datos"
         headers= {
           "content-type":"application/x-www-form-urlencoded"
         }
@@ -602,10 +597,8 @@ if social_network in network_list:
         print "Esperando a encontrar modificaciones"
         sleep(80)
         print "Recolectando datos"
-        panel = mixpanel_api.Mixpanel("a9e682c78c1c951e7ebf76794223e850","ffe6ada8738ed520e54aaf7e8b7c0cec")
-        params={'event':version,'name':'value','type':"general",'unit':"day",'interval':1}
-        respuesta=panel.request(['events/properties/values'], params, format='json')
-
+        params={'event':version,'name':'value'}
+        respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(redditSecret, '')).json()
         respuesta = [json.loads(resp) for resp in respuesta]
         
         data = filter(lambda el: el['published_text'] == publish_text, respuesta)
@@ -619,7 +612,7 @@ if social_network in network_list:
         mpReddit.track(final_time, "Final time "+ version,{"time final": final_time, "version":version})
 
 ############################################
-            #CASO8: SPOTIFY
+            #CASO9: SPOTIFY
 ############################################
 
     elif social_network == 'spotify':
@@ -640,8 +633,7 @@ if social_network in network_list:
             elif(version=="latency"):
                 webbrowser.open_new(url_base_local + "/Latency/spotify-component/spotifyRefrescoLatency.html" + "?" + dataSend)
                 sleep(5)
-    
-        listtpubl_ms=[]; listpost=[]; listestado=[]
+
         #este token hay que cogerlo de la API, no puedo coger el token del componente porque el componente no permite crear playList, solo mostrarlas
         #https://developer.spotify.com/web-api/console/post-playlists/
         access_token= yaml_config['spotify']['token']
@@ -656,19 +648,17 @@ if social_network in network_list:
         idNewPlayList = response.json()['id']
         url_postTracks= "https://api.spotify.com/v1/users/deusconwet/playlists/" + idNewPlayList + "/tracks"
         res= requests.post(url_postTracks, json.dumps(newTracks) ,headers=headers)
-
         tpubl_ms=int(time.time())
        
         #--DATOS SPOTIFY COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep (70)
-        lista=[]; listacomp=[]; listatime=[]
+        lista=[]
         if version in version_list:
             params={'event':version,'name':'value'}
             #a la peticion se le mete el api secret
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth('e1437fb0cc27d32cad87bd94bcb95bc7', '')).json()
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(spotifySecret, '')).json()
 
             for x in respuesta:
-                #pasar de unicode a dict
                 resp = ast.literal_eval(x)
                 lista.append(resp)
 
