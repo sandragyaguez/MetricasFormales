@@ -96,10 +96,10 @@ if social_network in network_list:
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new( url_base_local + "/Master/twitter-timeline-stable/static/TwitterCompletitud.html")
+                webbrowser.open_new( url_base_local + "/Master/twitter-timeline/static/TwitterCompletitud.html")
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new( url_base_local + "/Accuracy/twitter-timeline-accuracy/static/TwitterCompletitudAccuracy.html")
+                webbrowser.open_new( url_base_local + "/Accuracy/twitter-timeline/static/TwitterCompletitudAccuracy.html")
                 sleep(3)
 
         #objeto oauth con credenciales de usuario Deus
@@ -161,10 +161,10 @@ if social_network in network_list:
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/facebook-wall-accuracy/FacebookCompletitudAccuracy.html")
                 sleep(5)
-        #obtener nuevo token de facebook: https://developers.facebook.com/tools/explorer/928341650551653/
+
         #cambiarlo cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.5)
         access_token= yaml_config['facebook']['access_token']
-        facebook_url = "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token
+        facebook_url = "https://graph.facebook.com/v2.5/me?fields=home&pretty=1&access_token=" + access_token
 
         s= requests.get(facebook_url)
         muro=s.json()

@@ -6,6 +6,8 @@
 
 # python -m SimpleHTTPServer >> /dev/null &
 # PID=`echo $!`
+python -m SimpleHTTPServer 8080
+
 
 # Ejecutamos scripts para medir y recolectar los datos
 
@@ -13,15 +15,15 @@
 #TWITTER
 #---------#
 
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version master"
-python accuracy_metric.py twitter master
-sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version master"
+# python accuracy_metric.py twitter master
+# sleep 10
 
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version accuracy"
-python accuracy_metric.py twitter accuracy
-sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version accuracy"
+# python accuracy_metric.py twitter accuracy
+# sleep 10
 
 #---------#
 #FACEBOOK

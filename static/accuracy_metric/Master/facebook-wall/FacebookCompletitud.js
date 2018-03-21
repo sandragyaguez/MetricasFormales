@@ -6,7 +6,6 @@
         //selecccionamos el componente de facebook con el querySelector
         var element= document.querySelector("facebook-wall");
         window.setTimeout(function() {
-        console.log(element);
         var list = [];
         //facebook muestra los post creados por un usuario pero tambien los post que este tenga linkados
         //los linkados los saco como si fueran "normales" para poder comparar
@@ -16,15 +15,12 @@
             list.push(element.events[i].linked);
           }
         };
-        console.log(list.length)
         //cuando ya tengo en la misma lista los normales y los linkados, recorro el timeline de facebook
         for (var i = 0; i<list.length;i++){
-          console.log(i)
           //guardo el id de cada elemento
           var id= list[i].id
           //guardo el usuario de cada post
           var user= list[i].from.name
-          console.log(user)
           //objeto hash para "comprimir" textos e imagenes y poder mandarlo a Mixpanel sin ningun tipo de problemas por la limitacion de Mixpanel (255)
           var shaObj = new jsSHA("SHA-1", "TEXT");
           //guardo el texto 

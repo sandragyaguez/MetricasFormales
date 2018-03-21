@@ -6,14 +6,10 @@
         //selecccionamos el componente de twitter con el querySelector
         var element= document.querySelector("twitter-timeline");
         window.setTimeout(function() {
-        console.log(element);
-        console.log(element.events.length)
         //recorro todos los elementos del timeline de twitter
         for (var i = 0; i<element.events.length;i++){
           //guardo el texto del tweet
           texto=element.events[i].text
-          console.log(texto)
-          console.log(i)
           //guardo el id de cada elemento
           var id= element.events[i].id_str
           //guardo el usuario de cada post
