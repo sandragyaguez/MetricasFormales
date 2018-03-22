@@ -6,7 +6,7 @@
 
 # python -m SimpleHTTPServer >> /dev/null &
 # PID=`echo $!`
-python -m SimpleHTTPServer 8080
+#python -m SimpleHTTPServer 8000
 
 
 # Ejecutamos scripts para medir y recolectar los datos
@@ -34,10 +34,10 @@ echo "Realizando pruebas sobre el componente facebook-wall: metrica completitud 
 python accuracy_metric.py facebook master
 sleep 10
 
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente facebook-wall: metrica completitud version accuracy"
-python accuracy_metric.py facebook accuracy
-sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente facebook-wall: metrica completitud version accuracy"
+# python accuracy_metric.py facebook accuracy
+# sleep 10
 
 
 #---------#

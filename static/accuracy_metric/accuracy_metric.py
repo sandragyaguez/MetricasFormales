@@ -68,7 +68,7 @@ def byteify(input):
 
 network_list = ["twitter", "facebook", "googleplus", "pinterest", "traffic-incidents", "open-weather", "finance-search", "reddit", "spotify"]
 version_list = ["master","latency", "accuracy"]
-url_base_local= "http://localhost:8080"
+url_base_local= "http://localhost:8000"
 
 #de los comandos que ejecuto desde consola, me quedo con el segundo (posicion 1,array empieza en 0),
 if len(sys.argv) >= 2:
@@ -162,12 +162,14 @@ if social_network in network_list:
                 webbrowser.open_new(url_base_local + "/Accuracy/facebook-wall-accuracy/FacebookCompletitudAccuracy.html")
                 sleep(5)
 
-        #cambiarlo cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.5)
+        #cambiarlo cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.12)
         access_token= yaml_config['facebook']['access_token']
+        print access_token
         facebook_url = "https://graph.facebook.com/v2.5/me?fields=home&pretty=1&access_token=" + access_token
 
         s= requests.get(facebook_url)
         muro=s.json()
+        print muro
         
         #facebook devuelve un diccionario con 2 keys (home, id) y solo me quiero quedar con los values del home
         if not muro.has_key('home') or not muro['home'].has_key('data'):
@@ -231,10 +233,10 @@ if social_network in network_list:
         #--DATOS GOOGLE+ API--#
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/googleplus-timeline-stable/demo/GooglePlusCompletitud.html")
+                webbrowser.open_new(url_base_local + "/Master/googleplus-timeline/demo/GooglePlusCompletitud.html")
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline-accuracy/demo/GooglePlusCompletitudAccuracy.html")
+                webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline/demo/GooglePlusCompletitudAccuracy.html")
                 sleep(3)
 
         # Url para obtener nuevo token google: https://developers.google.com/+/web/api/rest/latest/activities/list#try-it
