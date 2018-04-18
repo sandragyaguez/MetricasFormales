@@ -14,7 +14,7 @@ from requests_oauthlib import OAuth1
 import requests
 import webbrowser
 import urllib3
-requests.packages.urllib3.disable_warnings()
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import datetime
 import re
 import ast
@@ -30,7 +30,7 @@ from requests.auth import HTTPBasicAuth
 import yaml
 
 path = os.path.dirname(os.path.abspath(__file__))
-output_file2 = os.path.join(path, "../../config.yaml") 
+output_file2 = os.path.join(path, "../Componentes/config.yaml") 
 configFile = open(output_file2,"r")
 yaml_config = yaml.load(configFile)
 
@@ -96,7 +96,7 @@ if social_network in network_list:
 
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new( url_base_local + "/Master/twitter-timeline/static/TwitterCompletitud.html")
+                webbrowser.open_new( url_base_local + "/twitter-timeline/static/TwitterCompletitud.html")
                 sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new( url_base_local + "/Accuracy/twitter-timeline/static/TwitterCompletitudAccuracy.html")
@@ -108,6 +108,7 @@ if social_network in network_list:
         request_hometimeline="https://api.twitter.com/1.1/statuses/home_timeline.json?count=200"
         s= requests.get(request_hometimeline, auth=oauth)
         timeline=s.json()
+        print timeline[0]
 
         #--DATOS TWITTER COMPONENTE (RECOGIDOS DE MIXPANEL)--#
         sleep(30)
@@ -149,14 +150,10 @@ if social_network in network_list:
 
     elif social_network == 'facebook':
 
-#RECORDAR QUE FACE NO MUESTRA LOS POST SECUNCIALMENTE, SINO QUE LOS MUESTRA "COMO QUIERE". Por lo que, en la version de accuracy,
-#cuando se miren los datos que fallan no van a coincidir con las posiciones de fallo que se guardan en mixpanel
-#Facebook hace una ordenacion por ACTUALIZACION, no por creacion
-
         #--DATOS FACEBOOK API--#
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/facebook-wall-stable/FacebookCompletitud.html")
+                webbrowser.open_new(url_base_local + "/facebook-wall/FacebookCompletitud.html")
                 sleep(5)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/facebook-wall-accuracy/FacebookCompletitudAccuracy.html")
@@ -164,12 +161,10 @@ if social_network in network_list:
 
         #cambiarlo cada hora y media: https://developers.facebook.com/tools/explorer/928341650551653 (Get User Access Token, version 2.12)
         access_token= yaml_config['facebook']['access_token']
-        print access_token
-        facebook_url = "https://graph.facebook.com/v2.5/me?fields=home&pretty=1&access_token=" + access_token
+        facebook_url="https://centauro.ls.etsiinf.upm.es/api/aux/facebookTimeline?&access_token=" + access_token +"&locale=es_es"
 
         s= requests.get(facebook_url)
         muro=s.json()
-        print muro
         
         #facebook devuelve un diccionario con 2 keys (home, id) y solo me quiero quedar con los values del home
         if not muro.has_key('home') or not muro['home'].has_key('data'):
@@ -233,7 +228,7 @@ if social_network in network_list:
         #--DATOS GOOGLE+ API--#
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/googleplus-timeline/demo/GooglePlusCompletitud.html")
+                webbrowser.open_new(url_base_local + "/googleplus-timeline/demo/GooglePlusCompletitud.html")
                 sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/googleplus-timeline/demo/GooglePlusCompletitudAccuracy.html")
@@ -399,14 +394,14 @@ if social_network in network_list:
         #--DATOS TRAFFIC API--#
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/traffic-incidents/demo/TrafficCompletitud.html")
+                webbrowser.open_new(url_base_local + "/traffic-incidents/demo/TrafficCompletitud.html")
                 sleep(3)
             elif(version=="accuracy"):
                 webbrowser.open_new(url_base_local + "/Accuracy/traffic-incidents/demo/TrafficCompletitudAccuracy.html")
                 sleep(3)
 
         token = yaml_config['traffic-incidents']['api_key_traffic']
-        request_uri= "https://centauro.ls.fi.upm.es:4444/traffic?map=39.56276609909911,-4.650120900900901,41.36456790090091,-2.848319099099099&key=" + token
+        request_uri= "https://centauro.etsiinf.fi.upm.es:4444/traffic?map=39.56276609909911,-4.650120900900901,41.36456790090091,-2.848319099099099&key=" + token
         
         headers= {"content-type":"application/x-www-form-urlencoded"}
         #verify=False para que no me de errores de SSL
@@ -491,16 +486,16 @@ if social_network in network_list:
         #--DATOS STOCK API--#
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/finance-search-stable/demo/FinanceSearchMaster.html")
+                webbrowser.open_new(url_base_local + "/finance-search/demo/FinanceSearchMaster.html")
                 sleep(3)
             elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/finance-search-accuracy/demo/FinanceSearchAccuracy.html")
+                webbrowser.open_new(url_base_local + "/finance-search-accuracy/demo/FinanceSearchAccuracy.html")
                 sleep(3)
                
         symbol = "GOOGL"
         query = 'select * from yahoo.finance.quote where symbol in ("%s")' % symbol
 
-        request_uri= "https://centauro.ls.fi.upm.es:4444/stock?q=%s" % query
+        request_uri= "https://centauro.ls.etsiinf.upm.es:4444/stock?q=%s" % query
         headers= {"content-type":"application/x-www-form-urlencoded"}
         #verify=False para que no me de errores de SSL
         response= requests.get(request_uri, verify=False, headers=headers)
@@ -543,14 +538,13 @@ if social_network in network_list:
         #--DATOS WEATHER API--#
         if version in version_list:
             if(version=="master"):
-                webbrowser.open_new(url_base_local + "/Master/open-weather-stable/demo/WeatherCompletitud.html")
-            elif(version=="accuracy"):
-                webbrowser.open_new(url_base_local + "/Accuracy/open-weather-accuracy/demo/WeatherCompletitudAccuracy.html")
+                webbrowser.open_new(url_base_local + "/open-weather/demo/WeatherCompletitud.html")
+            # elif(version=="accuracy"):
+            #     webbrowser.open_new(url_base_local + "/Accuracy/open-weather-accuracy/demo/WeatherCompletitudAccuracy.html")
         
-        #pasar parametros de weather   
         contador = 0
         ppid_weather = yaml_config['open-weather']['app-id']
-        request_uri= "https://centauro.ls.fi.upm.es:4444/weather?lat=40.4336199&lon=-3.8134707000000003&units=metric&lang=es&appId=" + ppid_weather
+        request_uri= "https://centauro.ls.etsiinf.upm.es:4444/weather?lat=40.4336199&lon=-3.8134707000000003&units=metric&lang=es&appId=" + ppid_weather
         
         headers= {"content-type":"application/x-www-form-urlencoded"}
         s= requests.get(request_uri, verify=False, headers=headers)
@@ -589,11 +583,15 @@ if social_network in network_list:
           days = []
           days.append(filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == time.strftime("%d/%m/%Y"), lista_timeline))
           nextdate=datetime.datetime.now().date()
-          
-          for i in range(4): 
+
+          hayValorespixita = True
+          while hayValorespixita:
             nextdate += datetime.timedelta(days=1)
             values_next_day1=filter(lambda x: datetime.datetime.fromtimestamp(x['dt']).strftime('%d/%m/%Y') == nextdate.strftime("%d/%m/%Y"), lista_timeline)
-            days.append(values_next_day1)
+            if len(values_next_day1) == 0:
+                hayValorespixita = False
+            else: 
+                days.append(values_next_day1)
           
           mins = []
           maxs = []
@@ -602,13 +600,12 @@ if social_network in network_list:
             max_day = max([weather['temp_max'] for weather in day])
             mins += [min_day]*len(day)
             maxs += [max_day]*len(day)
-          
+
           for index, weather in enumerate(lista_timeline):
             weather['temp_min'] = mins[index]
             weather['temp_max'] = maxs[index]
-          
           return lista_timeline
-       
+     
         def recorrer_timeline(lista_timeline):
           pretty = []          
           for entry in lista_timeline:
@@ -633,7 +630,7 @@ if social_network in network_list:
 
         if version in version_list:
             params={'event':version,'name':'value'}
-            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(weatherSecret, '')).json()     
+            respuesta = requests.get('https://mixpanel.com/api/2.0/events/properties/values', params,  auth=HTTPBasicAuth(weatherSecret, '')).json()
     
             for x in respuesta:
                 resp = ast.literal_eval(x)
@@ -741,7 +738,6 @@ if social_network in network_list:
          
         #eliminar datos de mixpanel
         #request = requests.get('https://mixpanel.com/api/2.0/engage',  auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', '')).json()
-        #print request
         #requests.delete('https://mixpanel.com/api/2.0/annotations/delete/', params, auth=HTTPBasicAuth('c21511e177f3b64c983228d922e0d1f6', ''))
 
         if version in version_list:

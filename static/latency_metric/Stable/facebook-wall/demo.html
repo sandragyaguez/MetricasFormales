@@ -1,12 +1,18 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>Facebook wall</title>
-    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <script src="../webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="facebook-wall.html">
   </head>
-  <body>
-      <facebook-wall language="en" access_token="CAACEdEose0cBAF4V0lYuQyg7R3pPSuALiXRClv1p6QS30ZCtlOxQpYyUmQaAGeAmIjNqaTVQqkodEss1kqTXKSUy4KIrftzRrrm0NnGV6J9nYI3WIXcGsVjwlZA4Y9hjfZCXhZC2krksRQkKEFAD0u2S637ZAU5QZBK71ZBZCYN4IgELQ1WlZBujD5U5fGfl3H9RQCnwlXtPcMwZDZD"></facebook-wall>
+  <body class="vertical layout">
+    <style is="custom style">
+      facebook-wall {
+        width: 450px;
+        height: 500px;
+      }
+    </style>
+		<facebook-wall language="en" access_token="EAANMUmJPs2UBAFTniabUN5TzvG1hMPvBzX855R87FeVmhdizKpi6TnaFOUzHLS7BcdI3nh4hb4tmI1JFX1vLuPwn1AQJhYVPnjWWIytbZCYOjCOSxIzgI7OZBZAfsqV7Mrw5ImDLEmgAhyuXUeA03CHR4pPnKZBZCeFEg2UwJQpTxAUPPkf32iYOlmPMAlZAsZD"></facebook-wall>
   </body>
 </html>
