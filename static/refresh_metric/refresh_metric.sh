@@ -1,174 +1,141 @@
 #!/bin/bash 
 
 ##############################################################################################################
-#--------------------------------------------PRUEBAS DE REFRESCO----------------------------------------------
+#-----------------------------------------PRUEBAS DE REFRESCO----------------------------------------------
 ##############################################################################################################
 
 python -m SimpleHTTPServer >> /dev/null &
 PID=`echo $!`
 
+# Ejecutamos scripts para medir y recolectar los datos
+
 #---------#
 #TWITTER
 #---------#
 
-# Ejecutamos scripts para medir y recolectar los datos
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version master"
-# python refresco_final.py twitter master
-# sleep 10
-# # killall chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version master"
+python refresh_metric.py twitter master
+sleep 10
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version latency"
-# python refresco_final.py twitter latency
-# sleep 10
-# # pkill chrome
-
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version accuracy"
-# python refresco_final.py twitter accuracy
-# sleep 10
-# # pkill chrome
-
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente twitter-timeline: metrica refresco version latency"
+python refresh_metric.py twitter latency
+sleep 10
 
 #---------#
 #FACEBOOK
 #---------#
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version master"
-# python refresco_final.py facebook master
-# sleep 10
-# # pkill chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version master"
+python refresh_metric.py facebook master
+sleep 10
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version latency"
-# python refresco_final.py facebook latency
-# sleep 10
-# pkill chrome
-
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version accuracy"
-# python refresco_final.py facebook accuracy
-# sleep 10
-# pkill chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente facebook-wall: metrica refresco version latency"
+python refresh_metric.py facebook latency
+sleep 10
 
 
 #---------#
+#GOOGLE+
+#---------#
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente googleplus-timeline: metrica refresco version master"
+python refresh_metric.py googleplus master
+sleep 10
+
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente googleplus-timeline: metrica refresco version latency"
+python refresh_metric.py googleplus latency
+sleep 10
+
+#-------#
 #PINTEREST
-#---------#
+#-------#
 
-# Ejecutamos scripts para medir y recolectar los datos
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente pinterest-timeline: metrica refresco version master"
-python refresco_final.py pinterest master
+python refresh_metric.py pinterest master
 sleep 10
-# killall chrome
+
 
 echo "##################################################################"
 echo "Realizando pruebas sobre el componente pinterest-timeline: metrica refresco version latency"
-python refresco_final.py pinterest latency
+python refresh_metric.py pinterest latency
 sleep 10
-# pkill chrome
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente pinterest-timeline: metrica refresco version accuracy"
-# python refresco_final.py pinterest accuracy
-# sleep 10
-# pkill chrome
+#-------#
+#FINANCE
+#-------#
 
-#---------#
-#TRAFFIC
-#---------#
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente finance-search: metrica refresco version master"
+python refresh_metric.py finance-search master
+sleep 10
 
-# Ejecutamos scripts para medir y recolectar los datos
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente traffic-incidents: metrica refresco version master"
-# python refresco_final.py traffic-incidents master
-# sleep 10
-# # killall chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente finance-search: metrica refresco version latency"
+python refresh_metric.py finance-search latency
+sleep 10
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente traffic-incidents: metrica refresco version latency"
-# python refresco_final.py traffic-incidents latency
-# sleep 10
-# pkill chrome
-
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente traffic-incidents: metrica refresco version accuracy"
-# python refresco_final.py traffic-incidents accuracy
-# sleep 10
-# pkill chrome
-
-#---------#
+#-------#
 #WEATHER
-#---------#
+#-------#
 
-# Ejecutamos scripts para medir y recolectar los datos
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente open-weather: metrica refresco version master"
-# python refresco_final.py open-weather master
-# sleep 10
-# # killall chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente open-weather: metrica refresco version master"
+python refresh_metric.py open-weather master
+sleep 10
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente open-weather: metrica refresco version latency"
-# python refresco_final.py open-weather latency
-# sleep 10
-# # pkill chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente open-weather: metrica refresco version latency"
+python refresh_metric.py open-weather latency
+sleep 10
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente open-weather: metrica refresco version accuracy"
-# python refresco_final.py open-weather accuracy
-# sleep 10
-# pkill chrome
+#-------#
+#TRAFFIC
+#-------#
 
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente traffic-incidents: metrica refresco version master"
+python refresh_metric.py traffic-incidents master
+sleep 10
 
-#---------#
-# STOCK
-#---------#
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente traffic-incidents: metrica refresco version latency"
+python refresh_metric.py traffic-incidents latency
+sleep 10
 
-# Ejecutamos scripts para medir y recolectar los datos
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente finance-search: metrica refresco version master"
-# python refresco_final.py finance-search master
-# sleep 10
-# # killall chrome
+#-------#
+#REDDIT
+#-------#
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente finance-search: metrica refresco version latency"
-# python refresco_final.py finance-search latency
-# sleep 10
-# # pkill chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente reddit: metrica refresco version master"
+python refresh_metric.py reddit master
+sleep 10
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente finance-search: metrica refresco version accuracy"
-# python refresco_final.py finance-search accuracy
-# sleep 10
-# pkill chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente reddit: metrica refresco version latency"
+python refresh_metric.py reddit latency
+sleep 10
 
-#---------#
-#GOOGLEPLUS
-#---------#
+#-------#
+#SPOTIFY
+#-------#
 
-# Ejecutamos scripts para medir y recolectar los datos
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente googleplus: metrica refresco version master"
-# python refresco_final.py googleplus master
-# sleep 10
-# # killall chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente spotify: metrica refresco version master"
+python refresh_metric.py spotify master
+sleep 10
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente googleplus: metrica refresco version latency"
-# python refresco_final.py googleplus latency
-# sleep 10
-# # pkill chrome
-
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente googleplus: metrica refresco version accuracy"
-# python refresco_final.py googleplus accuracy
-# sleep 10
-# pkill chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente spotify: metrica refresco version latency"
+python refresh_metric.py spotify latency
+sleep 10
 
 kill -9 $PID
 echo "##################################################################"

@@ -1,12 +1,13 @@
 #!/bin/bash 
 
-
 ##############################################################################################################
 #-----------------------------------------PRUEBAS DE COMPLETITUD----------------------------------------------
 ##############################################################################################################
 
-python -m SimpleHTTPServer >> /dev/null &
-PID=`echo $!`
+# python -m SimpleHTTPServer >> /dev/null &
+# PID=`echo $!`
+#python -m SimpleHTTPServer 8000
+
 
 # Ejecutamos scripts para medir y recolectar los datos
 
@@ -14,89 +15,29 @@ PID=`echo $!`
 #TWITTER
 #---------#
 
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version master"
-python completitud_final.py twitter master
-sleep 10
-# pkill chrome
-
-echo "##################################################################"
-echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version accuracy"
-python completitud_final.py twitter accuracy
-sleep 10
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version master"
+# python accuracy_metric.py twitter master
+# sleep 10
 
 # echo "##################################################################"
-# echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version latency"
-# python completitud_final.py twitter latency
+# echo "Realizando pruebas sobre el componente twitter-timeline: metrica completitud version accuracy"
+# python accuracy_metric.py twitter accuracy
 # sleep 10
-# pkill chrome
-
-#---------#
-#GITHUB
-#---------#
-
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente github-events: metrica completitud version master"
-# python completitud.py github master
-# sleep 10
-# pkill chrome
-
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente github-events: metrica completitud version latency"
-# python completitud.py github latency
-# sleep 10
-# pkill chrome
-
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente github-events: metrica completitud version accuracy"
-# python completitud.py github accuracy
-# sleep 10
-# pkill chrome
-
-
-#---------#
-#INSTAGRAM
-#---------#
-
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente instagram-timeline: metrica completitud version master"
-# python completitud.py instagram master
-# sleep 10
-# pkill chrome
-
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente instagram-timeline: metrica completitud version latency"
-# python completitud.py instagram latency
-# sleep 10
-# pkill chrome
-
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente instagram-timeline: metrica completitud version accuracy"
-# python completitud.py instagram accuracy
-# sleep 10
-# pkill chrome
-
 
 #---------#
 #FACEBOOK
 #---------#
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente facebook-wall: metrica completitud version master"
-# python completitud_final.py facebook master
-# sleep 10
-# # pkill chrome
+echo "##################################################################"
+echo "Realizando pruebas sobre el componente facebook-wall: metrica completitud version master"
+python accuracy_metric.py facebook master
+sleep 10
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente facebook-wall: metrica completitud version accuracy"
-# python completitud_final.py facebook accuracy
+# python accuracy_metric.py facebook accuracy
 # sleep 10
-
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente facebook-wall: metrica completitud version latency"
-# python completitud_final.py facebook latency
-# sleep 10
-# pkill chrome
 
 
 #---------#
@@ -105,92 +46,98 @@ sleep 10
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente googleplus-timeline: metrica completitud version master"
-# python completitud_final.py googleplus master
+# python accuracy_metric.py googleplus master
 # sleep 10
 # # pkill chrome
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente googleplus-timeline: metrica completitud version accuracy"
-# python completitud_final.py googleplus accuracy
+# python accuracy_metric.py googleplus accuracy
 # sleep 10
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente googleplus-timeline: metrica completitud version latency"
-# python completitud_final.py googleplus latency
-# sleep 10
-# pkill chrome
-
-#-------#
-# PINTEREST
-#-------#
+# #-------#
+# #PINTEREST
+# #-------#
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente pinterest-timeline: metrica completitud version master"
-# python completitud_final.py pinterest master
+# python accuracy_metric.py pinterest master
 # sleep 10
-# # pkill chrome
+
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente pinterest-timeline: metrica completitud version accuracy"
-# python completitud_final.py pinterest accuracy
+# python accuracy_metric.py pinterest accuracy
 # sleep 10
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente pinterest-timeline: metrica completitud version latency"
-# python completitud_final.py pinterest latency
-# sleep 10
-# # pkill chrome
-
-
-##############################
-########### STOCK ############
-##############################
+# #-------#
+# #FINANCE
+# #-------#
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente finance-search: metrica completitud version master"
-# python completitud_final.py finance-search master
+# python accuracy_metric.py finance-search master
 # sleep 10
-# # pkill chrome
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente finance-search: metrica completitud version accuracy"
-# python completitud_final.py finance-search accuracy
+# python accuracy_metric.py finance-search accuracy
 # sleep 10
-# pkill chrome
 
-# echo "##################################################################"
-# echo "Realizando pruebas sobre el componente finance-search: metrica completitud version latency"
-# python completitud_final.py finance-search latency
-# sleep 10
-# pkill chrome
-
-
-#############################
-######## WEATHER ############
-#############################
+# #-------#
+# #WEATHER
+# #-------#
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente open-weather: metrica completitud version master"
-# python completitud_final.py open-weather master
+# python accuracy_metric.py open-weather master
 # sleep 10
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente open-weather: metrica completitud version accuracy"
-# python completitud_final.py open-weather accuracy
+# python accuracy_metric.py open-weather accuracy
 # sleep 10
 
-#############################
-######## TRAFFIC ############
-#############################
+# #-------#
+# #TRAFFIC
+# #-------#
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente traffic-incidents: metrica completitud version master"
-# python completitud_final.py traffic-incidents master
+# python accuracy_metric.py traffic-incidents master
 # sleep 10
 
 # echo "##################################################################"
 # echo "Realizando pruebas sobre el componente traffic-incidents: metrica completitud version accuracy"
-# python completitud_final.py traffic-incidents accuracy
+# python accuracy_metric.py traffic-incidents accuracy
+# sleep 10
+
+# #-------#
+# #REDDIT
+# #-------#
+
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente reddit: metrica completitud version master"
+# python accuracy_metric.py reddit master
+# sleep 10
+
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente reddit: metrica completitud version accuracy"
+# python accuracy_metric.py reddit accuracy
+# sleep 10
+
+# #-------#
+# #SPOTIFY
+# #-------#
+
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente spotify: metrica completitud version master"
+# python accuracy_metric.py spotify master
+# sleep 10
+
+# echo "##################################################################"
+# echo "Realizando pruebas sobre el componente spotify: metrica completitud version accuracy"
+# python accuracy_metric.py spotify accuracy
 # sleep 10
 
 kill -9 $PID
