@@ -59,6 +59,8 @@ def getComponents(cfile):
 	return resFinal
 
 def insertInDB(datos,fname,compNames):
+	global contadorErroresTotales
+	contadorErroresTotales+=1
 	fname = fname.replace("-","")
 	fname = fname.replace(".","")
 	Errores = fname + "Errores"
@@ -121,6 +123,15 @@ def funcionRecursiva(c_N,dicc,rutaBase,cRevisados):
 			cRecur = mainFun(c,dicc,rutaComp)
 			cRevisados.append(nombreC)
 			funcionRecursiva(cRecur,dicc,rutaComp,cRevisados)
+			
+def getGrade(fallos,name,straux):
+    csvfile = open( "nota" + straux + ".csv" ,"w")
+    spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    if (straux == "noRec"):
+    	spamwriter.writerow( str(10 - (fallos*0.25)))
+    else:
+		spamwriter.writerow( str(10 - (fallos*0.1)))
+    csvfile.close()
 
 script, bbdd, fEntrada = argv
 with open(bbdd, 'r') as csvfile:
@@ -133,8 +144,13 @@ with open(bbdd, 'r') as csvfile:
 		linea5 = linea[5].replace(",","")
 		arr_dicc.append({'Component':linea[0],'Browser':linea[1],'Browser Version':linea[2],
 			'Error':linea3,'Operating System': linea[4],'Description': linea5})
+	contadorErroresTotales = 0
+	contadorErroresNoRec = 0
 	listC = mainFun(fEntrada,arr_dicc,".")
+	global contadorErroresNoRec
+	contadorErroresNoRec+=len(listC[0])
 	cRev = []
 	funcionRecursiva(listC,arr_dicc,".",cRev)
-	
+	getGrade(contadorErroresTotales,path.basename(fEntrada),"Rec")
+	getGrade(contadorErroresNoRec,path.basename,"noRec")
 
