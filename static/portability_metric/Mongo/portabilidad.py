@@ -2,14 +2,9 @@
 import csv
 import re
 from sys import argv
+import pymongo
+from pymongo import Connection
 from os import path
-from mixpanel import Mixpanel
-import configparser
-
-config = ConfigParser.ConfigParser()
-config.read('file.conf')
-token = config.get('TOKEN', 'token')
-mp = Mixpanel(token)
 
 
 def getErrors(diccsErrores, comps_Name):
@@ -58,7 +53,13 @@ def getComponents(cfile):
 	resFinal.append(components)
 	return resFinal
 
-def insertInDB(datos,fname,compNames):
+def abrirBD():
+	conex = Connection('localhost',27017)
+	return conex.portabilidad
+
+def insertInDB(datos,db,fname,compNames):
+	global contadorErroresTotales
+	contadorErroresTotales+=1
 	fname = fname.replace("-","")
 	fname = fname.replace(".","")
 	Errores = fname + "Errores"
@@ -69,14 +70,14 @@ def insertInDB(datos,fname,compNames):
 		clave = componente.keys()
 		if (len(componente[clave[0]][0]) != 0):
 			for diccErr in componente[clave[0]][2]:
-				mp.track(fname,Errores,diccErr)
-				
+				db[Errores].insert(diccErr)
 			diccBuscadores = {}
 			diccVersiones = {}
 			buscadores = componente[clave[0]][0]
 			versBuscadores = componente[clave[0]][1]
 			diccBuscadores['Component'] = clave[0]
 			diccVersiones['Component'] = clave[0]
+			
 
 			if len(buscadores)!=0:
 				for buscador in buscadores:
@@ -87,11 +88,9 @@ def insertInDB(datos,fname,compNames):
 				for versBus in versBuscadores:
 					if diccVersiones.keys().count(versBus) == 0:
 						diccVersiones[versBus] = str(versBuscadores.count(versBus))
-
-			mp.track(fname,EstadisticaBuscadores,diccBuscadores)
-			mp.track(fname,EstadVersionBuscadores,diccVersiones)
-			mp.track("componente base","Errores Totales",{"Errores Totales":"Errores Totales"})
-
+						
+			db[EstadisticaBuscadores].insert(diccBuscadores)
+			db[EstadVersionBuscadores].insert(diccVersiones)
 
 def mainFun (componentFile,diccionarios,rutaBase):
 	
@@ -100,12 +99,13 @@ def mainFun (componentFile,diccionarios,rutaBase):
 	nomFichRes = nombreFichero
 	nomFichRes = nomFichRes.replace(".html","")
 	componentFile = rutaBase + '/' +nombreFichero
-	print componentFile
+	#print componentFile
 	c_Name = getComponents(componentFile)
 	c_NameCompl = c_Name[1]
 	c_NameAbr = c_Name[0]
 	arr_Fallos = getErrors(diccionarios,c_NameAbr)
-	insertInDB(arr_Fallos,nombreFichero,c_NameAbr)
+	bd = abrirBD()
+	insertInDB(arr_Fallos,bd,nombreFichero,c_NameAbr)
 	return c_Name
 	
 def funcionRecursiva(c_N,dicc,rutaBase,cRevisados):
@@ -122,6 +122,16 @@ def funcionRecursiva(c_N,dicc,rutaBase,cRevisados):
 			cRevisados.append(nombreC)
 			funcionRecursiva(cRecur,dicc,rutaComp,cRevisados)
 
+
+def getGrade(fallos,name,straux):
+    csvfile = open( "nota" + straux + ".csv" ,"w")
+    spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    if (straux == "noRec"):
+    	spamwriter.writerow( str(10 - (fallos*0.25)))
+    else:
+		spamwriter.writerow( str(10 - (fallos*0.1)))
+    csvfile.close()
+
 script, bbdd, fEntrada = argv
 with open(bbdd, 'r') as csvfile:
 	lineas = csvfile.read().splitlines()        
@@ -133,8 +143,12 @@ with open(bbdd, 'r') as csvfile:
 		linea5 = linea[5].replace(",","")
 		arr_dicc.append({'Component':linea[0],'Browser':linea[1],'Browser Version':linea[2],
 			'Error':linea3,'Operating System': linea[4],'Description': linea5})
+	contadorErroresTotales = 0
+	contadorErroresNoRec = 0
 	listC = mainFun(fEntrada,arr_dicc,".")
+	global contadorErroresNoRec
+	contadorErroresNoRec+=len(listC[0])
 	cRev = []
 	funcionRecursiva(listC,arr_dicc,".",cRev)
-	
-
+	getGrade(contadorErroresTotales,path.basename(fEntrada),"Rec")
+	getGrade(contadorErroresNoRec,path.basename,"noRec")
